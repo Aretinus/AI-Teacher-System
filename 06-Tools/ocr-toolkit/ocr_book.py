@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""OCR 扫描版 PDF：逐页渲染 + RapidOCR 识别，生成带隐形文字层的 _OCR.pdf。
+
+产物直接可供 teach.py（蒸馏）与 RAG 切分使用，无需改下游流程。
+
+策略：
+- OCR 结果逐页缓存到 <书名>_ocr_cache.json，随时中断、重跑自动续跑（已识别页跳过）
+- 全部识别完成后统一组装 _OCR.pdf：源页复制 + 按检测框坐标写隐形文字层（render_mode=3，
+  文本层可提取但视觉不变）
+
+用法：
+    python ocr_book.py "<pdf路径>" [--dpi 200] [--pages 10-20] [--out <输出目录>]
+    --pages 限定页范围（如 10-20，含两端）；--out 指定输出目录（默认与源文件同目录）
+"""
+import argparse
+import json
+import os
+import sys
+import time
+
+import fitz
+from rapidocr import RapidOCR
+
+TEXT_LAYER_MIN_CHARS = 20
+
+
+def has_text_layer(page):
+    return len(page.get_text().strip()) > TEXT_LAYER_MIN_CHARS
+
+
+def ocr_image(engine, png_path):
+    """OCR 单张图片，返回 [(x0,y0,x1,y1,text), ...]（按检测框坐标）。"""
+    result = engine(png_path)
+    if result is None:
+        return []
+    boxes = getattr(result, "boxes", None)
+    scores = getattr(result, "scores", None)
+    txts = getattr(result, "txts", None)
+    if boxes is None or txts is None:
+        return []
+    out = []
+    for box, score, txt in zip(boxes, scores, txts):
+        text = str(txt).strip()
+        if not text:
+            continue
+        if score is not None and float(score) < 0.5:
+            continue
+        xs = [float(p[0]) for p in box]
+        ys = [float(p[1]) for p in box]
+        out.append([round(min(xs), 1), round(min(ys), 1), round(max(xs), 1), round(max(ys), 1), text])
+    return out
+
+
+def write_text_layer(page, lines):
+    """按检测框坐标写入隐形文字层（render_mode=3：只入文本层，不显示）。"""
+    n = 0
+    for x0, y0, x1, y1, text in lines:
+        w, h = x1 - x0, y1 - y0
+        if w < 4 or h < 4:
+            continue
+        fontsize = max(3.0, min(48.0, h * 0.9))
+        rc = page.insert_text(
+            fitz.Point(x0, y1 - h * 0.1),
+            text,
+            fontsize=fontsize,
+            fontname="china-ss",
+            render_mode=3,
+            overlay=True,
+        )
+        if rc >= 0:
+            n += 1
+    return n
+
+
+def load_cache(path):
+    if not os.path.exists(path):
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return {int(k): v for k, v in json.load(f).items()}
+    except Exception:
+        return {}
+
+
+def save_cache(path, cache):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(cache, f, ensure_ascii=False)
+
+
+def main():
+    ap = argparse.ArgumentParser(description="扫描版 PDF OCR -> 带文字层 _OCR.pdf")
+    ap.add_argument("pdf")
+    ap.add_argument("--dpi", type=int, default=200)
+    ap.add_argument("--pages", default=None, help="如 10-20（含两端），默认全部")
+    ap.add_argument("--out", default=None, help="输出目录（默认与源文件同目录）")
+    args = ap.parse_args()
+
+    src = os.path.abspath(args.pdf)
+    if not os.path.exists(src):
+        sys.exit(f"文件不存在：{src}")
+    src_name = os.path.basename(src)
+    stem, _ = os.path.splitext(src_name)
+    out_dir = os.path.abspath(args.out) if args.out else os.path.dirname(src)
+    os.makedirs(out_dir, exist_ok=True)
+    out_pdf = os.path.join(out_dir, f"{stem}_OCR.pdf")
+    cache_path = os.path.join(out_dir, f"{stem}_ocr_cache.json")
+
+    pno_range = None
+    if args.pages:
+        try:
+            a, b = args.pages.split("-")
+            pno_range = (int(a), int(b))
+        except ValueError:
+            sys.exit(f"--pages 格式错误：{args.pages}（应为 10-20）")
+
+    pdf = fitz.open(src)
+    pages = range(pdf.page_count)
+    if pno_range:
+        pages = range(min(pno_range[0], pdf.page_count - 1), min(pno_range[1], pdf.page_count - 1) + 1)
+
+    engine = RapidOCR()
+    cache = load_cache(cache_path)
+
+    # 阶段 1：OCR（逐页缓存，可中断续跑）
+    t0 = time.time()
+    recognized = 0
+    for pno in pages:
+        if str(pno) in cache:
+            continue
+        page = pdf[pno]
+        if has_text_layer(page):
+            cache[str(pno)] = []
+            save_cache(cache_path, cache)
+            continue
+        pix = page.get_pixmap(dpi=args.dpi)
+        tmp = os.path.join(os.environ.get("TEMP", "."), f"_ocr_tmp_{os.getpid()}.png")
+        pix.save(tmp)
+        t1 = time.time()
+        lines = ocr_image(engine, tmp)
+        os.remove(tmp)
+        cache[str(pno)] = lines
+        save_cache(cache_path, cache)
+        recognized += 1
+        print(f"  [{pno}] OCR {len(lines)} 段 ({time.time()-t1:.1f}s)")
+    print(f"OCR 阶段：识别 {recognized} 页，缓存 {len(cache)} 页，耗时 {(time.time()-t0)/60:.1f} 分钟")
+
+    # 阶段 2：组装 PDF（一次性生成）
+    t0 = time.time()
+    out_doc = fitz.open()
+    total_texts = 0
+    for pno in pages:
+        lines = cache.get(str(pno), [])
+        out_doc.insert_pdf(pdf, from_page=pno, to_page=pno)
+        total_texts += write_text_layer(out_doc[-1], lines)
+    out_doc.save(out_pdf)
+    n_pages = out_doc.page_count
+    out_doc.close()
+    pdf.close()
+    print(f"组装完成：{out_pdf}（{n_pages} 页，写入 {total_texts} 段文字层，{(time.time()-t0)/60:.1f} 分钟）")
+
+
+if __name__ == "__main__":
+    main()

@@ -24,8 +24,13 @@ logs/
 01-Skills/vendor/venv_slim/
 
 # ===== 第三方运行时工具（含嵌套 git 仓库与二进制）=====
-06-Tools/
+06-Tools/agentskills-runtime-src/
+06-Tools/ocr-toolkit/venv/
+06-Tools/ocr-toolkit/bin/
+06-Tools/ocr-toolkit/downloads/
 
 # ===== 系统文件 =====
 .DS_Store
 Thumbs.db
+# ===== �������� =====
+06-Tools/jwt_token.txt
