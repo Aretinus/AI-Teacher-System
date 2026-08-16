@@ -11,7 +11,8 @@
 
 用法：
     python ocr_book.py "<pdf路径>" [--dpi 200] [--pages 10-20] [--out <输出目录>]
-    --pages 限定页范围（如 10-20，含两端）；--out 指定输出目录（默认与源文件同目录）
+    --pages 限定页范围（如 10-20，含两端）；--out 指定输出目录（默认镜像到
+    02-DATA/books/ocr/<相对 raw 的路径>，不污染源数据）
 """
 import argparse
 import json
@@ -23,6 +24,21 @@ import fitz
 from rapidocr import RapidOCR
 
 TEXT_LAYER_MIN_CHARS = 20
+
+TOOLKIT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(TOOLKIT_DIR, "..", ".."))
+RAW_ROOT = os.path.join(PROJECT_ROOT, "02-DATA", "books", "raw")
+OCR_ROOT = os.path.join(PROJECT_ROOT, "02-DATA", "books", "ocr")
+
+
+def default_out_dir(src):
+    """默认输出到 02-DATA/books/ocr/<与 raw 相同的相对路径>，不污染源数据。"""
+    src_abs = os.path.abspath(src)
+    raw_abs = os.path.abspath(RAW_ROOT)
+    if src_abs.startswith(raw_abs + os.sep):
+        rel_dir = os.path.dirname(os.path.relpath(src_abs, raw_abs))
+        return os.path.join(OCR_ROOT, rel_dir)
+    return os.path.dirname(src_abs)
 
 
 def has_text_layer(page):
@@ -78,7 +94,7 @@ def load_cache(path):
         return {}
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return {int(k): v for k, v in json.load(f).items()}
+            return {str(k): v for k, v in json.load(f).items()}
     except Exception:
         return {}
 
@@ -101,7 +117,7 @@ def main():
         sys.exit(f"文件不存在：{src}")
     src_name = os.path.basename(src)
     stem, _ = os.path.splitext(src_name)
-    out_dir = os.path.abspath(args.out) if args.out else os.path.dirname(src)
+    out_dir = os.path.abspath(args.out) if args.out else default_out_dir(src)
     os.makedirs(out_dir, exist_ok=True)
     out_pdf = os.path.join(out_dir, f"{stem}_OCR.pdf")
     cache_path = os.path.join(out_dir, f"{stem}_ocr_cache.json")
@@ -145,11 +161,11 @@ def main():
         print(f"  [{pno}] OCR {len(lines)} 段 ({time.time()-t1:.1f}s)")
     print(f"OCR 阶段：识别 {recognized} 页，缓存 {len(cache)} 页，耗时 {(time.time()-t0)/60:.1f} 分钟")
 
-    # 阶段 2：组装 PDF（一次性生成）
+    # 阶段 2：组装 PDF（一次性生成，遍历全书；未 OCR 页写入空文字层）
     t0 = time.time()
     out_doc = fitz.open()
     total_texts = 0
-    for pno in pages:
+    for pno in range(pdf.page_count):
         lines = cache.get(str(pno), [])
         out_doc.insert_pdf(pdf, from_page=pno, to_page=pno)
         total_texts += write_text_layer(out_doc[-1], lines)

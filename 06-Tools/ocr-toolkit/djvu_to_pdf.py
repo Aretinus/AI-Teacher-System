@@ -24,7 +24,20 @@ import sys
 import fitz
 
 TOOLKIT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(TOOLKIT_DIR, "..", ".."))
+RAW_ROOT = os.path.join(PROJECT_ROOT, "02-DATA", "books", "raw")
+OCR_ROOT = os.path.join(PROJECT_ROOT, "02-DATA", "books", "ocr")
 PAGE_SEP = "\f"  # djvutxt 页分隔符
+
+
+def default_out_dir(src):
+    """默认输出到 02-DATA/books/ocr/<与 raw 相同的相对路径>，不污染源数据。"""
+    src_abs = os.path.abspath(src)
+    raw_abs = os.path.abspath(RAW_ROOT)
+    if src_abs.startswith(raw_abs + os.sep):
+        rel_dir = os.path.dirname(os.path.relpath(src_abs, raw_abs))
+        return os.path.join(OCR_ROOT, rel_dir)
+    return os.path.dirname(src_abs)
 
 
 def find_tool(name):
@@ -90,7 +103,9 @@ def main():
     if not os.path.exists(src):
         sys.exit(f"文件不存在：{src}")
     stem, _ = os.path.splitext(src)
-    out = f"{stem}_转PDF.pdf"
+    out_dir = default_out_dir(src)
+    os.makedirs(out_dir, exist_ok=True)
+    out = os.path.join(out_dir, f"{os.path.basename(stem)}_转PDF.pdf")
 
     ddjvu = find_tool("ddjvu.exe")
     djvutxt = find_tool("djvutxt.exe")

@@ -10,6 +10,9 @@ logs/
 # ===== 原始书籍（体积过大，不入库）=====
 02-DATA/books/raw/
 
+# ===== OCR 处理产物（镜像 raw 目录结构，不入库）=====
+02-DATA/books/ocr/
+
 # ===== 用户上传附件 =====
 02-DATA/uploads/
 
@@ -32,5 +35,5 @@ logs/
 # ===== 系统文件 =====
 .DS_Store
 Thumbs.db
-# ===== �������� =====
+# ===== �������� =====
 06-Tools/jwt_token.txt
