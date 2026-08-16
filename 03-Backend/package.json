@@ -1,0 +1,22 @@
+{
+  "name": "03-backend",
+  "version": "1.0.0",
+  "description": "AI 教师系统 Backend：提供 Runtime 调用、会话管理、状态读写、学科路由和 HTTP/SSE 接口。",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/test/smoke.js"
+  },
+  "keywords": [
+    "ai-teacher",
+    "runtime-client",
+    "sse"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@opencangjie/skills": "^1.0.2",
+    "express": "^4.21.2"
+  }
+}

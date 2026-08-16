@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "books": [
+    {
+      "id": "feynman-lectures-vol-1",
+      "title": "费恩曼物理学讲义（第一卷）",
+      "subject": "physics",
+      "rawPath": "raw/Physic/费恩曼物理学讲义（英文版）",
+      "rawFile": "费恩曼物理学讲义(第1卷·新千年版·英文版)-[美]费恩曼＆莱顿＆桑兹-2010.pdf",
+      "distilledPath": "distilled/费恩曼物理学讲义（英文版）/vol-1"
+    },
+    {
+      "id": "feynman-lectures-vol-2",
+      "title": "费恩曼物理学讲义（第二卷）",
+      "subject": "physics",
+      "rawPath": "raw/Physic/费恩曼物理学讲义（英文版）",
+      "rawFile": "费恩曼物理学讲义(第2卷·新千年版·英文版)-[美]费恩曼＆莱顿＆桑兹-2010.pdf",
+      "distilledPath": "distilled/费恩曼物理学讲义（英文版）/vol-2"
+    },
+    {
+      "id": "feynman-lectures-vol-3",
+      "title": "费恩曼物理学讲义（第三卷）",
+      "subject": "physics",
+      "rawPath": "raw/Physic/费恩曼物理学讲义（英文版）",
+      "rawFile": "费恩曼物理学讲义(第3卷·新千年版·英文版)-[美]费恩曼＆莱顿＆桑兹-2010.pdf",
+      "distilledPath": "distilled/费恩曼物理学讲义（英文版）/vol-3"
+    },
+    {
+      "id": "landau-vol-1-mechanics-3rd-ed",
+      "title": "Landau Vol. 1. Mechanics.3rd.Ed",
+      "subject": "physics",
+      "rawPath": "",
+      "rawFile": "",
+      "distilledPath": "distilled\\Landau Vol. 1. Mechanics.3rd.Ed"
+    }
+  ]
+}

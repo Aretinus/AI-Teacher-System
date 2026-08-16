@@ -1,0 +1,31 @@
+# ===== 依赖与构建产物 =====
+node_modules/
+04-Frontend/dist/
+04-Frontend/unpackage/
+
+# ===== 日志 =====
+logs/
+*.log
+
+# ===== 原始书籍（体积过大，不入库）=====
+02-DATA/books/raw/
+
+# ===== 用户上传附件 =====
+02-DATA/uploads/
+
+# ===== 用户个人学习记录（不上传）=====
+02-DATA/users/
+02-DATA/sessions/
+
+# ===== 本地配置（可能含 API Key，不上传）=====
+02-DATA/settings.json
+
+# ===== Python 虚拟环境 =====
+01-Skills/vendor/venv_slim/
+
+# ===== 第三方运行时工具（含嵌套 git 仓库与二进制）=====
+06-Tools/
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db

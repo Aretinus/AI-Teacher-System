@@ -1,718 +1,316 @@
-# 本地 AI 教师系统：第一版 MVP 开发方案
+# 本地 AI 教师系统：MVP 开发方案
 
-> 版本：V1.0  
-> 日期：2026-08-13  
-> 目标：以最小开发成本验证“AI 教师内核 + AgentSkills Runtime + UniApp”这条技术路线，而不是一开始做完整的多学科 App。
-
----
-
-## 1. 方案定位
-
-第一版的核心目标不是“做一个完整的 AI 学习 App”，而是验证下面这条最小闭环：
-
-```text
-用户问题
-   ↓
-UniApp H5
-   ↓
-本地 API / Adapter
-   ↓
-AgentSkills Runtime
-   ↓
-Tutor Skill
-   ↓
-LLM
-   ↓
-教学判断
-   ↓
-回答 / 追问 / 纠错
-   ↓
-简单学习状态更新
-```
-
-第一版必须优先证明：
-
-1. Runtime 可以稳定运行。
-2. 自定义 Tutor Skill 可以稳定执行。
-3. UniApp 能够调用 Runtime。
-4. AI 回复能够流式或准实时显示。
-5. Markdown + LaTeX 能正常渲染。
-6. AI 不只是“回答问题”，而是能够进行基本的诊断、解释、追问和检查理解。
-7. 学习状态能够以最小结构保存。
+> 版本：V1.1<br>
+> 日期：2026-08-14<br>
+> 目标：建立可扩展的 AI 教师系统基础，完成“诊断、教学、评估、学习状态更新”的闭环。
 
 ---
 
-# 2. 核心设计原则
+## 1. 产品定位
 
-## 2.1 先做 AI 老师内核，再做 App
+系统提供具有明确教学风格和学科能力的 AI 教师。第一阶段以数学微积分验证教学闭环，并建立理论物理（费曼力学）接入路径。
 
-第一版不追求：
-
-- 多平台同时发布；
-- 大规模 Skill 编排；
-- 复杂 Agent Router；
-- 完整用户账号体系；
-- 云端部署；
-- 大型知识库；
-- 完整学习分析系统。
-
-优先实现：
+系统交付的核心价值：
 
 ```text
-Tutor Core
-    +
-一个学科 Tutor
-    +
-简单 Student State
-    +
-UniApp H5
-```
-
----
-
-## 2.2 “Skill”不能只是一个 Prompt
-
-第一版的 Tutor Skill 至少需要包含一个基础教学流程：
-
-```text
-Question
-    ↓
-Diagnosis
-    ↓
-Knowledge Point
-    ↓
-Teaching Strategy
-    ↓
-Response / Question
-    ↓
-Check Understanding
-    ↓
-Update Student State
-```
-
-目标是让系统具备“教师行为”，而不是简单改变聊天机器人的语气。
-
----
-
-# 3. 技术架构
-
-推荐第一版架构：
-
-```text
-┌─────────────────────────────────────┐
-│              UniApp                 │
-│             Vue 3 + H5             │
-│                                     │
-│  学科选择 / 对话 / Markdown / LaTeX │
-└──────────────────┬──────────────────┘
-                   │
-             HTTP / SSE
-                   │
-┌──────────────────▼──────────────────┐
-│         Local API / Adapter         │
-│                                    │
-│  会话管理 / 参数转换 / 流式适配     │
-└──────────────────┬──────────────────┘
-                   │
-┌──────────────────▼──────────────────┐
-│       AgentSkills Runtime           │
-│       127.0.0.1:8080               │
-│                                    │
-│  Tutor Skill / Domain Skill        │
-└──────────────────┬──────────────────┘
-                   │
-                   ▼
-             LLM Provider
-        第一版可使用 DeepSeek
-```
-
-### 关键修改
-
-原方案直接让 UniApp 调用 Runtime。
-
-第一版更建议增加：
-
-```text
-UniApp
-   ↓
-Local API / Adapter
-   ↓
-AgentSkills Runtime
-```
-
-原因：
-
-- 避免前端直接绑定 Runtime 的内部接口；
-- 方便以后替换 Runtime；
-- 方便统一处理会话、错误、流式输出；
-- 以后可以增加 Student State、Router、日志等业务逻辑；
-- 可以避免前端直接暴露模型相关配置。
-
----
-
-# 4. 技术选型
-
-## 4.1 开发环境
-
-推荐：
-
-```text
-OS：Windows 10/11
-Node.js：20 LTS 或 22 LTS
-IDE：HBuilderX
-前端：UniApp + Vue 3
-```
-
-不建议继续使用 Node.js 16 作为基础环境。项目会涉及 Vue 3、Vite 和较新的 npm 依赖，使用较新的 LTS 可以降低兼容性问题。
-
----
-
-# 5. AgentSkills Runtime
-
-目前可以确认 `@opencangjie/skills` 是公开 npm 包，并提供：
-
-- Runtime 安装；
-- Runtime 启动/停止；
-- Skill 安装；
-- Skill 查询；
-- Skill 执行；
-- JavaScript / TypeScript API；
-- REST API；
-- MCP streaming；
-- Windows/macOS/Linux 支持。
-
-参考：
-
-- npm：<https://www.npmjs.com/package/@opencangjie/skills>
-- 项目主页：<https://atomgit.com/uctoo/agentskills-runtime>
-
-当前官方示例包含：
-
-```bash
-npm install @opencangjie/skills
-
-npx skills install-runtime
-
-npx skills start
-
-npx skills list
-
-npx skills run my-skill -p '{"input":"data"}'
-```
-
-默认 Runtime：
-
-```text
-http://127.0.0.1:8080
-```
-
-官方 JS API 也提供类似：
-
-```javascript
-import { createClient } from '@opencangjie/skills';
-
-const client = createClient({
-  baseUrl: 'http://127.0.0.1:8080'
-});
-
-const result = await client.executeSkill('my-skill', {
-  input: 'data'
-});
-```
-
-因此，AgentSkills Runtime 可以作为第一版的核心后端运行时。
-
----
-
-# 6. 第一次技术验证：不要先做 App
-
-第一阶段只验证 Runtime。
-
-## 6.1 安装
-
-```bash
-npm install @opencangjie/skills
-npx skills install-runtime
-```
-
-## 6.2 配置模型
-
-例如：
-
-```ini
-MODEL_PROVIDER=deepseek
-MODEL_NAME=deepseek-chat
-DEEPSEEK_API_KEY=你的API_KEY
-```
-
-## 6.3 启动
-
-```bash
-npx skills start --foreground
-```
-
-## 6.4 健康检查
-
-```bash
-curl http://127.0.0.1:8080/hello
-```
-
-期望得到正常响应。
-
-然后：
-
-```bash
-curl http://127.0.0.1:8080/skills
-```
-
-确认 Skill API 可用。
-
----
-
-# 7. 第一版 Skill 重新设计
-
-原方案中的：
-
-```text
-book-learning-tutor
-router-skill
-feynman-skill
-```
-
-不建议全部直接作为第一版依赖。
-
-第一版只建立三个逻辑模块：
-
-```text
-skills/
-├── tutor-core/
-├── math-tutor/
-└── evaluator/
-```
-
-后续再增加：
-
-```text
-physics-tutor/
-chemistry-tutor/
-...
-```
-
----
-
-# 8. Tutor Core
-
-`Tutor Core` 是第一版最重要的 Skill。
-
-职责：
-
-```text
-理解学生问题
-    ↓
-判断问题类型
-    ↓
-识别可能的知识缺口
-    ↓
+学生提问
+  ↓
+识别学科与知识点
+  ↓
+诊断理解状态
+  ↓
 选择教学策略
-    ↓
-回答 / 提问
-    ↓
-检查理解
+  ↓
+解释、提示、追问
+  ↓
+评估学生回答
+  ↓
+更新学习状态
 ```
 
-最小行为：
+教学风格采用费曼式原则：从直觉和具体情境出发，鼓励学生用自己的语言解释概念，并通过追问确认理解。
 
-### 学生直接问答案
+---
 
-AI 不应始终直接给最终答案，而应根据问题难度决定：
+## 2. MVP 目标
+
+1. AgentSkills Runtime 稳定运行并执行自定义 Skill。
+2. Tutor Engine 完成教学流程编排。
+3. Calculus Tutor 支持函数、导数和基础积分教学。
+4. Evaluator 输出结构化学习评估。
+5. Router 根据学科选择或自动识别调用相应 Tutor。
+6. 学习状态、历史摘要和用户档案保存在本地数据目录。
+7. UniApp H5 提供对话、Markdown、LaTeX 与流式输出体验。
+8. Physics Tutor 具备费曼力学内容的技能目录与数据关联能力。
+
+---
+
+## 3. 系统架构
 
 ```text
-直接讲解
-或
-给提示
-或
-反问一步
-或
-要求学生解释
+UniApp H5
+  ↓ HTTP / SSE
+Backend Adapter
+  ↓
+AgentSkills Runtime
+  ↓
+Router → Tutor Engine → Subject Tutor → Evaluator
+  ↓                                      ↓
+知识数据 ─────────────────────────────→ User State / Session History
 ```
 
-### 学生回答错误
+### 模块职责
 
-AI 至少完成：
+| 模块 | 职责 |
+|---|---|
+| Frontend | 学科选择、对话、流式渲染、Markdown 与 LaTeX 显示 |
+| Backend | 会话管理、输入校验、Skill 调用、流式协议适配、数据读写 |
+| Router | 根据用户选择或问题内容确定学科与 Tutor |
+| Tutor Engine | 编排诊断、教学策略、追问和状态更新 |
+| Subject Tutor | 提供学科知识、例题、常见错误与教学表达 |
+| Evaluator | 评估学生回答并输出掌握度、错误类型和下一步策略 |
+| DATA | 管理教材、教学材料、用户状态、会话明细与共享知识 |
+
+---
+
+## 4. 项目目录
 
 ```text
-判断错误类型
-    ↓
-指出错误位置
-    ↓
-给最小必要提示
-    ↓
-再次让学生尝试
+E:/AI-Teacher-System/
+│
+├── 01-Skills/
+│   ├── core/
+│   │   ├── tutor-engine/
+│   │   ├── evaluator/
+│   │   └── router/
+│   ├── subjects/
+│   │   ├── index.json
+│   │   ├── math/
+│   │   │   ├── calculus-tutor/
+│   │   │   │   ├── manifest.yaml
+│   │   │   │   ├── SKILL.md
+│   │   │   │   └── knowledge/
+│   │   │   └── _TEMPLATE/
+│   │   ├── physics/
+│   │   │   └── feynman-mechanics/
+│   │   └── _TEMPLATE/
+│   └── _TEMPLATE/
+│
+├── 02-DATA/
+│   ├── books/
+│   │   ├── index.json
+│   │   ├── raw/
+│   │   └── distilled/
+│   ├── materials/
+│   │   ├── exercises/
+│   │   ├── lecture-notes/
+│   │   └── reference/
+│   ├── users/
+│   │   ├── default/
+│   │   │   ├── state.json
+│   │   │   ├── history.json
+│   │   │   └── profile.json
+│   │   └── _TEMPLATE/
+│   ├── sessions/
+│   │   └── 2026/08/
+│   └── shared/
+│       └── knowledge-graph/
+│
+├── 03-Backend/
+├── 04-Frontend/
+├── 05-Docs/
+└── 06-Tools/
 ```
 
-### 学生回答正确
+### 目录设计原则
 
-AI 不应仅说“正确”，而可以：
+- `01-Skills` 保存可执行的教学能力；`02-DATA` 保存可复用、可追踪的数据资产。
+- `core` 提供跨学科通用能力；`subjects` 按学科隔离知识和教学策略。
+- 每个学科 Tutor 通过 `manifest.yaml` 声明其教材、练习、知识目录和适用范围。
+- `index.json` 作为程序可读取的注册表，支持学科发现、路由和配置校验。
+- 用户摘要保存在 `users`，完整会话按年月保存在 `sessions`，兼顾快速读取和审计追踪。
+- `_TEMPLATE` 为新建 Skill、学科和用户提供统一起点。
 
-```text
-确认
-    ↓
-要求解释原因
-    ↓
-检查是否真正理解
+---
+
+## 5. 索引与清单规范
+
+### 学科索引：`01-Skills/subjects/index.json`
+
+```json
+{
+  "version": "1.0",
+  "subjects": [
+    {
+      "id": "math",
+      "name": "数学",
+      "skills": ["calculus-tutor"],
+      "defaultSkill": "calculus-tutor"
+    },
+    {
+      "id": "physics",
+      "name": "理论物理",
+      "skills": ["feynman-mechanics"],
+      "defaultSkill": "feynman-mechanics"
+    }
+  ]
+}
+```
+
+### 教材索引：`02-DATA/books/index.json`
+
+```json
+{
+  "version": "1.0",
+  "books": [
+    {
+      "id": "feynman-lectures-vol-1",
+      "title": "费曼物理学讲义（第一卷）",
+      "subject": "physics",
+      "rawPath": "raw/feynman-lectures-vol-1",
+      "distilledPath": "distilled/feynman-lectures-vol-1"
+    }
+  ]
+}
+```
+
+### Tutor 清单：`manifest.yaml`
+
+```yaml
+id: calculus-tutor
+name: 微积分教师
+subject: math
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises/math
+  references: ../../../../02-DATA/materials/reference/math
+capabilities:
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+topics:
+  - function
+  - derivative
+  - integral
 ```
 
 ---
 
-# 9. Math Tutor
+## 6. 核心教学能力
 
-第一版建议先选一个学科。
+### Tutor Engine
 
-推荐优先选择：
+`tutor-engine` 接收统一教学请求，并输出下一轮教学响应。
 
-> 数学
-
-原因：
-
-- 结构清晰；
-- 公式渲染需求明确；
-- 容易验证；
-- 能快速检验 Tutor Core；
-- 后续迁移到物理较自然。
-
-目录：
-
-```text
-math-tutor/
-├── SKILL.md
-└── knowledge/
-    ├── algebra.md
-    ├── function.md
-    ├── calculus.md
-    └── common-errors.md
+```json
+{
+  "userId": "default",
+  "sessionId": "20260814-001",
+  "subject": "math",
+  "message": "为什么导数表示变化率？"
+}
 ```
 
-第一版不需要覆盖全部数学。
-
-建议只做：
+处理流程：
 
 ```text
-代数
-函数
-基础微积分
+识别意图与知识点
+  ↓
+读取用户状态与近期对话
+  ↓
+选择解释、提示、追问或练习策略
+  ↓
+调用学科 Tutor
+  ↓
+调用 Evaluator
+  ↓
+生成教学回复与状态更新
 ```
 
----
+### Evaluator
 
-# 10. Evaluator
-
-第一版可以把 Evaluator 作为第二个逻辑模块，而不是复杂 Agent。
-
-职责：
-
-```text
-评估学生答案
-    ↓
-判断：
-correct
-partial
-wrong
-unknown
-    ↓
-确定下一步教学策略
-```
-
-例如：
+Evaluator 对学生回答进行结构化判断：
 
 ```json
 {
   "status": "partial",
-  "knowledge_point": "导数几何意义",
-  "error_type": "概念混淆",
-  "confidence": 0.82
+  "knowledgePoint": "derivative-geometric-meaning",
+  "masteryDelta": 0.05,
+  "errorType": "concept-confusion",
+  "confidence": 0.82,
+  "nextStrategy": "guided-question"
 }
 ```
 
-这一步非常重要，因为它把：
+状态值包括：`correct`、`partial`、`wrong`、`unknown`。
+
+### Router
+
+Router 支持两种工作方式：
 
 ```text
-聊天
-```
-
-逐渐转化成：
-
-```text
-教学状态
+手动模式：用户选择学科 → 对应 Tutor
+自动模式：识别问题学科 → 对应 Tutor
 ```
 
 ---
 
-# 11. Student State
+## 7. 数据模型
 
-第一版不需要数据库。
-
-可以采用：
+### 用户状态：`state.json`
 
 ```json
 {
-  "subject": "math",
-  "knowledge_points": {
-    "derivative": {
+  "userId": "default",
+  "currentSubject": "math",
+  "currentGoal": "理解导数的几何意义",
+  "knowledgePoints": {
+    "derivative-geometric-meaning": {
       "mastery": 0.65,
-      "last_seen": "2026-08-13"
+      "lastSeen": "2026-08-14",
+      "attempts": 3
     }
   },
-  "recent_errors": [
+  "recentErrors": [
     {
-      "type": "concept_confusion",
-      "topic": "derivative"
+      "type": "concept-confusion",
+      "knowledgePoint": "derivative-geometric-meaning"
     }
-  ],
-  "current_goal": "理解导数的几何意义"
+  ]
 }
 ```
 
-第一阶段甚至可以使用：
+### 用户档案：`profile.json`
 
-```text
-student-state.json
-```
+保存显示名称、偏好教学语言、当前学习计划和学习偏好。
 
-保存。
+### 历史摘要：`history.json`
 
-以后再迁移：
+保存会话标识、日期、学科、核心知识点、学习结论和下一步目标。
 
-```text
-SQLite
-→ PostgreSQL
-```
+### 会话明细：`sessions/YYYY/MM/`
+
+保存消息、教学决策、评估结果和状态变更，用于回顾和质量分析。
 
 ---
 
-# 12. 为什么第一版不做 Router Skill
+## 8. 前端与交互
 
-不要一开始构建：
+技术栈：UniApp + Vue 3，以 H5 为首个交付端。
 
-```text
-用户
- ↓
-router-skill
- ↓
-数学 Skill / 物理 Skill / 化学 Skill
-```
+核心页面：
 
-第一版直接使用简单业务路由：
+| 页面 | 内容 |
+|---|---|
+| 首页 | 学科选择、继续学习、当前目标、最近知识点 |
+| 对话页 | 消息流、输入区、流式状态、Markdown 与 LaTeX 渲染 |
+| 学习概览 | 掌握度、近期错误、会话摘要、下一步目标 |
 
-```text
-用户明确选择学科
-    ↓
-对应 Tutor
-
-用户选择“自动”
-    ↓
-LLM 判断学科
-    ↓
-对应 Tutor
-```
-
-甚至可以先只支持：
-
-```text
-数学
-自动
-```
-
-当真正有 2~3 个成熟学科 Skill 后，再把 Router 独立出来。
-
----
-
-# 13. 为什么第一版不做 Feynman Skill
-
-费曼学习法更适合成为：
-
-```text
-Tutor Behavior
-```
-
-而不是独立 Skill。
-
-例如：
-
-```text
-学生：
-我理解导数就是变化率。
-
-AI：
-很好。现在不要看公式。
-假设位移 s(t) = t²，
-你解释一下 t=2 时导数代表什么？
-```
-
-这本质上是教学策略，不需要拆成独立 Agent。
-
----
-
-# 14. UniApp 前端
-
-第一版：
-
-```text
-UniApp + Vue 3
-```
-
-但只发布：
-
-```text
-H5
-```
-
-不要一开始同时做：
-
-```text
-Android
-iOS
-微信小程序
-```
-
-先把 H5 跑通。
-
-目录可以设计成：
-
-```text
-src/
-├── pages/
-│   ├── index/
-│   └── chat/
-├── components/
-│   ├── ChatMessage.vue
-│   ├── SubjectSelector.vue
-│   └── MarkdownRenderer.vue
-├── services/
-│   └── ai.js
-├── stores/
-│   └── learning.js
-└── utils/
-```
-
----
-
-# 15. 前端核心页面
-
-第一版只需要两个页面。
-
-## 首页
-
-```text
-┌─────────────────────────┐
-│       AI 学习助手        │
-│                         │
-│  [数学] [自动]           │
-│                         │
-│  继续学习                │
-│  最近知识点：导数        │
-│                         │
-│  [开始学习]              │
-└─────────────────────────┘
-```
-
-## 对话页
-
-```text
-┌─────────────────────────┐
-│ 数学 AI Tutor            │
-├─────────────────────────┤
-│                         │
-│ AI：你认为……             │
-│                         │
-│ 用户：我觉得……           │
-│                         │
-│ AI：很好，但这里……       │
-│                         │
-├─────────────────────────┤
-│ 输入问题……         [发送]│
-└─────────────────────────┘
-```
-
----
-
-# 16. Markdown + LaTeX
-
-数学/物理场景下公式渲染属于刚需。
-
-可优先验证：
-
-- wtto-markdown
-- 其他支持 KaTeX 的 UniApp Markdown 组件
-
-参考：
-
-<https://ext.dcloud.net.cn/plugin?id=21259>
-
-需要测试：
-
-```text
-行内公式
-块公式
-上下标
-矩阵
-分式
-积分
-极限
-代码块
-Markdown 表格
-```
-
-验收标准：
-
-> 同一条 AI 回复在 H5 中显示时，不应破坏数学公式和 Markdown 结构。
-
----
-
-# 17. Streaming
-
-这里不能直接假定 SDK 一定提供你需要的前端 WebSocket 流式接口。
-
-Runtime 当前资料明确存在：
-
-```text
-REST API
-MCP / stream
-```
-
-但第一版必须实际验证前端所需的流式协议。
-
-验证顺序：
-
-```text
-executeSkill
-    ↓
-确认普通调用可用
-    ↓
-确认 streaming API
-    ↓
-确定 WebSocket / SSE / MCP stream
-    ↓
-写 Adapter
-    ↓
-UniApp 接入
-```
-
-不要在未验证接口之前把 WebSocket 写死在前端。
-
----
-
-# 18. Adapter 层
-
-推荐建立：
-
-```text
-src/services/ai/
-├── runtime.js
-├── adapter.js
-└── stream.js
-```
-
-统一暴露：
+前端通过统一接口调用 Backend：
 
 ```javascript
 sendMessage({
@@ -722,577 +320,100 @@ sendMessage({
 })
 ```
 
-以后前端不关心：
-
-```text
-AgentSkills
-DeepSeek
-SSE
-WebSocket
-MCP
-```
-
-这样未来可以替换后端而无需重写 UI。
+Backend 负责适配 Runtime、模型供应商和流式协议，使前端保持稳定的调用方式。
 
 ---
 
-# 19. 第一版完整数据流
+## 9. 技术环境
 
 ```text
-用户输入
-   ↓
-UniApp
-   ↓
-ai.sendMessage()
-   ↓
-Local Adapter
-   ↓
-判断 subject
-   ├── math
-   │    ↓
-   │  math-tutor
-   │
-   └── auto
-        ↓
-      简单 LLM Router
-        ↓
-      math-tutor
-   ↓
-Tutor Core
-   ↓
-Evaluator
-   ↓
-更新 Student State
-   ↓
-生成回答
-   ↓
-Streaming Adapter
-   ↓
-UniApp
-   ↓
-Markdown + LaTeX
+操作系统：Windows 10/11
+Node.js：20 LTS 或 22 LTS
+前端：UniApp + Vue 3
+Runtime：@opencangjie/skills
+模型：DeepSeek API
+数据：本地 JSON 文件
+通信：HTTP + SSE
 ```
+
+本地运行范围：前端、Backend、Skill、教材索引和用户学习数据；模型推理由云端 API 提供。
 
 ---
 
-# 20. 第一版 MVP 开发阶段
+## 10. 实施阶段
 
-## Phase 0：Runtime 验证
+### Phase 0：运行时验证
 
-目标：
+安装并启动 AgentSkills Runtime，完成健康检查、Skill 列表查询和测试 Skill 执行。
 
-```text
-Runtime 能启动
-Skill 能安装
-Skill 能执行
-模型能正常返回
-```
+### Phase 1：项目骨架与索引
 
-成功标准：
+创建六层目录、学科索引、教材索引、模板目录和默认用户数据。
 
-```text
-curl /hello
-curl /skills
-skills run test-skill
-```
+### Phase 2：核心 Skill
 
-全部正常。
+实现 `tutor-engine`、`evaluator` 与 `router`，定义统一输入输出协议。
 
----
+### Phase 3：数学 Tutor
 
-## Phase 1：最小 Tutor Skill
+实现 `calculus-tutor`，覆盖函数、导数、基础积分、例题和常见错误。
 
-创建：
+### Phase 4：Backend
 
-```bash
-npx skills init tutor-core
-```
+实现 Runtime 客户端、会话服务、状态服务、路由服务与 SSE 输出。
 
-实现一个最小 Skill。
+### Phase 5：UniApp H5
 
-输入：
+实现首页、对话页、学习概览、Markdown、LaTeX 与流式展示。
 
-```json
-{
-  "question": "什么是导数？"
-}
-```
+### Phase 6：物理 Tutor
 
-输出：
-
-```text
-结构化教学回答
-```
-
-目标不是知识覆盖，而是验证：
-
-> AI 是否能够按照“诊断 → 解释 → 提问”的教学流程工作。
+实现 `feynman-mechanics` 的清单、知识目录和费曼式力学教学内容。
 
 ---
 
-## Phase 2：Math Tutor
+## 11. 验收标准
 
-增加：
-
-```text
-math-tutor
-```
-
-先支持：
+以下场景可稳定完成：
 
 ```text
-函数
-导数
-基础微积分
+学生：为什么导数表示变化率？
+  ↓
+系统：识别数学 / 导数，读取学习状态
+  ↓
+教师：以具体运动情境解释，并提出一个可回答的追问
+  ↓
+学生：提交解释
+  ↓
+系统：评估理解程度，记录错误或掌握度，给出下一步教学内容
 ```
+
+验收项目：
+
+- Runtime、核心 Skill 和学科 Tutor 可以被 Backend 调用。
+- 自动和手动模式可以定位到正确的学科 Tutor。
+- 教学回复包含诊断、解释或提示，以及理解检查。
+- Evaluator 可以生成结构化结果并写入用户状态。
+- 会话摘要与完整会话明细能够保存和读取。
+- H5 可流式显示 Markdown、行内公式、块公式、矩阵、分式、积分和代码块。
+- 新增学科可通过学科索引、Tutor 清单和数据目录完成注册。
 
 ---
 
-## Phase 3：Student State
-
-建立最小状态：
+## 12. 演进路径
 
 ```text
-知识点
-掌握度
-近期错误
-当前学习目标
+V1：数学微积分教学闭环
+  ↓
+V1.1：费曼力学 Tutor
+  ↓
+V1.2：多学科 Router 与知识图谱
+  ↓
+V2：学习路径规划与长期学习画像
+  ↓
+V3：多学科 AI 教师系统
 ```
 
-先使用 JSON。
+## 13. 一句话版本
 
----
-
-## Phase 4：UniApp H5
-
-接入：
-
-```text
-首页
-学科选择
-聊天页
-Markdown
-KaTeX
-```
-
----
-
-## Phase 5：Streaming
-
-完成：
-
-```text
-Runtime
- ↓
-Adapter
- ↓
-UniApp
-```
-
-的流式输出。
-
----
-
-## Phase 6：简单 Router
-
-只支持：
-
-```text
-数学
-自动
-```
-
-自动模式下判断：
-
-```text
-math
-general
-```
-
----
-
-## Phase 7：第二学科
-
-加入：
-
-```text
-physics-tutor
-```
-
-验证 Skill 化架构是否能够扩展。
-
----
-
-# 21. 第一版功能边界
-
-## 必须实现
-
-- [ ] AgentSkills Runtime 正常运行
-- [ ] 自定义 Tutor Skill 可执行
-- [ ] 数学 Tutor
-- [ ] UniApp H5
-- [ ] 对话
-- [ ] Markdown
-- [ ] LaTeX
-- [ ] 基本流式输出
-- [ ] 简单 Student State
-- [ ] 手动选择数学
-- [ ] 自动模式
-- [ ] 错误处理
-
-## 第一版明确不做
-
-- [ ] iOS 正式发布
-- [ ] Android 正式发布
-- [ ] 微信小程序
-- [ ] 多用户账号系统
-- [ ] 云端数据库
-- [ ] 完整知识图谱
-- [ ] 大型 RAG 系统
-- [ ] 多 Agent 自主协作
-- [ ] 独立 Feynman Skill
-- [ ] 复杂 Router Skill
-- [ ] 完整学习报告系统
-- [ ] 商业化支付
-
----
-
-# 22. 技术风险与处理方式
-
-| 风险 | 等级 | 处理 |
-|---|---|---|
-| Runtime 安装/启动问题 | 中 | Phase 0 优先解决 |
-| Skill 接口与预期不同 | 中 | 先用官方 SDK/CLI 验证 |
-| UniApp SDK 不成熟 | 高 | 自己建立 Adapter |
-| 流式 API 不确定 | 高 | 先验证协议，不锁死 WebSocket |
-| Markdown/LaTeX 兼容性 | 中 | 单独测试组件 |
-| Tutor 教学质量不足 | 高 | 优先优化 Tutor Core |
-| Router 判断错误 | 中 | 第一版限制学科数量 |
-| Student State 设计不合理 | 中 | 先 JSON，后数据库 |
-| 本地 Runtime + 云端 LLM | 低 | 第一版接受，产品文案明确说明 |
-
----
-
-# 23. “本地运行”的定义
-
-第一版推荐采用：
-
-```text
-前端：本地
-Runtime：本地
-Skill：本地
-Student State：本地
-LLM：云端 API
-```
-
-因此严格定义应该是：
-
-> **本地 AI 教师系统，而不是完全离线 AI。**
-
-如果未来要求：
-
-```text
-数据完全不离开本机
-```
-
-再把：
-
-```text
-DeepSeek API
-```
-
-替换为本地模型，例如：
-
-```text
-Ollama
-llama.cpp
-vLLM
-```
-
-不作为第一版目标。
-
----
-
-# 24. 推荐项目目录
-
-```text
-ai-learning-app/
-│
-├── backend/
-│   ├── adapter/
-│   │   ├── runtime.js
-│   │   ├── stream.js
-│   │   └── router.js
-│   │
-│   ├── student/
-│   │   └── student-state.json
-│   │
-│   └── skills/
-│       ├── tutor-core/
-│       │   └── SKILL.md
-│       │
-│       ├── math-tutor/
-│       │   ├── SKILL.md
-│       │   └── knowledge/
-│       │
-│       └── evaluator/
-│           └── SKILL.md
-│
-├── frontend/
-│   └── uniapp/
-│       ├── pages/
-│       ├── components/
-│       ├── services/
-│       ├── stores/
-│       └── utils/
-│
-├── docs/
-│   └── architecture.md
-│
-└── README.md
-```
-
----
-
-# 25. 第一版最小可行路径
-
-如果希望最快得到可运行成果，严格按照：
-
-```text
-1. 安装 Node.js 20/22 LTS
-        ↓
-2. 安装 @opencangjie/skills
-        ↓
-3. 安装 Runtime
-        ↓
-4. 配置 DeepSeek
-        ↓
-5. 启动 Runtime
-        ↓
-6. 创建 tutor-core
-        ↓
-7. CLI 执行 tutor-core
-        ↓
-8. 创建 math-tutor
-        ↓
-9. CLI 验证 math-tutor
-        ↓
-10. 建立 Local Adapter
-        ↓
-11. 创建 UniApp Vue3 项目
-        ↓
-12. H5 接入 Adapter
-        ↓
-13. Markdown + LaTeX
-        ↓
-14. Streaming
-        ↓
-15. Student State
-        ↓
-16. Auto Router
-        ↓
-17. Physics Tutor
-```
-
----
-
-# 26. 第一版的真正验收标准
-
-不是：
-
-> “App 能聊天。”
-
-而是下面这个场景能够稳定完成：
-
-### 示例
-
-用户：
-
-```text
-为什么导数表示变化率？
-```
-
-系统首先判断：
-
-```text
-学科：数学
-知识点：导数
-学习状态：未知
-```
-
-AI：
-
-```text
-不直接背定义。
-
-假设汽车在 t=2s 时的速度是 4m/s，
-你觉得“变化率”描述的是什么？
-```
-
-用户回答。
-
-系统：
-
-```text
-Evaluator
- ↓
-判断学生理解程度
- ↓
-更新 Student State
- ↓
-继续追问/解释
-```
-
-最终形成：
-
-```text
-一次对话
-    ↓
-一次教学过程
-    ↓
-一次状态更新
-```
-
-而不是：
-
-```text
-一次问题
-    ↓
-一次答案
-```
-
----
-
-# 27. 后续演进路线
-
-完成 MVP 后：
-
-```text
-V1
-数学 Tutor
-    ↓
-V1.1
-物理 Tutor
-    ↓
-V1.2
-Router
-    ↓
-V1.3
-Student Model
-    ↓
-V2
-Knowledge Graph / RAG
-    ↓
-V2.1
-学习路径规划
-    ↓
-V2.2
-长期学习画像
-    ↓
-V3
-多学科 AI 教师系统
-```
-
-如果最终目标是“真正的 AI 学习系统”，长期核心应逐渐转向：
-
-```text
-LLM
- ↓
-Tutor Engine
- ↓
-Student Model
- ↓
-Learning State
- ↓
-Learning Strategy
-```
-
-而不是不断堆叠更多聊天 Skill。
-
----
-
-# 28. 最终架构判断
-
-原方案最值得保留的是：
-
-```text
-AgentSkills Runtime
-+
-UniApp
-+
-Skill 化教师能力
-```
-
-需要修改的是：
-
-```text
-❌ 先做 Router
-❌ 先做多个 Skill
-❌ 先做完整 App
-❌ 假设 SDK 已经解决所有流式通信问题
-
-✅ 先做 Tutor Core
-✅ 先做一个学科
-✅ 先做 H5
-✅ 建立 Adapter
-✅ 加入最小 Student State
-✅ 最后再做 Router 和多学科
-```
-
-最终目标架构：
-
-```text
-                    AI Learning System
-                            │
-                   ┌────────┴────────┐
-                   │   Tutor Core    │
-                   └────────┬────────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          ↓                 ↓                 ↓
-       Math Tutor       Physics Tutor     Chemistry Tutor
-          │                 │                 │
-          └─────────────────┼─────────────────┘
-                            ↓
-                        Evaluator
-                            ↓
-                       Student Model
-                            ↓
-                      Learning Strategy
-                            ↓
-                         UniApp
-```
-
-**第一版的核心任务只有一个：证明“Skill 可以稳定承担一个真正的教学闭环”。**
-
-只要这个闭环成立，后面的 Router、更多学科、学习画像、App 化都属于扩展问题；如果这个闭环不成立，继续堆前端和 Agent 反而是在放大问题。
-
----
-
-# 29. 当前已核验的外部组件
-
-### AgentSkills Runtime
-
-- npm：<https://www.npmjs.com/package/@opencangjie/skills>
-- 项目主页：<https://atomgit.com/uctoo/agentskills-runtime>
-
-根据当前公开 npm 页面，`@opencangjie/skills` 已提供 Runtime 管理、Skill 管理、Skill 执行以及 JS/TS API；默认 Runtime 地址为 `127.0.0.1:8080`。
-
-### Markdown / KaTeX
-
-- wtto-markdown：<https://ext.dcloud.net.cn/plugin?id=21259>
-
-### UniApp AI UI
-
-- vm-openai-ui：<https://ext.dcloud.net.cn/plugin?id=27748>
-- vm-openai：<https://ext.dcloud.net.cn/plugin?id=27747>
-
-> 注：以上 UniApp 插件应在实际开发时再次验证当前版本、平台兼容性及流式接口能力。不要仅依据插件页面假设其与 AgentSkills Runtime 直接兼容。
-
----
-
-# 30. 一句话版本
-
-> **第一版不要做“很多 Agent 组成的 AI App”，而要做“一个真正会教人的 Tutor Skill”，然后用 AgentSkills Runtime 承载它，用 UniApp H5 把它变成可用产品。**
-
-这将是当前方案成本最低、技术风险最低、同时最有机会验证核心价值的路径。
+> 以统一的 Tutor Engine、可注册的学科 Skill 和可追踪的学习数据，构建能够持续教学与持续学习的 AI 教师系统。

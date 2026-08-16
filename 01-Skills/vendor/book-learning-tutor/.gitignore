@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+venv_slim/
+
+# 数据与产物（代码入库，书库数据不入库）
+书库/
+data/
+参考/
+*.log
+
+# WorkBuddy 工作区内部（记忆/会话/日志/本地安装副本）不入库；技能已置于仓库根
+.workbuddy/
+
+# 运行时按书名生成的学习数据（含隐私/进度）不入库
+storage/*/
+tools_dev/
+
+# 临时
+tmp/
+*.bak
+
+# 密钥（不入库）
+config/backends.json
+
+# 参考项目（克隆的开源阅读续作源码，仅作参考，不入库）
+开源阅读/
+
+# 备份目录（本地快照，不入库）
+_backup_*/
+
+# 本地二进制（djvulibre 等；用户本机放置，不入库）
+vendor/
+
+# 推广文案（作者自留的推广/社区介绍草稿，不随技能仓库发布）
+promotion/

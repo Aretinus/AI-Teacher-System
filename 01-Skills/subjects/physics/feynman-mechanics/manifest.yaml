@@ -1,0 +1,27 @@
+id: feynman-mechanics
+name: 费曼式力学教师
+subject: physics
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  books:
+    - feynman-lectures-vol-1
+    - feynman-lectures-vol-2
+    - feynman-lectures-vol-3
+  exercises: ../../../../02-DATA/materials/exercises/physics
+  references: ../../../../02-DATA/materials/reference/physics
+  courseDir: ../../../../02-DATA/books/distilled/费恩曼物理学讲义（英文版）
+capabilities:
+  - explain
+  - hint
+  - question
+  - evaluate
+  - course-teach
+  - spaced-review
+topics:
+  - mechanics
+  - kinematics
+  - dynamics
+  - conservation-laws
+  - rotation
+  - gravitation

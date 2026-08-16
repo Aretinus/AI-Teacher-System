@@ -1,0 +1,21 @@
+id: tutor-engine
+name: 教师引擎
+subject: core
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises
+  references: ../../../../02-DATA/materials/reference
+capabilities:
+  - orchestrate
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+  - update-state
+topics:
+  - teaching-loop
+  - strategy-selection
+  - state-management

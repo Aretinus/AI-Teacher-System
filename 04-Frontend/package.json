@@ -1,0 +1,25 @@
+{
+  "name": "ai-teacher-h5",
+  "version": "1.0.0",
+  "description": "AI 教师系统 UniApp H5 前端",
+  "scripts": {
+    "dev": "uni -p h5",
+    "dev:h5": "uni -p h5",
+    "build:h5": "uni build -p h5"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5020420260813001",
+    "@dcloudio/uni-components": "3.0.0-5020420260813001",
+    "@dcloudio/uni-h5": "3.0.0-5020420260813001",
+    "katex": "^0.16.11",
+    "marked": "^12.0.2",
+    "vue": "3.4.21",
+    "vue-i18n": "^9.14.1"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-5020420260813001",
+    "@dcloudio/uni-stacktracey": "3.0.0-5020420260813001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5020420260813001",
+    "vite": "5.2.8"
+  }
+}

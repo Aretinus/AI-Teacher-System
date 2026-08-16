@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "subjects": [
+    {
+      "id": "math",
+      "name": "数学",
+      "skills": [
+        "calculus-tutor"
+      ],
+      "defaultSkill": "calculus-tutor"
+    },
+    {
+      "id": "physics",
+      "name": "理论物理",
+      "skills": [
+        "feynman-mechanics"
+      ],
+      "defaultSkill": "feynman-mechanics"
+    }
+  ]
+}

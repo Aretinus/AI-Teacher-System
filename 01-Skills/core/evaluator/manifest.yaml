@@ -1,0 +1,17 @@
+id: evaluator
+name: 评估器
+subject: core
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises
+  references: ../../../../02-DATA/materials/reference
+capabilities:
+  - evaluate
+  - diagnose-error
+  - update-state
+topics:
+  - answer-assessment
+  - mastery-tracking
+  - error-classification

@@ -1,0 +1,19 @@
+id: calculus-tutor
+name: 微积分教师
+subject: math
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises/math
+  references: ../../../../02-DATA/materials/reference/math
+capabilities:
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+topics:
+  - function
+  - derivative
+  - integral
