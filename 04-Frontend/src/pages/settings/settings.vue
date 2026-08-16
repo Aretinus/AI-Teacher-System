@@ -64,7 +64,11 @@
     </view>
 
         <view class="section">
-      <view class="section-title">蒸馏书籍</view>
+      <view class="section-title">书籍加工</view>
+      <view class="tab-bar">
+        <view class="tab" :class="{ active: bookTab === 'ocr' }" @click="switchTab('ocr')">OCR 层</view>
+        <view class="tab" :class="{ active: bookTab === 'distill' }" @click="switchTab('distill')">蒸馏层</view>
+      </view>
       <view class="card">
         <view class="form-row">
           <text class="label">学科</text>
@@ -73,6 +77,52 @@
         <view class="subject-chips">
           <view v-for="s in subjects" :key="s.id" class="subject-chip" @click="distillSubject = s.id">{{ s.name }}</view>
           <view v-if="canAddSubject" class="subject-chip add-chip" @click="addDistillSubject">＋ 添加「{{ distillSubject }}」</view>
+        </view>
+      </view>
+
+      <view class="card" v-if="bookTab === 'ocr'">
+        <view class="refresh-desc">扫描 raw 目录中的 PDF / djvu。已有文字层的书（text/djvu）可直接蒸馏；纯扫描件需先 OCR 生成文字层（产物镜像到 02-DATA/books/ocr/，不污染源数据）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
+        <view class="btn refresh-btn" :class="{ loading: ocrScanning }" @click="doOcrScan">
+          {{ ocrScanning ? '扫描中…' : '扫描新文件' }}
+        </view>
+        <view v-if="ocrBooks.length" class="book-list">
+          <view
+            v-for="(b, i) in ocrBooks"
+            :key="b.file"
+            class="book-item"
+            :class="{ selected: i === ocrSelectedIdx }"
+            @click="ocrSelectedIdx = i"
+          >
+            <view class="book-name">{{ b.name }}</view>
+            <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
+            <view class="book-size">{{ b.sizeMB }} MB</view>
+          </view>
+        </view>
+        <view v-if="selectedOcrBook" class="ocr-detail">
+          <view class="ocr-state-line">{{ stateLine(selectedOcrBook) }}</view>
+          <view v-if="selectedOcrBook.destPath" class="ocr-state-line dim">蒸馏产物：{{ selectedOcrBook.destPath }}/</view>
+          <view class="btn-row">
+            <view v-if="primaryBtn(selectedOcrBook)" class="btn primary" :class="{ loading: busy }" @click="onPrimary">
+              {{ primaryBtn(selectedOcrBook) }}
+            </view>
+            <view v-if="secondaryBtn(selectedOcrBook)" class="btn" :class="{ loading: busy }" @click="onSecondary">
+              {{ secondaryBtn(selectedOcrBook) }}
+            </view>
+          </view>
+        </view>
+        <view v-if="ocrScanError" class="refresh-line fail">{{ ocrScanError }}</view>
+        <view v-if="ocrLog.length" class="distill-log">
+          <view v-for="(l, i) in ocrLog" :key="i" class="distill-line">{{ l }}</view>
+        </view>
+      </view>
+
+      <view class="card" v-if="bookTab === 'distill'">
+        <view class="form-row">
+          <text class="label">来源</text>
+          <view class="src-tabs">
+            <view class="src-tab" :class="{ active: distillSrc === 'raw' }" @click="setDistillSrc('raw')">raw</view>
+            <view class="src-tab" :class="{ active: distillSrc === 'ocr' }" @click="setDistillSrc('ocr')">ocr</view>
+          </view>
         </view>
         <view class="form-row">
           <text class="label">书籍目录</text>
@@ -117,7 +167,7 @@
 </template>
 
 <script>
-import { getSettings, saveSettings, testSettings, refreshSkills, scanBooks, distillBook, getDistillJob, getSubjects } from '@/api'
+import { getSettings, saveSettings, testSettings, refreshSkills, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -136,6 +186,14 @@ export default {
       distilling: false,
       distillLog: [],
       distillSubject: '',
+      distillSrc: 'raw',
+      bookTab: 'ocr',
+      ocrBooks: [],
+      ocrScanError: '',
+      ocrSelectedIdx: -1,
+      ocrScanning: false,
+      ocrRunning: false,
+      ocrLog: [],
       pollTimer: null,
       subjects: [],
       providers: [
@@ -159,6 +217,12 @@ export default {
       const name = (this.distillSubject || '').trim()
       if (!name) return false
       return !this.subjects.some((s) => s.id === name || s.name === name)
+    },
+    selectedOcrBook() {
+      return this.ocrBooks[this.ocrSelectedIdx] || null
+    },
+    busy() {
+      return this.ocrRunning || this.distilling
     },
   },
   onLoad() {
@@ -217,6 +281,204 @@ export default {
       if (!name) return
       this.subjects.push({ id: name, name, skills: [], defaultSkill: '' })
       uni.showToast({ title: `已添加学科：${name}`, icon: 'none' })
+    },
+    switchTab(tab) {
+      this.bookTab = tab
+    },
+    setDistillSrc(src) {
+      this.distillSrc = src
+      const roots = {
+        raw: 'E:\\Projects\\AI-Teacher-System\\02-DATA\\books\\raw',
+        ocr: 'E:\\Projects\\AI-Teacher-System\\02-DATA\\books\\ocr',
+      }
+      this.distillFolder = roots[src] || ''
+      this.scanBooks = []
+      this.selectedBookIdx = -1
+      this.scanError = ''
+      if (this.distillFolder) this.doScan()
+    },
+    async doOcrScan() {
+      this.ocrScanning = true
+      this.ocrScanError = ''
+      this.ocrBooks = []
+      this.ocrSelectedIdx = -1
+      try {
+        const r = await scanOcrBooks()
+        this.ocrBooks = r.books || []
+        if (!this.ocrBooks.length) this.ocrScanError = 'raw 目录下未找到 pdf/djvu 文件'
+      } catch (e) {
+        this.ocrScanError = e.message
+      } finally {
+        this.ocrScanning = false
+      }
+    },
+    async doOcr() {
+      const book = this.selectedOcrBook
+      if (!book || this.busy) return
+      this.ocrRunning = true
+      this.ocrLog = []
+      try {
+        const { jobId } = await startOcr({ file: book.file })
+        const st = await this.pollOcrJob(jobId)
+        if (st === 'done') {
+          await this.doOcrScan()
+          const fresh = this.ocrBooks.find((b) => b.relPath === book.relPath)
+          uni.showModal({
+            title: 'OCR 完成',
+            content: '文字层已生成，是否继续蒸馏？',
+            confirmText: '去蒸馏',
+            cancelText: '取消',
+            success: (r) => {
+              if (r.confirm && fresh) this.goDistill(fresh)
+            },
+          })
+        }
+      } catch (e) {
+        this.ocrLog.push('✗ ' + e.message)
+      } finally {
+        this.ocrRunning = false
+      }
+    },
+    async pollOcrJob(jobId) {
+      return new Promise((resolve) => {
+        const tick = async () => {
+          try {
+            const j = await getOcrJob(jobId)
+            this.ocrLog = j.log
+            if (j.status === 'running') {
+              this.pollTimer = setTimeout(tick, 3000)
+            } else {
+              if (j.status === 'error') {
+                this.ocrLog.push('✗ OCR 失败')
+                if (j.error) this.ocrLog.push('✗ ' + j.error)
+              }
+              resolve(j.status)
+            }
+          } catch (e) {
+            this.ocrLog.push('✗ ' + e.message)
+            resolve('error')
+          }
+        }
+        tick()
+      })
+    },
+    bookState(b) {
+      if (b.distilledDone) return 'distilled'
+      if (b.ocrDone) return 'ocrDone'
+      if (b.ocrCachePages > 0) return 'ocrRunning'
+      if (b.textLayer === 'text' || b.textLayer === 'djvu') return 'noOcr'
+      return 'needOcr'
+    },
+    badgeText(b) {
+      const st = this.bookState(b)
+      if (st === 'distilled') return b.ocrDone ? '已OCR · 已蒸馏' : '已蒸馏'
+      if (st === 'ocrDone') return '已OCR'
+      if (st === 'ocrRunning') return 'OCR 中 ' + b.ocrCachePages + ' 页'
+      if (st === 'noOcr') return b.textLayer === 'djvu' ? '可直接蒸馏' : '无需OCR'
+      return '需OCR'
+    },
+    badgeCls(b) {
+      const st = this.bookState(b)
+      if (st === 'noOcr') return 'skip'
+      return st === 'needOcr' || st === 'ocrRunning' ? 'todo' : 'done'
+    },
+    stateLine(b) {
+      const st = this.bookState(b)
+      if (st === 'distilled') return '✓ 已蒸馏过，可重新蒸馏以覆盖旧产物'
+      if (st === 'ocrDone') return '✓ 已有文字层，可直接蒸馏'
+      if (st === 'ocrRunning') return '⏳ OCR 进行中（已识别 ' + b.ocrCachePages + ' 页），可继续或直接蒸馏'
+      if (st === 'noOcr') return '该文件有文字层，无需 OCR，可直接蒸馏'
+      return '纯扫描件，需要 OCR 生成文字层后再蒸馏'
+    },
+    primaryBtn(b) {
+      const st = this.bookState(b)
+      if (st === 'needOcr') return '开始 OCR'
+      if (st === 'ocrRunning') return '继续 OCR'
+      if (st === 'distilled') return '重新蒸馏'
+      return '去蒸馏'
+    },
+    secondaryBtn(b) {
+      const st = this.bookState(b)
+      if (st === 'needOcr' || st === 'ocrRunning') return '直接蒸馏（跳过 OCR）'
+      if (st === 'ocrDone') return '重新 OCR'
+      return ''
+    },
+    onPrimary() {
+      const b = this.selectedOcrBook
+      if (!b || this.busy) return
+      const st = this.bookState(b)
+      if (st === 'needOcr' || st === 'ocrRunning') this.doOcr()
+      else this.goDistill(b)
+    },
+    onSecondary() {
+      const b = this.selectedOcrBook
+      if (!b || this.busy) return
+      const st = this.bookState(b)
+      if (st === 'needOcr' || st === 'ocrRunning') this.directDistill(b)
+      else if (st === 'ocrDone') this.redoOcr(b)
+    },
+    redoOcr(b) {
+      uni.showModal({
+        title: '重新 OCR',
+        content: '将重新生成文字层并覆盖现有产物，是否继续？',
+        confirmText: '重新 OCR',
+        cancelText: '取消',
+        success: (r) => {
+          if (r.confirm) {
+            this.ocrSelectedIdx = this.ocrBooks.findIndex((x) => x.file === b.file)
+            this.doOcr()
+          }
+        },
+      })
+    },
+    directDistill(b) {
+      uni.showModal({
+        title: '直接蒸馏',
+        content: '此文件无文字层，直接蒸馏结果可能为空（只能靠图片或空文本），建议先 OCR。仍要继续吗？',
+        confirmText: '继续蒸馏',
+        cancelText: '取消',
+        success: (r) => {
+          if (r.confirm) this.doDistillFile(b.file, this.stemOf(b))
+        },
+      })
+    },
+    goDistill(b) {
+      if (!b || this.busy) return
+      const file = (b.ocrDone && b.ocrProductFile) || b.file
+      const stem = this.stemOf(b)
+      if (b.distilledDone) {
+        uni.showModal({
+          title: '重新蒸馏',
+          content: '此书已蒸馏过，重新蒸馏将覆盖旧产物，是否继续？',
+          confirmText: '重新蒸馏',
+          cancelText: '取消',
+          success: (r) => {
+            if (r.confirm) this.doDistillFile(file, stem)
+          },
+        })
+      } else {
+        this.doDistillFile(file, stem)
+      }
+    },
+    stemOf(b) {
+      return b.name.replace(/\.(pdf|epub|djvu|mobi|azw|azw3|docx|txt|md|cbz)$/i, '')
+    },
+    async doDistillFile(file, name) {
+      if (this.distilling) return
+      this.distilling = true
+      this.distillLog = []
+      try {
+        const { jobId } = await distillBook({ file, name, subject: this.distillSubject })
+        const st = await this.pollJob(jobId)
+        if (st === 'done') {
+          await this.doOcrScan()
+          uni.showToast({ title: '蒸馏完成', icon: 'success' })
+        }
+      } catch (e) {
+        this.distillLog.push('✗ ' + e.message)
+      } finally {
+        this.distilling = false
+      }
     },
     chooseFolder() {
       if (typeof document === 'undefined') {
@@ -279,11 +541,11 @@ export default {
             } else {
               if (j.status === 'error') this.distillLog.push('✗ 蒸馏失败')
               if (j.error) this.distillLog.push('✗ ' + j.error)
-              resolve()
+              resolve(j.status)
             }
           } catch (e) {
             this.distillLog.push('✗ ' + e.message)
-            resolve()
+            resolve('error')
           }
         }
         tick()
@@ -385,6 +647,64 @@ export default {
 .tips {
   margin-top: 40rpx;
 }
+.tab-bar {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 16rpx;
+  background: #e5e7eb;
+  color: #6b7280;
+  font-size: 29rpx;
+  font-weight: 600;
+}
+.tab.active {
+  background: #4f8cff;
+  color: #ffffff;
+}
+.src-tabs {
+  display: flex;
+  gap: 12rpx;
+  flex: 1;
+}
+.src-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12rpx 0;
+  border-radius: 12rpx;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 26rpx;
+  border: 2rpx solid #e5e7eb;
+}
+.src-tab.active {
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-color: #4f46e5;
+}
+.book-badge {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+}
+.book-badge.done {
+  background: #f0fdf4;
+  color: #15803d;
+}
+.book-badge.skip {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+.book-badge.todo {
+  background: #fef3c7;
+  color: #b45309;
+}
 .refresh-desc {
   font-size: 26rpx;
   color: #6b7280;
@@ -481,6 +801,23 @@ export default {
   font-size: 24rpx;
   color: #9ca3af;
   margin-left: 16rpx;
+}
+.ocr-detail {
+  margin-top: 20rpx;
+  border: 2rpx solid #e0e7ff;
+  background: #f8faff;
+  border-radius: 14rpx;
+  padding: 18rpx 22rpx;
+}
+.ocr-state-line {
+  font-size: 25rpx;
+  color: #374151;
+  padding: 4rpx 0;
+  line-height: 1.6;
+}
+.ocr-state-line.dim {
+  color: #6b7280;
+  word-break: break-all;
 }
 .distill-log {
   margin-top: 20rpx;

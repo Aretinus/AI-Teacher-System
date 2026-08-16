@@ -61,7 +61,12 @@ def extract_text_by_page(djvutxt, src):
 
 
 def add_text_layer(pdf_path, pages_text):
-    """把每页文本写入隐形文字层，逐行 insert_text。"""
+    """把每页文本写入隐形文字层：整页一段 insert_textbox（一个文本块）。
+
+    逐行 insert_text 会让下游 book_formats 按块切段时每行成一段，产生大量
+    碎片节；整页合并成一块后切分粒度回到"页"，章节切分才正常。
+    render_mode=3 只入文本层、不显示；fontsize 自适应缩小直到整页放下。
+    """
     doc = fitz.open(pdf_path)
     n = 0
     for pno, text in enumerate(pages_text):
@@ -69,25 +74,19 @@ def add_text_layer(pdf_path, pages_text):
             break
         page = doc[pno]
         rect = page.rect
-        fontsize = 12.0
-        y = rect.y0 + fontsize
-        for line in text.splitlines():
-            line = line.rstrip()
-            if not line.strip():
-                continue
-            rc = page.insert_text(
-                fitz.Point(rect.x0 + 2, y),
-                line,
-                fontsize=fontsize,
-                fontname="china-ss",
-                render_mode=3,
-                overlay=True,
+        text = text.strip()
+        if not text:
+            continue
+        fs = 12.0
+        for _ in range(10):
+            rc = page.insert_textbox(
+                rect, text, fontsize=fs, fontname="china-ss",
+                render_mode=3, overlay=True,
             )
             if rc >= 0:
                 n += 1
-            y += fontsize * 1.25
-            if y > rect.y1 - fontsize:
                 break
+            fs *= 0.7
     doc.save(pdf_path, incremental=True, encryption=fitz.PDF_ENCRYPT_KEEP)
     doc.close()
     return n

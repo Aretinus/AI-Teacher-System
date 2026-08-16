@@ -4,6 +4,7 @@ subject: math
 entry: SKILL.md
 knowledgePath: knowledge
 data:
+  courseDir: ../../../../02-DATA/books/distilled/Math/01-分析/渐近分析（奇异摄动）
   books: []
   exercises: ../../../../02-DATA/materials/exercises/math
   references: ../../../../02-DATA/materials/reference/math

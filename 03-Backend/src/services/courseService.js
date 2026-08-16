@@ -38,6 +38,42 @@ function findCourse(subject, tutor) {
   return dir;
 }
 
+// 课程书架：遍历所有学科/技能 manifest，列出已绑定且有效的课程
+function listCourses() {
+  const courses = [];
+  const SUBJECTS_INDEX = path.join(SKILLS_DIR, 'subjects', 'index.json');
+  let subjects = [];
+  try {
+    subjects = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8')).subjects || [];
+  } catch (e) {
+    return courses;
+  }
+  for (const s of subjects) {
+    for (const skillId of s.skills || []) {
+      const skillDir = path.join(SKILLS_DIR, 'subjects', s.id, skillId);
+      const manifest = readManifest(s.id, skillId);
+      const rel = extractYamlField(manifest, 'courseDir');
+      if (!rel) continue;
+      const dir = path.resolve(skillDir, rel);
+      if (!fs.existsSync(path.join(dir, 'progress.json'))) continue;
+      let chapterCount = 0;
+      try {
+        chapterCount = fs.readdirSync(dir).filter((n) => n.includes('第')).length;
+      } catch (e) { /* 忽略 */ }
+      courses.push({
+        subject: s.id,
+        subjectName: s.name || s.id,
+        skill: skillId,
+        skillName: extractYamlField(manifest, 'name') || skillId,
+        bookTitle: path.basename(dir),
+        courseDir: path.relative(SKILLS_DIR, dir).split(path.sep).join('/'),
+        chapters: chapterCount,
+      });
+    }
+  }
+  return courses;
+}
+
 function listLessons(courseDir) {
   const out = [];
   const walk = (d, prefix) => {
@@ -185,4 +221,4 @@ function loadCourseContext(subject, tutor, message, wantAdvance) {
   };
 }
 
-module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField };
+module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField, listCourses };

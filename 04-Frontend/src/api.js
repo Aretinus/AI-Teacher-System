@@ -49,6 +49,22 @@ export function getDistillJob(jobId) {
   return apiGet(`/api/books/distill/${jobId}`)
 }
 
+export function getCourses() {
+  return apiGet('/api/books/courses').then((d) => d.courses || [])
+}
+
+export function scanOcrBooks() {
+  return apiPost('/api/ocr/scan', {})
+}
+
+export function startOcr(file) {
+  return apiPost('/api/ocr/start', { file })
+}
+
+export function getOcrJob(jobId) {
+  return apiGet(`/api/ocr/job/${jobId}`)
+}
+
 export function getState(userId = DEFAULT_USER) {
   return apiGet(`/api/users/${userId}/state`)
 }

@@ -68,24 +68,54 @@ def ocr_image(engine, png_path):
     return out
 
 
+def _cluster_lines(lines, page_h):
+    """OCR 行按 (y0,x0) 排序后按 y 间隙聚类成段落，返回 [ [line,...], ... ]。
+
+    下游 book_formats._page_text_clean 按文本块切段，逐行 insert_text 会生成
+    上百个块 → 每行成"一段" → 蒸馏时切出大量碎片节。聚类成段后每段写成一个
+    文本块，切分粒度回到"页内段落"，章节切分才能正常。
+    """
+    if not lines:
+        return []
+    ordered = sorted(lines, key=lambda l: (l[1], l[0]))
+    median_h = sorted(l[3] - l[1] for l in ordered)[len(ordered) // 2] or 12
+    gap = max(median_h * 1.6, 12.0)
+    paras = []
+    cur = [ordered[0]]
+    for l in ordered[1:]:
+        if l[1] - cur[-1][3] > gap:
+            paras.append(cur)
+            cur = [l]
+        else:
+            cur.append(l)
+    if cur:
+        paras.append(cur)
+    return paras
+
+
 def write_text_layer(page, lines):
-    """按检测框坐标写入隐形文字层（render_mode=3：只入文本层，不显示）。"""
+    """把 OCR 行聚类成段落，每段一次 insert_textbox 写入隐形文字层。
+
+    render_mode=3：只入文本层、不显示。fontsize 自适应缩小直到整段放下，
+    保证每段恰好一个文本块（下游按块切分才合理）。
+    """
     n = 0
-    for x0, y0, x1, y1, text in lines:
-        w, h = x1 - x0, y1 - y0
-        if w < 4 or h < 4:
+    pw, ph = page.rect.width, page.rect.height
+    rect = fitz.Rect(0, 0, pw, ph)
+    for para in _cluster_lines(lines, ph):
+        text = "\n".join(l[4] for l in para)
+        if not text.strip():
             continue
-        fontsize = max(3.0, min(48.0, h * 0.9))
-        rc = page.insert_text(
-            fitz.Point(x0, y1 - h * 0.1),
-            text,
-            fontsize=fontsize,
-            fontname="china-ss",
-            render_mode=3,
-            overlay=True,
-        )
-        if rc >= 0:
-            n += 1
+        fs = min(48.0, max(3.0, (para[0][3] - para[0][1]) * 0.9))
+        for _ in range(8):
+            rc = page.insert_textbox(
+                rect, text, fontsize=fs, fontname="china-ss",
+                render_mode=3, overlay=True,
+            )
+            if rc >= 0:
+                n += 1
+                break
+            fs *= 0.75
     return n
 
 

@@ -10,7 +10,7 @@ data:
     - feynman-lectures-vol-3
   exercises: ../../../../02-DATA/materials/exercises/physics
   references: ../../../../02-DATA/materials/reference/physics
-  courseDir: ../../../../02-DATA/books/distilled/费恩曼物理学讲义（英文版）
+  courseDir: ../../../../02-DATA/books/distilled/Physic/费恩曼物理学讲义（英文版）
 capabilities:
   - explain
   - hint

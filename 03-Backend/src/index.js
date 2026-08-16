@@ -9,6 +9,8 @@ const { loadState, saveState, loadProfile, loadHistory, saveSessionDetail, loadS
 const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
 const { scanBookFolder, startDistill, getJob } = require('./services/distillService');
+const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
+const { listCourses } = require('./services/courseService');
 const { externalRequest } = require('./runtimeClient');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', '02-DATA', 'uploads');
@@ -130,6 +132,35 @@ app.post('/api/books/distill', (req, res) => {
 
 app.get('/api/books/distill/:jobId', (req, res) => {
   const j = getJob(req.params.jobId);
+  if (!j) return res.status(404).json({ error: 'job not found' });
+  res.json(j);
+});
+
+app.get('/api/books/courses', (req, res) => {
+  res.json({ courses: listCourses() });
+});
+
+app.post('/api/ocr/scan', (req, res) => {
+  try {
+    res.json({ books: scanRaw() });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.post('/api/ocr/start', (req, res) => {
+  try {
+    const { file } = req.body || {};
+    if (!file) return res.status(400).json({ error: 'file 必填' });
+    const jobId = startOcr({ file });
+    res.json({ jobId });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.get('/api/ocr/job/:jobId', (req, res) => {
+  const j = getOcrJob(req.params.jobId);
   if (!j) return res.status(404).json({ error: 'job not found' });
   res.json(j);
 });

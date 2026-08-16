@@ -96,6 +96,25 @@ function runDistill(job, { file, name }) {
   });
 }
 
+function distillDestDir(job) {
+  // 源书在 raw/ 或 ocr/ 下：镜像其学科目录结构（distilled/Math/08-…/<书名>/）
+  if (job.rawPath) {
+    const m = job.rawPath.match(/^(raw|ocr)[\\/](.+)$/);
+    if (m) return path.join(DISTILLED_DIR, m[2]);
+  }
+  // 其他目录的源：按学科分类兜底
+  if (job.subject) return path.join(DISTILLED_DIR, job.subject);
+  return DISTILLED_DIR;
+}
+
+function countBooksInDir(dir) {
+  try {
+    return fs.readdirSync(dir).filter((n) => BOOK_EXTS.includes(path.extname(n).toLowerCase())).length;
+  } catch (e) {
+    return 1;
+  }
+}
+
 function finalize(job, bookName) {
   let src = path.join(TMP_COURSE_DIR, bookName);
   if (!fs.existsSync(src) || !fs.statSync(src).isDirectory()) {
@@ -108,13 +127,66 @@ function finalize(job, bookName) {
     src = path.join(TMP_COURSE_DIR, latest.name);
   }
   const destName = path.basename(src);
-  const dest = path.join(DISTILLED_DIR, destName);
+  const destDir = distillDestDir(job);
+  // 单书目录直接用镜像目录名（用户举例的粒度）；多书目录加书名子目录防覆盖
+  const srcDir = job.rawPath ? path.join(BOOKS_DIR, job.rawPath) : null;
+  const singleBook = srcDir && countBooksInDir(srcDir) <= 1;
+  const dest = singleBook ? destDir : path.join(destDir, destName);
   fs.rmSync(dest, { recursive: true, force: true });
   fs.cpSync(src, dest, { recursive: true });
   const chapters = fs.existsSync(dest) ? fs.readdirSync(dest).filter((n) => n.includes('第')).length : 0;
-  job.book = { title: destName, distilledPath: path.join('distilled', destName), subject: job.subject };
+  const rel = path.relative(BOOKS_DIR, dest).split(path.sep).join('/');
+  job.book = { title: destName, distilledPath: rel.startsWith('distilled/') ? rel : 'distilled/' + rel, subject: job.subject };
   appendBook(job.book);
-  job.log.push(`✅ 蒸馏完成：02-DATA/books/distilled/${destName}/（${chapters} 个章节目录）`);
+  const bindMsg = bindCourseToManifest(job, dest);
+  if (bindMsg) job.log.push('· ' + bindMsg);
+  job.log.push(`✅ 蒸馏完成：${path.relative(BOOKS_DIR, dest)}/（${chapters} 个章节目录）`);
+}
+
+// 蒸馏产物自动绑定到对应学科的技能 manifest（courseDir）。
+// 无学科 / 学科下无技能 / 已有有效课程绑定 → 保持现状（暂空），后续蒸馏会自动补上。
+function bindCourseToManifest(job, dest) {
+  const subject = job.subject && String(job.subject).trim();
+  if (!subject) return null;
+  const subjDir = path.join(SKILLS_DIR, 'subjects', subject);
+  if (!fs.existsSync(subjDir) || !fs.statSync(subjDir).isDirectory()) return null;
+  let skill = null;
+  try {
+    const idx = JSON.parse(fs.readFileSync(path.join(SKILLS_DIR, 'subjects', 'index.json'), 'utf8'));
+    const s = (idx.subjects || []).find((x) => x.id === subject);
+    if (s && s.defaultSkill) skill = s.defaultSkill;
+  } catch (e) { /* 索引读失败则回退目录扫描 */ }
+  if (!skill) {
+    const dirs = fs.readdirSync(subjDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !d.name.startsWith('_') && fs.existsSync(path.join(subjDir, d.name, 'manifest.yaml')));
+    if (dirs.length) skill = dirs[0].name;
+  }
+  if (!skill) return null;
+  const skillDir = path.join(subjDir, skill);
+  const manifestPath = path.join(skillDir, 'manifest.yaml');
+  if (!fs.existsSync(manifestPath)) return null;
+  const text0 = fs.readFileSync(manifestPath, 'utf8');
+  const rel = path.relative(skillDir, dest).split(path.sep).join('/');
+  const courseLine = `  courseDir: ${rel}`;
+  let text = text0;
+  const existing = /^\s*courseDir:\s*(.+)$/m.exec(text);
+  if (existing) {
+    const target = path.resolve(skillDir, existing[1].trim());
+    if (fs.existsSync(path.join(target, 'progress.json'))) {
+      return `技能「${skill}」已有有效课程绑定（${existing[1].trim()}），保留现有`;
+    }
+    text = text.replace(/^\s*courseDir:\s*.+$/m, courseLine);
+  } else {
+    const dataIdx = text.indexOf('\ndata:');
+    if (dataIdx >= 0) {
+      const lineEnd = text.indexOf('\n', dataIdx + 1);
+      text = text.slice(0, lineEnd + 1) + courseLine + '\n' + text.slice(lineEnd + 1);
+    } else {
+      text = text.replace(/\s*$/, '') + '\n' + courseLine + '\n';
+    }
+  }
+  fs.writeFileSync(manifestPath, text, 'utf8');
+  return `已自动绑定课程到技能「${skill}」：${rel}`;
 }
 
 function appendBook(book) {

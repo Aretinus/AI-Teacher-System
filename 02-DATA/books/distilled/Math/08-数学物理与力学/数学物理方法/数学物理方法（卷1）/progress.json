@@ -1,0 +1,313 @@
+{
+  "version": 1,
+  "book": "数学物理方法（卷1）",
+  "current": "第01章_綫性代數和二次型/第01课_綫性代數和二次型.md",
+  "total_lessons": 38,
+  "updated": null,
+  "lessons": {
+    "第01章_綫性代數和二次型/第01课_綫性代數和二次型.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "綫性代數和二次型",
+      "lesson": "綫性代數和二次型"
+    },
+    "第02章_綫性積分方程/第01课_綫性積分方程.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "綫性積分方程",
+      "lesson": "綫性積分方程"
+    },
+    "第03章_變分法/第01课_變分法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "變分法",
+      "lesson": "變分法"
+    },
+    "第04章_2._u_的變换，球坐標⋯⋯⋯⋯/第01课_2._u_的變换，球坐標⋯⋯⋯⋯.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "2. u 的變换，球坐標⋯⋯⋯⋯",
+      "lesson": "2. u 的變换，球坐標⋯⋯⋯⋯"
+    },
+    "第05章_振動和本徵值問題/第01课_振動和本徵值問題.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "振動和本徵值問題",
+      "lesson": "振動和本徵值問題"
+    },
+    "第06章_1._圓,球,球殻⋯⋯/第01课_1._圓,球,球殻⋯⋯.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1. 圓,球,球殻⋯⋯",
+      "lesson": "1. 圓,球,球殻⋯⋯"
+    },
+    "第07章_變分法在本徵值問題上的應用/第01课_變分法在本徵值問題上的應用.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "變分法在本徵值問題上的應用",
+      "lesson": "變分法在本徵值問題上的應用"
+    },
+    "第08章_本徵值問題所定義的特殊函數/第01课_本徵值問題所定義的特殊函數.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "本徵值問題所定義的特殊函數",
+      "lesson": "本徵值問題所定義的特殊函數"
+    },
+    "第09章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第10章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第11章_任意函數的級數展開/第01课_任意函數的級數展開.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "任意函數的級數展開",
+      "lesson": "任意函數的級數展開"
+    },
+    "第12章_第一卷，第450頁。/第01课_第一卷，第450頁。.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "第一卷，第450頁。",
+      "lesson": "第一卷，第450頁。"
+    },
+    "第13章_1._3._5⋯(2v_1)/第01课_1._3._5⋯(2v_1).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1. 3. 5⋯(2v 1)",
+      "lesson": "1. 3. 5⋯(2v 1)"
+    },
+    "第14章_1._2_r(r_+_1)/第01课_1._2_r(r_+_1).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1. 2 r(r + 1)",
+      "lesson": "1. 2 r(r + 1)"
+    },
+    "第15章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第16章_§2_的收斂定理/第01课_§2_的收斂定理.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "§2 的收斂定理.",
+      "lesson": "§2 的收斂定理."
+    },
+    "第17章_3._依·斯米特關於彿萊特蒙定理的推導3)_試取_λ_=_1_並將核_K(s,_t)_寫成/第01课_3._依·斯米特關於彿萊特蒙定理的推導3)_試取_λ_=_1_並將核_K(s,_t)_寫成.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "3. 依·斯米特關於彿萊特蒙定理的推導3) 試取 λ = 1 並將核 K(s, t) 寫成",
+      "lesson": "3. 依·斯米特關於彿萊特蒙定理的推導3) 試取 λ = 1 並將核 K(s, t) 寫成"
+    },
+    "第18章_17._正(負)定核的連續性_可以證明若正(負)定對稱核_K(s,_t)_當_0_≤_s,_t_≤1/第01课_17._正(負)定核的連續性_可以證明若正(負)定對稱核_K(s,_t)_當_0_≤_s,_t_≤1.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "17. 正(負)定核的連續性 可以證明若正(負)定對稱核 K(s, t) 當 0 ≤ s, t ≤1",
+      "lesson": "17. 正(負)定核的連續性 可以證明若正(負)定對稱核 K(s, t) 當 0 ≤ s, t ≤1"
+    },
+    "第19章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第20章_第_四_章/第01课_第_四_章.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "第 四 章",
+      "lesson": "第 四 章"
+    },
+    "第21章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第22章_2._u_的變換．球坐標_被積函數_ux_+_u_+_u2_是一個重要的例子._設變換/第01课_2._u_的變換．球坐標_被積函數_ux_+_u_+_u2_是一個重要的例子._設變換.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "2. u 的變換．球坐標 被積函數 ux + u + u2 是一個重要的例子. 設變換",
+      "lesson": "2. u 的變換．球坐標 被積函數 ux + u + u2 是一個重要的例子. 設變換"
+    },
+    "第23章_第_四章/第01课_第_四章.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "第 四章",
+      "lesson": "第 四章"
+    },
+    "第24章_196_數學物理方法/第01课_196_數學物理方法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "196 數學物理方法",
+      "lesson": "196 數學物理方法"
+    },
+    "第25章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第26章_1._v(0)_=_0/第01课_1._v(0)_=_0.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1. v(0) = 0",
+      "lesson": "1. v(0) = 0"
+    },
+    "第27章_4._v(0)_=_v(π)/第01课_4._v(0)_=_v(π).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "4. v(0) = v(π)",
+      "lesson": "4. v(0) = v(π)"
+    },
+    "第28章_3._在_x_=_0_及_x_=_π处，/第01课_3._在_x_=_0_及_x_=_π处，.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "3. 在 x = 0 及 x = π处，",
+      "lesson": "3. 在 x = 0 及 x = π处，"
+    },
+    "第29章_5._v(0)_=_v(π),/第01课_5._v(0)_=_v(π),.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "5. v(0) = v(π),",
+      "lesson": "5. v(0) = v(π),"
+    },
+    "第30章_§6)/第01课_§6).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "§6).",
+      "lesson": "§6)."
+    },
+    "第31章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第32章_愛分法在本徵值問題上的應用/第01课_愛分法在本徵值問題上的應用.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "愛分法在本徵值問題上的應用",
+      "lesson": "愛分法在本徵值問題上的應用"
+    },
+    "第33章_，§2)我們可以從本徵函數組un中選出一個一致收斂的子敍列．_假如我們仍/第01课_，§2)我們可以從本徵函數組un中選出一個一致收斂的子敍列．_假如我們仍.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "，§2)我們可以從本徵函數組un中選出一個一致收斂的子敍列． 假如我們仍",
+      "lesson": "，§2)我們可以從本徵函數組un中選出一個一致收斂的子敍列． 假如我們仍"
+    },
+    "第34章_未命名/第01课_未命名.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "",
+      "lesson": ""
+    },
+    "第35章_1._3..(2μ1)/第01课_1._3..(2μ1).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1. 3..(2μ1)",
+      "lesson": "1. 3..(2μ1)"
+    },
+    "第36章_數學物理方法_430/第01课_數學物理方法_430.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "數學物理方法 430",
+      "lesson": "數學物理方法 430"
+    },
+    "第37章_數學物理方法_436/第01课_數學物理方法_436.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "數學物理方法 436",
+      "lesson": "數學物理方法 436"
+    },
+    "第38章_索_引_437/第01课_索_引_437.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "索 引 437",
+      "lesson": "索 引 437"
+    }
+  }
+}
