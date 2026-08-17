@@ -76,9 +76,10 @@
                 v-for="b in g.books"
                 :key="b.file"
                 class="book-item"
-                :class="{ selected: selectedOcrBook && selectedOcrBook.file === b.file }"
+                :class="{ selected: selectedOcrBook && selectedOcrBook.file === b.file, multi: isMulti(b.file) }"
                 @click="ocrSelectedFile = b.file"
               >
+                <view class="book-check" :class="{ on: isMulti(b.file) }" @click.stop="toggleMulti(b.file)"></view>
                 <view class="book-name">{{ b.name }}</view>
                 <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
                 <view class="book-size">{{ b.sizeMB }} MB</view>
@@ -87,6 +88,11 @@
           </view>
         </view>
         <view v-else-if="ocrScanned" class="refresh-line dim">该学科下没有对应状态的文件</view>
+        <view v-if="multiCount > 0" class="batch-bar">
+          <text class="batch-count">已选 {{ multiCount }} 本</text>
+          <view class="btn primary sm" :class="{ loading: busy }" @click="doBatchOcr">批量 OCR</view>
+          <view class="btn sm" :class="{ loading: busy }" @click="doBatchDistill">批量蒸馏</view>
+        </view>
         <view v-if="selectedOcrBook" class="ocr-detail">
           <view class="ocr-state-line">{{ stateLine(selectedOcrBook) }}</view>
           <view v-if="selectedOcrBook.destPath" class="ocr-state-line dim">蒸馏产物：{{ selectedOcrBook.destPath }}/</view>
@@ -133,9 +139,10 @@
                 v-for="b in g.books"
                 :key="b.file"
                 class="book-item"
-                :class="{ selected: selectedScanBook && selectedScanBook.file === b.file }"
+                :class="{ selected: selectedScanBook && selectedScanBook.file === b.file, multi: isMulti(b.file) }"
                 @click="selectScanBook(b)"
               >
+                <view class="book-check" :class="{ on: isMulti(b.file) }" @click.stop="toggleMulti(b.file)"></view>
                 <view class="book-name">{{ b.name }}</view>
                 <view v-if="!b.distilledDone && b.needOcr" class="book-badge todo">需OCR</view>
                 <view v-if="b.distilledDone" class="book-badge done">已蒸馏</view>
@@ -146,6 +153,10 @@
         </view>
         <view v-else-if="distillScanned" class="refresh-line dim">该学科下没有对应状态的文件</view>
         <view v-if="scanError" class="refresh-line fail">{{ scanError }}</view>
+        <view v-if="multiCount > 0" class="batch-bar">
+          <text class="batch-count">已选 {{ multiCount }} 本</text>
+          <view class="btn primary sm" :class="{ loading: busy }" @click="doBatchDistill">批量蒸馏</view>
+        </view>
         <view v-if="selectedScanBook" class="btn refresh-btn" :class="{ loading: distilling }" @click="doDistill">
           {{ distilling ? '蒸馏中…（可离开页面，任务在后台运行）' : (selectedScanBook.distilledDone ? '重新蒸馏选中的书籍' : '蒸馏选中的书籍') }}
         </view>
@@ -200,6 +211,7 @@ export default {
       ocrScanning: false,
       ocrRunning: false,
       ocrLog: [],
+      multiSelected: {},
       collapsed: {},
       pollTimer: null,
       subjects: [],
@@ -230,6 +242,12 @@ export default {
     },
     selectedScanBook() {
       return this.scanBooks.find((b) => b.file === this.selectedScanFile) || null
+    },
+    currentBooks() {
+      return this.bookTab === 'ocr' ? this.ocrBooks : this.scanBooks
+    },
+    multiCount() {
+      return this.currentBooks.filter((b) => this.isMulti(b.file)).length
     },
     ocrSectionCounts() {
       const counts = { needOcr: 0, ocrDone: 0, noOcr: 0 }
@@ -386,6 +404,80 @@ export default {
           },
         })
       }
+    },
+    isMulti(file) {
+      return !!this.multiSelected[file]
+    },
+    toggleMulti(file) {
+      if (this.multiSelected[file]) delete this.multiSelected[file]
+      else this.multiSelected[file] = true
+    },
+    async doBatchOcr() {
+      const books = this.currentBooks.filter((b) => this.isMulti(b.file) && (b.needOcr || (b.ocrCachePages || 0) > 0))
+      const skipped = this.currentBooks.filter((b) => this.isMulti(b.file) && !books.includes(b))
+      if (!books.length) {
+        uni.showToast({ title: '所选均无需 OCR', icon: 'none' })
+        return
+      }
+      this.ocrRunning = true
+      this.ocrLog = []
+      let done = 0
+      for (const b of books) {
+        done++
+        this.ocrLog.push('[' + done + '/' + books.length + '] ' + b.name)
+        try {
+          const { jobId } = await startOcr({ file: b.file })
+          const st = await this.pollOcrJob(jobId)
+          if (st === 'done') this.ocrLog.push('✓ ' + b.name + ' OCR 完成')
+          else this.ocrLog.push('✗ ' + b.name + ' OCR 失败')
+        } catch (e) {
+          this.ocrLog.push('✗ ' + b.name + '：' + e.message)
+        }
+      }
+      if (skipped.length) this.ocrLog.push('跳过无需 OCR：' + skipped.map((x) => x.name).join('、'))
+      this.ocrRunning = false
+      await this.doOcrScan()
+      uni.showToast({ title: '批量 OCR 完成', icon: 'success' })
+    },
+    async doBatchDistill() {
+      const all = this.currentBooks.filter((b) => this.isMulti(b.file))
+      if (!all.length) return
+      const needOcr = all.filter((b) => b.needOcr && !b.ocrDone && !b.distilledDone)
+      const redo = all.filter((b) => b.distilledDone)
+      const notes = []
+      if (needOcr.length) notes.push(needOcr.length + ' 本无文字层将直接蒸馏（结果可能不完整）')
+      if (redo.length) notes.push(redo.length + ' 本将覆盖旧产物')
+      if (notes.length) {
+        const ok = await new Promise((resolve) => {
+          uni.showModal({
+            title: '批量蒸馏确认',
+            content: notes.join('；') + '，是否继续？',
+            confirmText: '继续',
+            cancelText: '取消',
+            success: (r) => resolve(r.confirm),
+          })
+        })
+        if (!ok) return
+      }
+      this.distilling = true
+      this.distillLog = []
+      let done = 0
+      for (const b of all) {
+        done++
+        const file = (b.ocrDone && b.ocrProductFile) || b.file
+        this.distillLog.push('[' + done + '/' + all.length + '] ' + b.name)
+        try {
+          const { jobId } = await distillBook({ file, name: this.stemOf(b), subject: this.distillSubject })
+          const st = await this.pollJob(jobId)
+          if (st === 'done') this.distillLog.push('✓ ' + b.name + ' 蒸馏完成')
+          else this.distillLog.push('✗ ' + b.name + ' 蒸馏失败')
+        } catch (e) {
+          this.distillLog.push('✗ ' + b.name + '：' + e.message)
+        }
+      }
+      this.distilling = false
+      await this.doScan()
+      uni.showToast({ title: '批量蒸馏完成', icon: 'success' })
     },
     async doOcr() {
       const book = this.selectedOcrBook
@@ -689,6 +781,24 @@ export default {
 .btn.loading {
   opacity: 0.6;
 }
+.btn.sm {
+  flex: 0 0 auto;
+  padding: 10rpx 26rpx;
+  font-size: 24rpx;
+}
+.batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 4rpx;
+  border-top: 2rpx solid #f3f4f6;
+  margin-top: 16rpx;
+}
+.batch-count {
+  flex: 1;
+  font-size: 26rpx;
+  color: #4b5563;
+}
 .test-result {
   margin-top: 20rpx;
   border-radius: 14rpx;
@@ -894,6 +1004,35 @@ export default {
 .book-item.selected {
   border-color: #4f8cff;
   background: #f0f5ff;
+}
+.book-item.multi {
+  border-color: #34d399;
+  background: #ecfdf5;
+}
+.book-check {
+  flex: 0 0 auto;
+  width: 34rpx;
+  height: 34rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+.book-check.on {
+  border-color: #34d399;
+  background: #34d399;
+}
+.book-check.on::after {
+  content: '';
+  position: absolute;
+  left: 8rpx;
+  top: 3rpx;
+  width: 12rpx;
+  height: 18rpx;
+  border: solid #ffffff;
+  border-width: 0 4rpx 4rpx 0;
+  transform: rotate(45deg);
 }
 .book-name {
   font-size: 26rpx;
