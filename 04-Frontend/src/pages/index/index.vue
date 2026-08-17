@@ -25,7 +25,7 @@
       </view>
     </view>
 
-    <view class="section">
+    <view v-if="selectedSubject" class="section">
       <view class="section-title">选择课程（可选）</view>
       <view class="style-grid">
         <view
@@ -58,7 +58,7 @@
       </view>
     </view>
 
-    <view class="section">
+    <view v-if="selectedSubject" class="section">
       <view class="section-title">授课风格</view>
       <view class="style-grid">
         <view
