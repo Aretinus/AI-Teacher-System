@@ -109,7 +109,7 @@ export default {
       return s ? s.name : '学科'
     },
     emptyTitle() {
-      if (!this.selectedSubject) return '正在加载…'
+      if (!this.selectedSubject && !this.selectedCourse) return '全科提问（自动判断学科与课程）'
       const s = this.subjects.find((x) => x.id === this.selectedSubject)
       if (this.selectedCourse) return `${s ? s.name : ''} · 课程《${this.selectedCourse}》`
       return `向 ${s ? s.name : ''}教师提问`
@@ -122,7 +122,7 @@ export default {
   },
 onLoad(options) {
       this.loadSubjects().then(() => {
-        this.selectedSubject = options.subject || this.subjects[0]?.id || ''
+        this.selectedSubject = options.subject || ''
         this.selectedStyle = options.style || 'standard'
         this.selectedCourse = options.course ? decodeURIComponent(options.course) : ''
         if (options.sessionId) {
@@ -266,8 +266,11 @@ onLoad(options) {
         await streamChat(
           { subject: this.selectedSubject, style: this.selectedStyle, course: this.selectedCourse || undefined, message: text + attachDesc, conversationId: this.conversationId || undefined },
           {
-            onSession: ({ sessionId }) => {
+            onSession: ({ sessionId, subject: resolved }) => {
               this.conversationId = sessionId
+              if (!this.selectedSubject && resolved && this.subjects.some((x) => x.id === resolved)) {
+                this.selectedSubject = resolved
+              }
             },
             onDelta: (delta, full) => {
               cur.content = full

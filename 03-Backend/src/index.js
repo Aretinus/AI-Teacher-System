@@ -191,7 +191,7 @@ app.post('/api/chat', async (req, res) => {
   try {
     const response = await chatCompletions(messages, { model: RUNTIME_MODEL, stream: false });
     const content = response?.response?.content || response?.raw || '（空响应）';
-    const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: content });
+    const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: content, effectiveCourse: prepared.effectiveCourse });
     res.json({ sessionId, subject: routeInfo.subject, reply: result.replyContent, evaluation: result.parsed?.evaluation || null, state: result.nextState });
   } catch (e) {
     res.status(502).json({ error: e.message });
@@ -239,7 +239,7 @@ app.post('/api/chat/stream', async (req, res) => {
       }
     });
     stream.on('end', async () => {
-      const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: full });
+      const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: full, effectiveCourse: prepared.effectiveCourse });
       res.write(`event: done\ndata: ${JSON.stringify({ evaluation: result.parsed?.evaluation || null })}\n\n`);
       res.end();
     });

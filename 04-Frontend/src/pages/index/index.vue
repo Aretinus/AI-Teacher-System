@@ -8,12 +8,16 @@
     <view class="section">
       <view class="section-title">选择学科</view>
       <view class="subject-grid">
+        <view class="subject-card" :class="{ active: selectedSubject === '' }" @click="pickSubject('')">
+          <view class="subject-name">全科提问</view>
+          <view class="subject-skill">自动判断学科与课程</view>
+        </view>
         <view
           v-for="s in subjects"
           :key="s.id"
           class="subject-card"
           :class="{ active: s.id === selectedSubject }"
-          @click="selectedSubject = s.id"
+          @click="pickSubject(s.id)"
         >
           <view class="subject-name">{{ s.name }}</view>
           <view class="subject-skill">{{ (s.defaultSkill || s.skills[0]) || '' }}</view>
@@ -129,6 +133,7 @@ export default {
       styles: [],
       courses: [],
       selectedSubject: '',
+      subjectTouched: false,
       selectedStyle: 'standard',
       selectedCourse: '',
       state: null,
@@ -186,8 +191,8 @@ export default {
         if (styles.length && !styles.some((x) => x.id === this.selectedStyle)) {
           this.selectedStyle = styles[0].id
         }
-        if (!this.selectedSubject) {
-          this.selectedSubject = (state && state.currentSubject) || (subjects[0] && subjects[0].id) || ''
+        if (!this.subjectTouched) {
+          this.selectedSubject = (state && state.currentSubject) || ''
         }
         await this.loadCourses(this.selectedSubject)
       } catch (e) {
@@ -197,6 +202,7 @@ export default {
     async loadCourses(subject) {
       if (!subject) {
         this.courses = []
+        this.selectedCourse = ''
         return
       }
       try {
@@ -207,6 +213,10 @@ export default {
       } catch (e) {
         this.courses = []
       }
+    },
+    pickSubject(id) {
+      this.subjectTouched = true
+      this.selectedSubject = id
     },
     selectCourse(c) {
       if (!c.available) {

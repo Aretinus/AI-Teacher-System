@@ -82,8 +82,12 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
   const history = loadHistory(userId);
 
   const routing = route({ subject, message });
+  const autoCourse = routing.route && routing.route.course ? routing.route.course : null;
+  const continueIntent = /继续|接着|下一课|下一节|下一章|再来/.test(message);
   const namedCourse = (() => {
     if (course) return course;
+    if (autoCourse) return autoCourse;
+    if (continueIntent && userState.currentCourse) return userState.currentCourse;
     const sid = subject || userState.currentSubject;
     if (!sid) return null;
     const hit = listSubjectCourses(sid).find((c) => c.available && message.includes(c.name));
@@ -117,15 +121,23 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
   }
   const userMessage = { role: 'user', content: message, at: new Date().toISOString() };
 
-  return { sessionId, routeInfo, messages, userMessage, userState, profile, history, courseCtx };
+  return { sessionId, routeInfo, messages, userMessage, userState, profile, history, courseCtx, effectiveCourse };
 }
 
-async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse }) {
+async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse, effectiveCourse }) {
   const parsed = parseTeachingResponse(rawResponse);
   const replyContent = parsed?.response || rawResponse;
   const assistantMessage = { role: 'assistant', content: replyContent, at: new Date().toISOString() };
 
   let nextState = loadState(userId);
+  if (routeInfo.subject && nextState.currentSubject !== routeInfo.subject) {
+    nextState = mergeStateUpdate(nextState, { currentSubject: routeInfo.subject }, routeInfo.subject);
+    saveState(userId, nextState);
+  }
+  if (effectiveCourse && nextState.currentCourse !== effectiveCourse) {
+    nextState.currentCourse = effectiveCourse;
+    saveState(userId, nextState);
+  }
   if (parsed?.stateUpdate) {
     nextState = mergeStateUpdate(nextState, parsed.stateUpdate, routeInfo.subject);
     saveState(userId, nextState);
