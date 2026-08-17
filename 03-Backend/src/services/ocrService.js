@@ -101,9 +101,9 @@ function probeTextLayers(files) {
 function ocrProduct(relDir, stem, ext) {
   const base = path.join(OCR_DIR, relDir);
   const main = ext === '.djvu'
-    ? path.join(base, `${stem}_转PDF.pdf`)
+    ? path.join(base, `${stem}_转PDF_OCR.pdf`)
     : path.join(base, `${stem}_OCR.pdf`);
-  const cache = ext === '.djvu' ? null : path.join(base, `${stem}_ocr_cache.json`);
+  const cache = path.join(base, `${stem}${ext === '.djvu' ? '_转PDF' : ''}_ocr_cache.json`);
   return { main, cache };
 }
 
@@ -173,11 +173,6 @@ function scanRaw(subject) {
   }
   saveStatus(merged);
   for (const f of files) {
-    if (f.ext === '.djvu') {
-      f.textLayer = 'djvu';
-      f.needOcr = false;
-      continue;
-    }
     const p = merged[f.file];
     const kind = p && p.kind ? p.kind : 'unknown';
     f.textLayer = kind;
@@ -208,12 +203,9 @@ function getOcrJob(id) {
   return { id: j.id, status: j.status, log: j.log.slice(-40), startedAt: j.startedAt, product: j.product || null, error: j.error || null };
 }
 
-function runOcr(job, { file, ext }) {
+function runScript(job, py, script, args) {
   return new Promise((resolve, reject) => {
-    const py = fs.existsSync(VENV_PY) ? VENV_PY : 'python';
-    const script = ext === '.djvu' ? DJVU_TO_PDF_PY : OCR_BOOK_PY;
-    job.log.push(`▶ 开始 OCR《${path.basename(file)}》（本地处理，不联网）`);
-    const child = spawn(py, [script, file], {
+    const child = spawn(py, [script, ...args], {
       cwd: TOOLKIT_DIR,
       windowsHide: true,
       env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' },
@@ -228,15 +220,35 @@ function runOcr(job, { file, ext }) {
     child.stderr.on('data', (c) => String(c).split(/\r?\n/).forEach(onLine));
     child.on('error', (e) => reject(e));
     child.on('close', (code) => {
-      if (code !== 0) return reject(new Error(`OCR 脚本退出码 ${code}`));
-      const rel = path.relative(RAW_DIR, path.dirname(file));
-      const stem = path.basename(file, path.extname(file));
+      if (code !== 0) reject(new Error(`${path.basename(script)} 退出码 ${code}`));
+      else resolve();
+    });
+  });
+}
+
+function runOcr(job, { file, ext }) {
+  return new Promise(async (resolve, reject) => {
+    const py = fs.existsSync(VENV_PY) ? VENV_PY : 'python';
+    const rel = path.relative(RAW_DIR, path.dirname(file));
+    const stem = path.basename(file, path.extname(file));
+    const outDir = path.join(OCR_DIR, rel);
+    job.log.push(`▶ 开始 OCR《${path.basename(file)}》（本地处理，不联网）`);
+    try {
+      if (ext === '.djvu') {
+        await runScript(job, py, DJVU_TO_PDF_PY, [file]);
+        const convPdf = path.join(outDir, `${stem}_转PDF.pdf`);
+        await runScript(job, py, OCR_BOOK_PY, [convPdf, '--out', outDir]);
+      } else {
+        await runScript(job, py, OCR_BOOK_PY, [file]);
+      }
       const prod = ocrProduct(rel, stem, ext);
       const relProd = path.relative(BOOKS_DIR, prod.main).split(path.sep).join('/');
       job.product = relProd;
       job.log.push(`✅ OCR 完成：${relProd}`);
       resolve();
-    });
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 

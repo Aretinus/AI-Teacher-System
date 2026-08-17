@@ -97,11 +97,13 @@ function scanSubjectBooks(subject, src) {
         const di = distilledInfo(srcDir, relDir, stem);
         let needOcr = false;
         if (srcKey === 'raw' && (ext === '.pdf' || ext === '.djvu')) {
-          if (ext !== '.djvu') {
-            const kind = (status[full] && status[full].kind) || 'unknown';
-            needOcr = kind === 'scanned' || kind === 'partial' || kind === 'unknown';
-          }
+          const kind = (status[full] && status[full].kind) || 'unknown';
+          needOcr = kind === 'scanned' || kind === 'partial' || kind === 'unknown';
         }
+        const ocrFile = ext === '.pdf' || ext === '.djvu'
+          ? path.join(BOOKS_DIR, 'ocr', relDir, ext === '.djvu' ? `${stem}_转PDF_OCR.pdf` : `${stem}_OCR.pdf`)
+          : null;
+        const ocrDone = !!(ocrFile && fs.existsSync(ocrFile));
         books.push({
           name: entry.name,
           file: full,
@@ -111,6 +113,8 @@ function scanSubjectBooks(subject, src) {
           destPath: di.destPath,
           distilledDone: di.distilledDone,
           needOcr,
+          ocrDone,
+          ocrProductFile: ocrDone ? ocrFile : null,
         });
       }
     }

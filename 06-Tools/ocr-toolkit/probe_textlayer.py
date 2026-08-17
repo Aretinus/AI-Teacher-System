@@ -11,14 +11,38 @@
 「无需 OCR」/「需 OCR」，避免全库逐个完整检查。
 """
 import json
+import os
+import subprocess
 import sys
 
 import fitz
 
 TEXT_LAYER_MIN_CHARS = 20
 
+BIN_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin")
+
+
+def probe_djvu(path):
+    """djvu：用 djvudump 检查是否有 TXTz（文本层）块；无文本层视为扫描件。
+
+    djvutxt 需整本抽取解码（大书很慢），djvudump 只列块结构，秒级完成。
+    """
+    djvudump = os.path.join(BIN_DIR, "djvudump.exe")
+    if not os.path.exists(djvudump):
+        return {"kind": "error", "error": "djvudump.exe 未找到（DjVuLibre 工具缺失）"}
+    try:
+        r = subprocess.run([djvudump, path], capture_output=True, timeout=120)
+        if r.returncode != 0:
+            return {"kind": "error", "error": "djvudump 退出码 " + str(r.returncode)}
+        out = r.stdout.decode("utf-8", errors="replace")
+        return {"kind": "text" if "TXTz" in out else "scanned"}
+    except Exception as e:
+        return {"kind": "error", "error": str(e)}
+
 
 def probe(path):
+    if path.lower().endswith(".djvu"):
+        return probe_djvu(path)
     try:
         doc = fitz.open(path)
     except Exception as e:
@@ -42,6 +66,9 @@ def probe(path):
 
 
 def main():
+    if hasattr(sys.stdin, "reconfigure"):
+        sys.stdin.reconfigure(encoding="utf-8")
+        sys.stdout.reconfigure(encoding="utf-8")
     for line in sys.stdin:
         line = line.strip()
         if not line:

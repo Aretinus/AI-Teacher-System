@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.pyc
 venv/
@@ -31,8 +31,6 @@ config/backends.json
 # 备份目录（本地快照，不入库）
 _backup_*/
 
-# 本地二进制（djvulibre 等；用户本机放置，不入库）
-vendor/
 
 # 推广文案（作者自留的推广/社区介绍草稿，不随技能仓库发布）
 promotion/

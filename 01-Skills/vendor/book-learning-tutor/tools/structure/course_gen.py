@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -223,6 +224,25 @@ def sanitize(name: str, maxlen: int = 120) -> str:
     return name
 
 
+def _fit_path(rel: str, base_abs: str) -> str:
+    """按 Windows 路径上限（260）逐级截断目录/文件名，保留编号前缀与扩展名。"""
+    MAX = 250
+    budget = MAX - len(base_abs)
+    parts = rel.split('/')
+    out = []
+    used = 0
+    for i, p in enumerate(parts):
+        is_last = i == len(parts) - 1
+        ext = '.md' if is_last and p.endswith('.md') else ''
+        stem = p[:-len(ext)] if ext else p
+        keep = max(10, budget - used - (1 if not is_last else 0) - len(ext))
+        if len(stem) > keep:
+            stem = stem[:keep].rstrip('._ ')
+        used += len(stem) + len(ext) + (1 if not is_last else 0)
+        out.append(stem + ext)
+    return '/'.join(out)
+
+
 # ---------------------------------------------------------------------------
 # 生成
 # ---------------------------------------------------------------------------
@@ -291,7 +311,7 @@ def _generate_from_text(text: str,
             les_title = file_title(les['title']) or f'第{lnum:02d}课'
             les_disp = strip_number_prefix(les['title']) or les['title']
             les_filename = f'第{lnum:02d}课_{les_title}.md'
-            rel = f'{ch_dirname}/{les_filename}'
+            rel = _fit_path(f'{ch_dirname}/{les_filename}', str(book_dir.resolve()))
             body = _body_text(les['body'])
             summary = _first_line_summary(les['body'])
             lesson_entries.append({
@@ -343,7 +363,9 @@ def _generate_from_text(text: str,
             'dry_run': True,
         }
 
-    # 落盘
+    # 落盘（先清旧产物：重蒸时旧文件名残留会与新截断名并存，导致双份/超长路径）
+    if book_dir.exists():
+        shutil.rmtree(book_dir)
     book_dir.mkdir(parents=True, exist_ok=True)
     (book_dir / '00_目录导读.md').write_text(toc_text, encoding='utf-8')
     (book_dir / 'progress.json').write_text(
@@ -495,6 +517,9 @@ def generate_comic(ref_dir: str | Path,
         return {'book': book, 'book_dir': str(book_dir), 'chapters': len(ch_folders),
                 'lessons': total, 'toc': toc_text, 'comic': True, 'dry_run': True}
 
+    # 落盘（先清旧产物，理由同上）
+    if book_dir.exists():
+        shutil.rmtree(book_dir)
     book_dir.mkdir(parents=True, exist_ok=True)
     (book_dir / '00_目录导读.md').write_text(toc_text, encoding='utf-8')
     (book_dir / 'progress.json').write_text(

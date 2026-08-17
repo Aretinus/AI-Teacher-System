@@ -714,11 +714,12 @@ def _djvu_sections(path):
                 if toc:
                     return _resplit_embedded(_outline_to_triples(toc, doc, n)), n, meta
                 full = "\n".join(doc[p].get_text("text") for p in range(n))
-                sub = _split_hierarchical(full)
-                if sub:
-                    return _resplit_embedded(sub), n, meta
-                triples = [(f"第{p + 1}页", None, doc[p].get_text("text")) for p in range(n)]
-                return triples, n, meta
+                if full.strip():
+                    sub = _split_hierarchical(full)
+                    if sub:
+                        return _resplit_embedded(sub), n, meta
+                    triples = [(f"第{p + 1}页", None, doc[p].get_text("text")) for p in range(n)]
+                    return triples, n, meta
         finally:
             doc.close()
     except Exception:
@@ -726,7 +727,7 @@ def _djvu_sections(path):
     djvutxt = _find_djvutxt()
     if djvutxt:
         try:
-            out = subprocess.run([djvutxt, path], capture_output=True, text=True, timeout=120)
+            out = subprocess.run([djvutxt, path], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
             txt = out.stdout or ""
         except Exception as e:
             raise RuntimeError("djvutxt 执行失败：%s" % e)

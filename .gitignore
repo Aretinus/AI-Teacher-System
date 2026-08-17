@@ -29,7 +29,6 @@ logs/
 # ===== 第三方运行时工具（含嵌套 git 仓库与二进制）=====
 06-Tools/agentskills-runtime-src/
 06-Tools/ocr-toolkit/venv/
-06-Tools/ocr-toolkit/bin/
 06-Tools/ocr-toolkit/downloads/
 
 # ===== 系统文件 =====
