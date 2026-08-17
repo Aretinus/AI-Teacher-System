@@ -47,14 +47,18 @@ function scanSubjects() {
     const subjDir = path.join(root, entry.name);
     const subjYaml = path.join(subjDir, 'subject.yaml');
     let name = null;
+    let bookDir = null;
     if (fs.existsSync(subjYaml)) {
-      name = extractYamlField(fs.readFileSync(subjYaml, 'utf8'), 'name');
+      const yaml = fs.readFileSync(subjYaml, 'utf8');
+      name = extractYamlField(yaml, 'name');
+      bookDir = extractYamlField(yaml, 'bookDir');
     }
     const skills = scanSkillsOf(entry.name);
     if (!skills.length) continue;
     subjects.push({
       id: entry.name,
       name,
+      bookDir,
       skills,
       defaultSkill: skills[0].id,
     });
@@ -82,6 +86,7 @@ function refresh() {
       const oldKey = JSON.stringify({ skills: prev.skills || [], defaultSkill: prev.defaultSkill });
       if (key !== oldKey) changedSubjects.push(s.id);
       if (prev.name && !s.name) s.name = prev.name;
+      if (!s.bookDir && prev.bookDir) s.bookDir = prev.bookDir;
     } else {
       addedSubjects.push(s.id);
     }
@@ -98,6 +103,7 @@ function refresh() {
     subjects: scanned.map((s) => ({
       id: s.id,
       name: s.name || s.id,
+      bookDir: s.bookDir || null,
       skills: s.skills.map((k) => k.id),
       defaultSkill: s.defaultSkill,
     })),

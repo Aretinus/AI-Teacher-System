@@ -12,9 +12,23 @@ const BOOKS_DIR = path.join(DATA_DIR, 'books');
 const RAW_DIR = path.join(BOOKS_DIR, 'raw');
 const OCR_DIR = path.join(BOOKS_DIR, 'ocr');
 const OCR_STATUS = path.join(RAW_DIR, '_ocr_status.json');
+const SUBJECTS_INDEX = path.join(SKILLS_DIR, 'subjects', 'index.json');
+
+// 学科 id → 书库顶层目录（raw/ocr 镜像），取自 subjects/index.json 的 bookDir
+function bookDirOf(subject) {
+  const id = String(subject || '').trim();
+  if (!id) return null;
+  try {
+    const idx = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8'));
+    const s = (idx.subjects || []).find((x) => x.id === id);
+    return (s && s.bookDir) || null;
+  } catch (e) {
+    return null;
+  }
+}
 
 const OCR_EXTS = ['.pdf', '.djvu'];
-const BOOK_EXTS = ['.pdf', '.epub', '.djvu', '.mobi', '.azw', '.azw3', '.docx', '.txt', '.md', '.cbz'];
+const BOOK_EXTS = ['.pdf', '.epub', '.djvu', '.mobi', '.azw', '.azw3', '.docx', '.txt', '.cbz'];
 const DISTILLED_DIR = path.join(BOOKS_DIR, 'distilled');
 
 const jobs = new Map();
@@ -102,7 +116,11 @@ function cachePages(cacheFile) {
   }
 }
 
-function scanRaw() {
+function scanRaw(subject) {
+  const bookDir = bookDirOf(subject);
+  if (!bookDir) return [];
+  const root = path.join(RAW_DIR, bookDir);
+  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) return [];
   const files = [];
 
   function walk(dir, rel) {
@@ -131,6 +149,7 @@ function scanRaw() {
           name: e.name,
           file: full,
           relPath: relFull.split(path.sep).join('/'),
+          folder: relDir ? relDir.split('/').slice(1).join('/') : '',
           ext,
           sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024),
           ocrDone: done,
@@ -144,7 +163,7 @@ function scanRaw() {
     }
   }
 
-    walk(RAW_DIR, '');
+  walk(root, bookDir);
   const status = loadStatus();
   const toProbe = files.filter((f) => !status[f.file] || !status[f.file].kind);
   const probes = probeTextLayers(toProbe);

@@ -9,37 +9,113 @@ const BOOKS_DIR = path.join(DATA_DIR, 'books');
 const BOOKS_INDEX = path.join(BOOKS_DIR, 'index.json');
 const DISTILLED_DIR = path.join(BOOKS_DIR, 'distilled');
 const TMP_COURSE_DIR = path.join(VENDOR_BLT, '书库');
+const SUBJECTS_INDEX = path.join(SKILLS_DIR, 'subjects', 'index.json');
+const OCR_STATUS = path.join(BOOKS_DIR, 'raw', '_ocr_status.json');
 
-const BOOK_EXTS = ['.pdf', '.epub', '.djvu', '.mobi', '.azw', '.azw3', '.docx', '.txt', '.md', '.cbz'];
+const BOOK_EXTS = ['.pdf', '.epub', '.djvu', '.mobi', '.azw', '.azw3', '.docx', '.txt', '.cbz'];
 
 const jobs = new Map();
 
-function walkBooks(dir, out, depth) {
-  if (depth > 4) return;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith('.')) continue;
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      walkBooks(full, out, depth + 1);
-    } else if (entry.isFile()) {
-      const ext = path.extname(entry.name).toLowerCase();
-      if (!BOOK_EXTS.includes(ext)) continue;
-      out.push({
-        name: entry.name,
-        file: full,
-        sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024),
-      });
-    }
+function safeName(name) {
+  const s = String(name || '').replace(/[\\/:*?"<>|]/g, '_').trim();
+  return s || 'untitled';
+}
+
+// 学科 id → 书库顶层目录（raw/ocr 镜像），取自 subjects/index.json 的 bookDir
+function bookDirOf(subject) {
+  const id = String(subject || '').trim();
+  if (!id) return null;
+  try {
+    const idx = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8'));
+    const s = (idx.subjects || []).find((x) => x.id === id);
+    return (s && s.bookDir) || null;
+  } catch (e) {
+    return null;
   }
 }
 
-function scanBookFolder(folder) {
-  const dir = path.resolve(String(folder || '').trim());
-  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
-    throw new Error('目录不存在：' + (folder || '（未填写）'));
+// 产物判定：新产物有 progress.json；旧产物无 progress.json，但目录内有 00_/01_… 编号条目（章节目录、目录整理）
+function hasDistilledProducts(dest) {
+  if (!dest) return false;
+  try {
+    if (!fs.existsSync(dest)) return false;
+    if (fs.existsSync(path.join(dest, 'progress.json'))) return true;
+    const items = fs.readdirSync(dest);
+    if (!items.length) return false;
+    return items.some((n) => /^\d{2}_/.test(n));
+  } catch (e) {
+    return false;
   }
+}
+
+// 与 ocrService 相同的落位判定：单书目录用镜像目录名，多书目录加书名子目录；
+// 多书但镜像目录名下已有旧产物时（历史产物为单书镜像名），回退到镜像目录
+function distilledInfo(srcDir, relDir, stem) {
+  try {
+    const destDir = relDir ? path.join(DISTILLED_DIR, relDir) : DISTILLED_DIR;
+    const dest = countBooksInDir(srcDir) <= 1 ? destDir : path.join(destDir, safeName(stem));
+    const real = dest !== destDir && !hasDistilledProducts(dest) && hasDistilledProducts(destDir) ? destDir : dest;
+    return {
+      destPath: path.relative(BOOKS_DIR, real).split(path.sep).join('/'),
+      distilledDone: hasDistilledProducts(real),
+    };
+  } catch (e) {
+    return { destPath: null, distilledDone: false };
+  }
+}
+
+// 按学科 + 来源（raw/ocr）扫描书籍：返回按目录分组的清单（folder 为相对学科根的目录路径）
+function scanSubjectBooks(subject, src) {
+  const srcKey = src === 'ocr' ? 'ocr' : 'raw';
+  const bookDir = bookDirOf(subject);
+  if (!bookDir) throw new Error('未配置学科的书籍目录（bookDir）');
+  const root = path.join(BOOKS_DIR, srcKey, bookDir);
+  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) {
+    throw new Error(`目录不存在：${path.relative(BOOKS_DIR, root).split(path.sep).join('/')}/`);
+  }
+  const status = (() => {
+    try {
+      return JSON.parse(fs.readFileSync(OCR_STATUS, 'utf8')) || {};
+    } catch (e) {
+      return {};
+    }
+  })();
   const books = [];
-  walkBooks(dir, books, 0);
+  function walk(dir, rel) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.')) continue;
+      const full = path.join(dir, entry.name);
+      const relFull = rel ? path.join(rel, entry.name) : entry.name;
+      if (entry.isDirectory()) {
+        walk(full, relFull);
+      } else if (entry.isFile()) {
+        const ext = path.extname(entry.name).toLowerCase();
+        if (!BOOK_EXTS.includes(ext)) continue;
+        const stem = path.basename(entry.name, ext);
+        const relDir = rel ? path.dirname(relFull).replace(/\\/g, '/') : '';
+        const srcDir = path.dirname(full);
+        const di = distilledInfo(srcDir, relDir, stem);
+        let needOcr = false;
+        if (srcKey === 'raw' && (ext === '.pdf' || ext === '.djvu')) {
+          if (ext !== '.djvu') {
+            const kind = (status[full] && status[full].kind) || 'unknown';
+            needOcr = kind === 'scanned' || kind === 'partial' || kind === 'unknown';
+          }
+        }
+        books.push({
+          name: entry.name,
+          file: full,
+          folder: relDir ? relDir.split('/').slice(1).join('/') : '',
+          ext,
+          sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024),
+          destPath: di.destPath,
+          distilledDone: di.distilledDone,
+          needOcr,
+        });
+      }
+    }
+  }
+  walk(root, bookDir);
   return books.sort((a, b) => a.sizeMB - b.sizeMB);
 }
 
@@ -202,4 +278,4 @@ function appendBook(book) {
   fs.writeFileSync(BOOKS_INDEX, JSON.stringify(index, null, 2), 'utf8');
 }
 
-module.exports = { scanBookFolder, startDistill, getJob, appendBook };
+module.exports = { scanSubjectBooks, startDistill, getJob, appendBook };

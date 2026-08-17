@@ -33,12 +33,8 @@ export function testSettings(body) {
   return apiPost('/api/settings/test', body)
 }
 
-export function refreshSkills() {
-  return apiPost('/api/skills/refresh', {})
-}
-
-export function scanBooks(folder) {
-  return apiPost('/api/books/scan', { folder })
+export function scanBooks(body) {
+  return apiPost('/api/books/scan', body || {})
 }
 
 export function distillBook(body) {
@@ -49,12 +45,8 @@ export function getDistillJob(jobId) {
   return apiGet(`/api/books/distill/${jobId}`)
 }
 
-export function getCourses() {
-  return apiGet('/api/books/courses').then((d) => d.courses || [])
-}
-
-export function scanOcrBooks() {
-  return apiPost('/api/ocr/scan', {})
+export function scanOcrBooks(body) {
+  return apiPost('/api/ocr/scan', body || {})
 }
 
 export function startOcr(file) {

@@ -8,7 +8,7 @@ const { loadSubjects } = require('./services/routerService');
 const { loadState, saveState, loadProfile, loadHistory, saveSessionDetail, loadSessionDetail, deleteSession } = require('./services/dataService');
 const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
-const { scanBookFolder, startDistill, getJob } = require('./services/distillService');
+const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
 const { listCourses } = require('./services/courseService');
 const { externalRequest } = require('./runtimeClient');
@@ -102,18 +102,10 @@ app.delete('/api/sessions/:sessionId', (req, res) => {
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 app.use('/uploads', express.static(UPLOAD_DIR));
 
-app.post('/api/skills/refresh', (req, res) => {
-  try {
-    const r = refresh();
-    res.json(r);
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
 app.post('/api/books/scan', (req, res) => {
   try {
-    res.json({ books: scanBookFolder((req.body || {}).folder || '') });
+    const { subject, src } = req.body || {};
+    res.json({ books: scanSubjectBooks(subject, src) });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
@@ -142,7 +134,7 @@ app.get('/api/books/courses', (req, res) => {
 
 app.post('/api/ocr/scan', (req, res) => {
   try {
-    res.json({ books: scanRaw() });
+    res.json({ books: scanRaw((req.body || {}).subject || '') });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
@@ -260,3 +252,11 @@ function loadSessionDetailSafe(sessionId) {
 app.listen(PORT, () => {
   console.log(`[backend] listening on http://127.0.0.1:${PORT}`);
 });
+
+// 启动时扫描学科/技能目录并重建索引（新增学科/技能后重启后端即生效）
+try {
+  const r = refresh();
+  console.log(`[subjects] 索引已更新：${r.totalSubjects} 个学科`);
+} catch (e) {
+  console.warn('[subjects] 索引刷新失败（忽略）：' + e.message);
+}

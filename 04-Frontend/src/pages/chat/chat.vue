@@ -4,18 +4,6 @@
       <view v-if="!messages.length" class="empty">
         <view class="empty-title">{{ emptyTitle }}</view>
         <view class="empty-sub">可以问：{{ samplePrompt }}</view>
-        <view v-if="courses.length" class="bookshelf">
-          <view class="shelf-title">可学课程</view>
-          <view
-            v-for="(c, i) in courses"
-            :key="c.subject + c.skill"
-            class="shelf-item"
-            @click="startCourse(c)"
-          >
-            <view class="shelf-name">{{ c.bookTitle }}</view>
-            <view class="shelf-meta">{{ c.subjectName }} · {{ c.chapters }} 章 · {{ c.skillName }}</view>
-          </view>
-        </view>
       </view>
 
       <view v-for="(m, i) in messages" :key="m.id" :id="'msg-' + m.id" class="msg-row" :class="m.role">
@@ -84,7 +72,7 @@
 
 <script>
 import MdRender from '@/components/md-render.vue'
-import { getSubjects, getCourses, getSession, streamChat, uploadFile } from '@/api'
+import { getSubjects, getSession, streamChat, uploadFile } from '@/api'
 import { renderMarkdown } from '@/utils/md'
 import { API_BASE } from '@/config'
 
@@ -95,7 +83,6 @@ export default {
   data() {
     return {
       subjects: [],
-      courses: [],
       selectedSubject: '',
       input: '',
       messages: [],
@@ -130,16 +117,15 @@ export default {
         : '为什么导数表示变化率？'
     },
   },
-  onLoad(options) {
-    this.loadSubjects().then(() => {
-      this.selectedSubject = options.subject || this.subjects[0]?.id || ''
-      if (options.sessionId) {
-        this.conversationId = options.sessionId
-        this.loadSession(options.sessionId)
-      }
-    })
-    this.loadCourses()
-  },
+onLoad(options) {
+      this.loadSubjects().then(() => {
+        this.selectedSubject = options.subject || this.subjects[0]?.id || ''
+        if (options.sessionId) {
+          this.conversationId = options.sessionId
+          this.loadSession(options.sessionId)
+        }
+      })
+    },
   onUnload() {
     this.streaming = false
   },
@@ -150,18 +136,6 @@ export default {
       } catch (e) {
         uni.showToast({ title: '无法加载学科：' + e.message, icon: 'none' })
       }
-    },
-    async loadCourses() {
-      try {
-        this.courses = await getCourses()
-      } catch (e) {
-        this.courses = []
-      }
-    },
-    async startCourse(c) {
-      this.selectedSubject = c.subject
-      this.input = '学这本书'
-      await this.send()
     },
     async loadSession(sessionId) {
       try {
@@ -359,37 +333,6 @@ export default {
 .empty-sub {
   margin-top: 14rpx;
   font-size: 26rpx;
-  color: #9ca3af;
-}
-.bookshelf {
-  margin-top: 40rpx;
-  text-align: left;
-}
-.shelf-title {
-  font-size: 26rpx;
-  color: #6b7280;
-  margin-bottom: 16rpx;
-  padding-left: 6rpx;
-}
-.shelf-item {
-  background: #ffffff;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 14rpx;
-  padding: 18rpx 24rpx;
-  margin-bottom: 14rpx;
-}
-.shelf-item:active {
-  border-color: #4f8cff;
-  background: #f0f5ff;
-}
-.shelf-name {
-  font-size: 28rpx;
-  color: #1f2937;
-  font-weight: 600;
-}
-.shelf-meta {
-  margin-top: 6rpx;
-  font-size: 24rpx;
   color: #9ca3af;
 }
 .msg-row {

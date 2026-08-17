@@ -38,66 +38,55 @@
     </view>
 
     <view class="section">
-      <view class="section-title">技能与书籍</view>
-      <view class="card">
-        <view class="refresh-desc">扫描 01-Skills/subjects 与书籍蒸馏目录，更新学科索引。新增学科/技能后无需重启。</view>
-        <view class="btn refresh-btn" :class="{ loading: refreshing }" @click="doRefresh">
-          {{ refreshing ? '更新中…' : '一键更新技能与书籍' }}
-        </view>
-        <view v-if="refreshResult" class="refresh-result">
-          <view class="refresh-line ok">✓ 已更新，共 {{ refreshResult.totalSubjects }} 个学科</view>
-          <view v-if="refreshResult.addedSubjects.length" class="refresh-line">+ 新增学科：{{ refreshResult.addedSubjects.join('、') }}</view>
-          <view v-if="refreshResult.addedSkills.length" class="refresh-line">
-            + 新增技能：
-            <text v-for="(a, i) in refreshResult.addedSkills" :key="i">{{ a.subject }}（{{ a.skills.join('、') }}）{{ i < refreshResult.addedSkills.length - 1 ? '；' : '' }}</text>
-          </view>
-          <view v-if="refreshResult.changedSubjects.length" class="refresh-line">~ 变化学科：{{ refreshResult.changedSubjects.join('、') }}</view>
-          <view v-if="refreshResult.removedSubjects.length" class="refresh-line">- 移除学科：{{ refreshResult.removedSubjects.join('、') }}</view>
-          <view v-if="refreshResult.invalidSkills.length" class="refresh-line fail">
-            <text v-for="(iv, i) in refreshResult.invalidSkills" :key="i">⚠ {{ iv }}<text v-if="i < refreshResult.invalidSkills.length - 1">；</text></text>
-          </view>
-          <view v-if="refreshResult.noCourse.length" class="refresh-line warn">
-            <text v-for="(nc, i) in refreshResult.noCourse" :key="i">· {{ nc }}<text v-if="i < refreshResult.noCourse.length - 1">；</text></text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-        <view class="section">
       <view class="section-title">书籍加工</view>
-      <view class="tab-bar">
-        <view class="tab" :class="{ active: bookTab === 'ocr' }" @click="switchTab('ocr')">OCR 层</view>
-        <view class="tab" :class="{ active: bookTab === 'distill' }" @click="switchTab('distill')">蒸馏层</view>
+      <view class="book-tabs">
+        <view class="book-tab" :class="{ active: bookTab === 'ocr' }" @click="switchTab('ocr')">OCR 层</view>
+        <view class="book-tab" :class="{ active: bookTab === 'distill' }" @click="switchTab('distill')">蒸馏层</view>
       </view>
       <view class="card">
         <view class="form-row">
           <text class="label">学科</text>
-          <input v-model="distillSubject" class="form-input" placeholder="例如：physics 或 物理" />
+          <text class="value">{{ subjectName(distillSubject) }}</text>
         </view>
         <view class="subject-chips">
-          <view v-for="s in subjects" :key="s.id" class="subject-chip" @click="distillSubject = s.id">{{ s.name }}</view>
+          <view v-for="s in subjects" :key="s.id" class="subject-chip" :class="{ active: s.id === distillSubject }" @click="selectSubject(s.id)">{{ s.name }}</view>
           <view v-if="canAddSubject" class="subject-chip add-chip" @click="addDistillSubject">＋ 添加「{{ distillSubject }}」</view>
         </view>
       </view>
 
       <view class="card" v-if="bookTab === 'ocr'">
-        <view class="refresh-desc">扫描 raw 目录中的 PDF / djvu。已有文字层的书（text/djvu）可直接蒸馏；纯扫描件需先 OCR 生成文字层（产物镜像到 02-DATA/books/ocr/，不污染源数据）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
+        <view class="refresh-desc">扫描当前学科 raw 目录中的 PDF / djvu，按状态分类：需OCR（纯扫描件，产物镜像到 02-DATA/books/ocr/）、已OCR、无需OCR（有文字层 / djvu，可直接蒸馏）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
         <view class="btn refresh-btn" :class="{ loading: ocrScanning }" @click="doOcrScan">
-          {{ ocrScanning ? '扫描中…' : '扫描新文件' }}
+          {{ ocrScanning ? '扫描中…' : '扫描文件' }}
         </view>
-        <view v-if="ocrBooks.length" class="book-list">
-          <view
-            v-for="(b, i) in ocrBooks"
-            :key="b.file"
-            class="book-item"
-            :class="{ selected: i === ocrSelectedIdx }"
-            @click="ocrSelectedIdx = i"
-          >
-            <view class="book-name">{{ b.name }}</view>
-            <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
-            <view class="book-size">{{ b.sizeMB }} MB</view>
+        <view class="sec-tabs">
+          <view class="sec-tab" :class="{ active: ocrSection === 'needOcr' }" @click="ocrSection = 'needOcr'">需OCR {{ ocrSectionCounts.needOcr }}</view>
+          <view class="sec-tab" :class="{ active: ocrSection === 'ocrDone' }" @click="ocrSection = 'ocrDone'">已OCR {{ ocrSectionCounts.ocrDone }}</view>
+          <view class="sec-tab" :class="{ active: ocrSection === 'noOcr' }" @click="ocrSection = 'noOcr'">无需OCR {{ ocrSectionCounts.noOcr }}</view>
+        </view>
+        <view v-if="ocrGroups.length" class="book-list">
+          <view v-for="g in ocrGroups" :key="g.folder" class="folder-group">
+            <view class="folder-head" @click="toggleFolder('ocr:' + g.folder)">
+              <text class="folder-toggle">{{ isCollapsed('ocr:' + g.folder) ? '▸' : '▾' }}</text>
+              <text class="folder-name">{{ g.folder || '（根目录）' }}</text>
+              <text class="folder-count">{{ g.books.length }}</text>
+            </view>
+            <view v-if="!isCollapsed('ocr:' + g.folder)">
+              <view
+                v-for="b in g.books"
+                :key="b.file"
+                class="book-item"
+                :class="{ selected: selectedOcrBook && selectedOcrBook.file === b.file }"
+                @click="ocrSelectedFile = b.file"
+              >
+                <view class="book-name">{{ b.name }}</view>
+                <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
+                <view class="book-size">{{ b.sizeMB }} MB</view>
+              </view>
+            </view>
           </view>
         </view>
+        <view v-else-if="ocrScanned" class="refresh-line dim">该学科下没有对应状态的文件</view>
         <view v-if="selectedOcrBook" class="ocr-detail">
           <view class="ocr-state-line">{{ stateLine(selectedOcrBook) }}</view>
           <view v-if="selectedOcrBook.destPath" class="ocr-state-line dim">蒸馏产物：{{ selectedOcrBook.destPath }}/</view>
@@ -124,27 +113,41 @@
             <view class="src-tab" :class="{ active: distillSrc === 'ocr' }" @click="setDistillSrc('ocr')">ocr</view>
           </view>
         </view>
-        <view class="form-row">
-          <text class="label">书籍目录</text>
-          <input v-model="distillFolder" class="form-input" placeholder="E:\Projects\AI-Teacher-System\02-DATA\books\raw\Physic\物理十书（英文版）" />
-          <view class="btn mini-btn" @click="chooseFolder">选择目录</view>
+        <view class="refresh-desc">扫描当前学科 {{ distillSrc }} 目录中的书籍（pdf/epub/djvu/mobi/txt 等），按蒸馏状态分类。选书后异步蒸馏（后台运行，可离开页面）。</view>
+        <view class="btn refresh-btn" :class="{ loading: scanning }" @click="doScan">
+          {{ scanning ? '扫描中…' : '扫描文件' }}
         </view>
-        <view class="btn refresh-btn" @click="doScan">扫描目录</view>
-        <view v-if="scanBooks.length" class="book-list">
-          <view
-            v-for="(b, i) in scanBooks"
-            :key="b.file"
-            class="book-item"
-            :class="{ selected: i === selectedBookIdx }"
-            @click="selectedBookIdx = i"
-          >
-            <view class="book-name">{{ b.name }}</view>
-            <view class="book-size">{{ b.sizeMB }} MB</view>
+        <view class="sec-tabs">
+          <view class="sec-tab" :class="{ active: distillSection === 'undistilled' }" @click="distillSection = 'undistilled'">未蒸馏 {{ distillSectionCounts.undistilled }}</view>
+          <view class="sec-tab" :class="{ active: distillSection === 'distilled' }" @click="distillSection = 'distilled'">已蒸馏 {{ distillSectionCounts.distilled }}</view>
+        </view>
+        <view v-if="distillGroups.length" class="book-list">
+          <view v-for="g in distillGroups" :key="g.folder" class="folder-group">
+            <view class="folder-head" @click="toggleFolder('d:' + g.folder)">
+              <text class="folder-toggle">{{ isCollapsed('d:' + g.folder) ? '▸' : '▾' }}</text>
+              <text class="folder-name">{{ g.folder || '（根目录）' }}</text>
+              <text class="folder-count">{{ g.books.length }}</text>
+            </view>
+            <view v-if="!isCollapsed('d:' + g.folder)">
+              <view
+                v-for="b in g.books"
+                :key="b.file"
+                class="book-item"
+                :class="{ selected: selectedScanBook && selectedScanBook.file === b.file }"
+                @click="selectScanBook(b)"
+              >
+                <view class="book-name">{{ b.name }}</view>
+                <view v-if="!b.distilledDone && b.needOcr" class="book-badge todo">需OCR</view>
+                <view v-if="b.distilledDone" class="book-badge done">已蒸馏</view>
+                <view class="book-size">{{ b.sizeMB }} MB</view>
+              </view>
+            </view>
           </view>
         </view>
+        <view v-else-if="distillScanned" class="refresh-line dim">该学科下没有对应状态的文件</view>
         <view v-if="scanError" class="refresh-line fail">{{ scanError }}</view>
-        <view v-if="scanBooks.length" class="btn refresh-btn" :class="{ loading: distilling }" @click="doDistill">
-          {{ distilling ? '蒸馏中…（可离开页面，任务在后台运行）' : '蒸馏选中的书籍' }}
+        <view v-if="selectedScanBook" class="btn refresh-btn" :class="{ loading: distilling }" @click="doDistill">
+          {{ distilling ? '蒸馏中…（可离开页面，任务在后台运行）' : (selectedScanBook.distilledDone ? '重新蒸馏选中的书籍' : '蒸馏选中的书籍') }}
         </view>
         <view v-if="distillLog.length" class="distill-log">
           <view v-for="(l, i) in distillLog" :key="i" class="distill-line">{{ l }}</view>
@@ -167,7 +170,7 @@
 </template>
 
 <script>
-import { getSettings, saveSettings, testSettings, refreshSkills, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob } from '@/api'
+import { getSettings, saveSettings, testSettings, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -177,23 +180,27 @@ export default {
       form: { provider: 'runtime', baseUrl: '', apiKey: '', modelName: '' },
       testing: false,
       testResult: null,
-      refreshing: false,
-      refreshResult: null,
-      distillFolder: '',
       scanBooks: [],
       scanError: '',
-      selectedBookIdx: -1,
+      scanning: false,
+      distillScanned: false,
+      selectedScanFile: '',
+      pendingOcrFile: '',
       distilling: false,
       distillLog: [],
       distillSubject: '',
       distillSrc: 'raw',
+      distillSection: 'undistilled',
       bookTab: 'ocr',
       ocrBooks: [],
       ocrScanError: '',
-      ocrSelectedIdx: -1,
+      ocrScanned: false,
+      ocrSection: 'needOcr',
+      ocrSelectedFile: '',
       ocrScanning: false,
       ocrRunning: false,
       ocrLog: [],
+      collapsed: {},
       pollTimer: null,
       subjects: [],
       providers: [
@@ -219,14 +226,44 @@ export default {
       return !this.subjects.some((s) => s.id === name || s.name === name)
     },
     selectedOcrBook() {
-      return this.ocrBooks[this.ocrSelectedIdx] || null
+      return this.ocrBooks.find((b) => b.file === this.ocrSelectedFile) || null
+    },
+    selectedScanBook() {
+      return this.scanBooks.find((b) => b.file === this.selectedScanFile) || null
+    },
+    ocrSectionCounts() {
+      const counts = { needOcr: 0, ocrDone: 0, noOcr: 0 }
+      for (const b of this.ocrBooks) {
+        if (b.ocrDone) counts.ocrDone++
+        else if (b.needOcr) counts.needOcr++
+        else counts.noOcr++
+      }
+      return counts
+    },
+    distillSectionCounts() {
+      const counts = { undistilled: 0, distilled: 0 }
+      for (const b of this.scanBooks) {
+        if (b.distilledDone) counts.distilled++
+        else counts.undistilled++
+      }
+      return counts
+    },
+    ocrGroups() {
+      return this.groupBooks(this.ocrBooks.filter((b) => {
+        if (this.ocrSection === 'ocrDone') return b.ocrDone
+        if (this.ocrSection === 'noOcr') return !b.ocrDone && !b.needOcr
+        return !b.ocrDone && b.needOcr
+      }))
+    },
+    distillGroups() {
+      return this.groupBooks(this.scanBooks.filter((b) => this.distillSection === 'distilled' ? b.distilledDone : !b.distilledDone))
     },
     busy() {
       return this.ocrRunning || this.distilling
     },
   },
   onLoad() {
-    this.load()
+    this.load().then(() => this.rescan())
   },
   onUnload() {
     if (this.pollTimer) clearTimeout(this.pollTimer)
@@ -265,18 +302,7 @@ export default {
         this.testing = false
       }
     },
-    async doRefresh() {
-      this.refreshing = true
-      this.refreshResult = null
-      try {
-        this.refreshResult = await refreshSkills()
-      } catch (e) {
-        this.refreshResult = { ok: false, error: e.message, addedSubjects: [], addedSkills: [], changedSubjects: [], removedSubjects: [], invalidSkills: [], noCourse: [] }
-      } finally {
-        this.refreshing = false
-      }
-    },
-    addDistillSubject() {
+    async addDistillSubject() {
       const name = (this.distillSubject || '').trim()
       if (!name) return
       this.subjects.push({ id: name, name, skills: [], defaultSkill: '' })
@@ -284,32 +310,81 @@ export default {
     },
     switchTab(tab) {
       this.bookTab = tab
+      this.rescan()
+    },
+    subjectName(id) {
+      const s = this.subjects.find((x) => x.id === id)
+      return s ? s.name : (id || '未选择')
+    },
+    selectSubject(id) {
+      if (id === this.distillSubject) return
+      this.distillSubject = id
+      this.rescan()
+    },
+    rescan() {
+      if (!this.distillSubject) return
+      if (this.bookTab === 'ocr') this.doOcrScan()
+      else this.doScan()
+    },
+    groupBooks(books) {
+      const groups = new Map()
+      for (const b of books) {
+        const key = b.folder || ''
+        if (!groups.has(key)) groups.set(key, [])
+        groups.get(key).push(b)
+      }
+      const arr = []
+      for (const [folder, list] of groups) arr.push({ folder, books: list })
+      return arr
+    },
+    toggleFolder(key) {
+      this.collapsed[key] = !this.collapsed[key]
+    },
+    isCollapsed(key) {
+      return !!this.collapsed[key]
     },
     setDistillSrc(src) {
       this.distillSrc = src
-      const roots = {
-        raw: 'E:\\Projects\\AI-Teacher-System\\02-DATA\\books\\raw',
-        ocr: 'E:\\Projects\\AI-Teacher-System\\02-DATA\\books\\ocr',
-      }
-      this.distillFolder = roots[src] || ''
       this.scanBooks = []
-      this.selectedBookIdx = -1
+      this.selectedScanFile = ''
       this.scanError = ''
-      if (this.distillFolder) this.doScan()
+      this.doScan()
     },
     async doOcrScan() {
       this.ocrScanning = true
       this.ocrScanError = ''
       this.ocrBooks = []
-      this.ocrSelectedIdx = -1
+      this.ocrSelectedFile = ''
       try {
-        const r = await scanOcrBooks()
+        const r = await scanOcrBooks({ subject: this.distillSubject })
         this.ocrBooks = r.books || []
-        if (!this.ocrBooks.length) this.ocrScanError = 'raw 目录下未找到 pdf/djvu 文件'
+        this.ocrScanned = true
+        if (this.pendingOcrFile) {
+          this.ocrSelectedFile = this.pendingOcrFile
+          this.pendingOcrFile = ''
+        }
+        if (!this.ocrBooks.length) this.ocrScanError = '该学科 raw 目录下未找到 pdf/djvu 文件'
       } catch (e) {
         this.ocrScanError = e.message
       } finally {
         this.ocrScanning = false
+      }
+    },
+    selectScanBook(b) {
+      this.selectedScanFile = b.file
+      if (!b.distilledDone && b.needOcr) {
+        uni.showModal({
+          title: '需先 OCR',
+          content: '《' + b.name + '》是纯扫描件（无文字层），直接蒸馏效果差，需先 OCR 生成文字层。是否前往 OCR 层处理？',
+          confirmText: '去 OCR',
+          cancelText: '仍然蒸馏',
+          success: (r) => {
+            if (r.confirm) {
+              this.pendingOcrFile = b.file
+              this.switchTab('ocr')
+            }
+          },
+        })
       }
     },
     async doOcr() {
@@ -425,7 +500,7 @@ export default {
         cancelText: '取消',
         success: (r) => {
           if (r.confirm) {
-            this.ocrSelectedIdx = this.ocrBooks.findIndex((x) => x.file === b.file)
+            this.ocrSelectedFile = b.file
             this.doOcr()
           }
         },
@@ -461,7 +536,7 @@ export default {
       }
     },
     stemOf(b) {
-      return b.name.replace(/\.(pdf|epub|djvu|mobi|azw|azw3|docx|txt|md|cbz)$/i, '')
+      return b.name.replace(/\.(pdf|epub|djvu|mobi|azw|azw3|docx|txt|cbz)$/i, '')
     },
     async doDistillFile(file, name) {
       if (this.distilling) return
@@ -471,7 +546,7 @@ export default {
         const { jobId } = await distillBook({ file, name, subject: this.distillSubject })
         const st = await this.pollJob(jobId)
         if (st === 'done') {
-          await this.doOcrScan()
+          this.rescan()
           uni.showToast({ title: '蒸馏完成', icon: 'success' })
         }
       } catch (e) {
@@ -480,55 +555,39 @@ export default {
         this.distilling = false
       }
     },
-    chooseFolder() {
-      if (typeof document === 'undefined') {
-        uni.showToast({ title: '仅 H5 支持目录选择，请手动输入路径', icon: 'none' })
-        return
-      }
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.webkitdirectory = true
-      input.onchange = () => {
-        const files = Array.from(input.files || [])
-        if (!files.length) return
-        const first = files[0]
-        const abs = first.path || first.webkitRelativePath
-        if (!abs || !first.path) {
-          uni.showToast({ title: '浏览器未暴露绝对路径，请手动输入目录', icon: 'none' })
-          return
-        }
-        const sep = abs.lastIndexOf('\\') >= 0 ? '\\' : '/'
-        this.distillFolder = abs.slice(0, abs.lastIndexOf(sep))
-        this.doScan()
-      }
-      input.click()
-    },
     async doScan() {
+      if (!this.distillSubject) return
+      this.scanning = true
       this.scanError = ''
       this.scanBooks = []
-      this.selectedBookIdx = -1
+      this.selectedScanFile = ''
       try {
-        const r = await scanBooks(this.distillFolder.trim())
+        const r = await scanBooks({ subject: this.distillSubject, src: this.distillSrc })
         this.scanBooks = r.books || []
-        if (!this.scanBooks.length) this.scanError = '该目录下未找到书籍文件（pdf/epub/mobi/txt/md 等）'
+        this.distillScanned = true
+        if (!this.scanBooks.length) this.scanError = '该学科 ' + this.distillSrc + ' 目录下未找到书籍文件'
       } catch (e) {
         this.scanError = e.message
+      } finally {
+        this.scanning = false
       }
     },
     async doDistill() {
-      const book = this.scanBooks[this.selectedBookIdx]
+      const book = this.selectedScanBook
       if (!book || this.distilling) return
-      this.distilling = true
-      this.distillLog = []
-      try {
-        const name = book.name.replace(/\.(pdf|epub|djvu|mobi|azw|azw3|docx|txt|md|cbz)$/i, '')
-        const { jobId } = await distillBook({ file: book.file, name, subject: this.distillSubject })
-        await this.pollJob(jobId)
-      } catch (e) {
-        this.distillLog.push('✗ ' + e.message)
-      } finally {
-        this.distilling = false
+      if (book.distilledDone) {
+        uni.showModal({
+          title: '重新蒸馏',
+          content: '此书已蒸馏过，重新蒸馏将覆盖旧产物，是否继续？',
+          confirmText: '重新蒸馏',
+          cancelText: '取消',
+          success: (r) => {
+            if (r.confirm) this.doDistillFile(book.file, this.stemOf(book))
+          },
+        })
+        return
       }
+      this.doDistillFile(book.file, this.stemOf(book))
     },
     async pollJob(jobId) {
       return new Promise((resolve) => {
@@ -647,12 +706,12 @@ export default {
 .tips {
   margin-top: 40rpx;
 }
-.tab-bar {
+.book-tabs {
   display: flex;
   gap: 16rpx;
   margin-bottom: 20rpx;
 }
-.tab {
+.book-tab {
   flex: 1;
   text-align: center;
   padding: 18rpx 0;
@@ -662,7 +721,7 @@ export default {
   font-size: 29rpx;
   font-weight: 600;
 }
-.tab.active {
+.book-tab.active {
   background: #4f8cff;
   color: #ffffff;
 }
@@ -685,6 +744,56 @@ export default {
   background: #e0e7ff;
   color: #4f46e5;
   border-color: #4f46e5;
+}
+.sec-tabs {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+.sec-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12rpx 0;
+  border-radius: 12rpx;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 26rpx;
+  border: 2rpx solid #e5e7eb;
+}
+.sec-tab.active {
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-color: #4f46e5;
+}
+.folder-group {
+  margin-top: 14rpx;
+}
+.folder-head {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 12rpx 8rpx;
+  background: #f8fafc;
+  border-radius: 12rpx;
+}
+.folder-toggle {
+  font-size: 24rpx;
+  color: #9ca3af;
+  width: 30rpx;
+}
+.folder-name {
+  flex: 1;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #374151;
+  word-break: break-all;
+}
+.folder-count {
+  font-size: 24rpx;
+  color: #9ca3af;
+  background: #eef1f5;
+  border-radius: 999rpx;
+  padding: 2rpx 16rpx;
 }
 .book-badge {
   flex-shrink: 0;
@@ -718,27 +827,17 @@ export default {
 .refresh-btn.loading {
   opacity: 0.6;
 }
-.refresh-result {
-  margin-top: 20rpx;
-  border-radius: 14rpx;
-  background: #f8fafc;
-  padding: 18rpx 24rpx;
-}
 .refresh-line {
   font-size: 26rpx;
   color: #374151;
   padding: 4rpx 0;
   line-height: 1.6;
 }
-.refresh-line.ok {
-  color: #15803d;
-  font-weight: 600;
-}
 .refresh-line.fail {
   color: #b91c1c;
 }
-.refresh-line.warn {
-  color: #b45309;
+.refresh-line.dim {
+  color: #9ca3af;
 }
 .subject-chips {
   display: flex;
@@ -753,6 +852,11 @@ export default {
   color: #4b5563;
   font-size: 24rpx;
   border: 2rpx solid #e5e7eb;
+}
+.subject-chip.active {
+  background: #e0e7ff;
+  color: #4f46e5;
+  border-color: #4f46e5;
 }
 .subject-chip:active {
   background: #e0e7ff;

@@ -4,6 +4,7 @@
     {
       "id": "math",
       "name": "数学",
+      "bookDir": "Math",
       "skills": [
         "calculus-tutor"
       ],
@@ -12,6 +13,7 @@
     {
       "id": "physics",
       "name": "理论物理",
+      "bookDir": "Physic",
       "skills": [
         "feynman-mechanics"
       ],
