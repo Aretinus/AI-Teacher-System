@@ -85,6 +85,7 @@ export default {
       subjects: [],
       selectedSubject: '',
       selectedStyle: 'standard',
+      selectedCourse: '',
       input: '',
       messages: [],
       conversationId: '',
@@ -110,6 +111,7 @@ export default {
     emptyTitle() {
       if (!this.selectedSubject) return '正在加载…'
       const s = this.subjects.find((x) => x.id === this.selectedSubject)
+      if (this.selectedCourse) return `${s ? s.name : ''} · 课程《${this.selectedCourse}》`
       return `向 ${s ? s.name : ''}教师提问`
     },
     samplePrompt() {
@@ -122,6 +124,7 @@ onLoad(options) {
       this.loadSubjects().then(() => {
         this.selectedSubject = options.subject || this.subjects[0]?.id || ''
         this.selectedStyle = options.style || 'standard'
+        this.selectedCourse = options.course ? decodeURIComponent(options.course) : ''
         if (options.sessionId) {
           this.conversationId = options.sessionId
           this.loadSession(options.sessionId)
@@ -261,7 +264,7 @@ onLoad(options) {
         const cur = this.messages[this.messages.length - 1]
         this.abortController = new AbortController()
         await streamChat(
-          { subject: this.selectedSubject, style: this.selectedStyle, message: text + attachDesc, conversationId: this.conversationId || undefined },
+          { subject: this.selectedSubject, style: this.selectedStyle, course: this.selectedCourse || undefined, message: text + attachDesc, conversationId: this.conversationId || undefined },
           {
             onSession: ({ sessionId }) => {
               this.conversationId = sessionId

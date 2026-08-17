@@ -1,6 +1,6 @@
 const { route } = require('./routerService');
 const { buildMessages, buildCourseMessages } = require('./promptBuilder');
-const { detectCourseIntent, loadCourseContext } = require('./courseService');
+const { detectCourseIntent, loadCourseContext, loadDistilledCourseContext, listSubjectCourses } = require('./courseService');
 const {
   loadState, saveState, loadProfile, loadHistory, appendHistory,
   saveSessionDetail, newSessionId,
@@ -76,13 +76,20 @@ function parseTeachingResponse(text) {
   return null;
 }
 
-async function handleChat({ userId, subject, message, conversationId, stream, style }) {
+async function handleChat({ userId, subject, message, conversationId, stream, style, course }) {
   const userState = loadState(userId);
   const profile = loadProfile(userId);
   const history = loadHistory(userId);
 
   const routing = route({ subject, message });
-  const wantCourse = detectCourseIntent(message);
+  const namedCourse = (() => {
+    if (course) return course;
+    const sid = subject || userState.currentSubject;
+    if (!sid) return null;
+    const hit = listSubjectCourses(sid).find((c) => c.available && message.includes(c.name));
+    return hit ? hit.id : null;
+  })();
+  const wantCourse = detectCourseIntent(message) || !!namedCourse;
   if (!routing.route && wantCourse && userState.currentSubject) {
     routing.route = { subject: userState.currentSubject, tutor: userState.currentSubject, source: 'user-state-fallback' };
     routing.source = 'user-state-fallback';
@@ -91,19 +98,21 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
     return { error: true, message: `无法确定学科，请选择：${(routing.candidates || []).join('、')}`, routing };
   }
   const routeInfo = routing.route;
+  const effectiveCourse = namedCourse;
 
   const sessionId = conversationId || newSessionId();
   const tutor = routeInfo.tutor || routeInfo.subject;
 
   let messages;
   let courseCtx = null;
-  if (wantCourse) {
+  if (effectiveCourse) {
+    courseCtx = loadDistilledCourseContext(routeInfo.subject, effectiveCourse, message, /继续|下一课|下一节|接着/.test(message));
+  } else if (wantCourse) {
     courseCtx = loadCourseContext(routeInfo.subject, tutor, message, /继续|下一课|下一节|接着/.test(message));
-    if (courseCtx) {
-      messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
-    }
   }
-  if (!messages) {
+  if (courseCtx) {
+    messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
+  } else {
     messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message, style });
   }
   const userMessage = { role: 'user', content: message, at: new Date().toISOString() };

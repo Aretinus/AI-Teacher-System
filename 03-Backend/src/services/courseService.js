@@ -1,6 +1,9 @@
 ﻿const fs = require('fs');
 const path = require('path');
-const { SKILLS_DIR } = require('../config');
+const { SKILLS_DIR, DATA_DIR } = require('../config');
+
+const DISTILLED_ROOT = path.join(DATA_DIR, 'Books', 'distilled');
+const COURSES_DIR = path.join(DATA_DIR, 'courses');
 
 const COURSE_KEYWORDS = [
   '学这本书', '学习这本书', '开始学', '开始学习', '课程', '继续学', '继续学习',
@@ -221,4 +224,141 @@ function loadCourseContext(subject, tutor, message, wantAdvance) {
   };
 }
 
-module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField, listCourses };
+function bookDirOf(subject) {
+  try {
+    const idx = JSON.parse(fs.readFileSync(path.join(SKILLS_DIR, 'subjects', 'index.json'), 'utf8'));
+    const s = (idx.subjects || []).find((x) => x.id === subject);
+    return s ? s.bookDir : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 课程 = 蒸馏产物 distilled/{bookDir}/<一级目录>：数学下是分类目录（多本书），物理下是整本大书
+function listSubjectCourses(subject) {
+  const bookDir = bookDirOf(subject);
+  const root = bookDir ? path.join(DISTILLED_ROOT, bookDir) : null;
+  if (!root || !fs.existsSync(root)) return [];
+  const out = [];
+  for (const name of fs.readdirSync(root, { withFileTypes: true })) {
+    if (!name.isDirectory() || name.name.startsWith('_')) continue;
+    const dir = path.join(root, name.name);
+    const lessons = listLessons(dir);
+    const chapters = chaptersOf(dir);
+    out.push({
+      id: name.name,
+      name: name.name,
+      subject,
+      chapters: chapters.length,
+      lessons: lessons.length,
+      available: lessons.length > 0,
+    });
+  }
+  return out.sort((a, b) => a.id.localeCompare(b.id, 'zh-CN-numeric'));
+}
+
+// 安全解析课程目录：拒绝越界路径
+function resolveDistilledCourse(subject, courseId) {
+  if (!courseId) return null;
+  const bookDir = bookDirOf(subject);
+  if (!bookDir) return null;
+  const root = path.join(DISTILLED_ROOT, bookDir);
+  const dir = path.resolve(root, courseId);
+  if (dir !== root && !dir.startsWith(root + path.sep)) return null;
+  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) return null;
+  return dir;
+}
+
+function progressFileOf(subject, courseId) {
+  const safe = String(courseId).replace(/[\\/]/g, '__').replace(/[^\w\u4e00-\u9fa5-]/g, '_');
+  return path.join(COURSES_DIR, subject, safe + '.json');
+}
+
+function loadProgressFile(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (e) {
+    return { version: 1, book: path.basename(path.dirname(file)).replace(/__/g, '/'), current: null, lessons: {} };
+  }
+}
+
+function saveProgressFile(file, progress) {
+  progress.updated = new Date().toISOString();
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const tmp = file + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(progress, null, 2), 'utf8');
+  fs.renameSync(tmp, file);
+}
+
+function advanceLessonFile(file, progress, lessons) {
+  let current = progress.current;
+  if (!current || !lessons.includes(current)) current = lessons[0] || null;
+  const idx = lessons.indexOf(current);
+  const next = idx >= 0 && idx + 1 < lessons.length ? lessons[idx + 1] : null;
+  if (progress.lessons[current]) {
+    const l = progress.lessons[current];
+    if (l.status !== 'learned') {
+      l.status = 'learned';
+      l.mastery = Math.max(l.mastery || 0, 0.8);
+    }
+  }
+  progress.current = next || current;
+  saveProgressFile(file, progress);
+  return next;
+}
+
+// 章 = 蒸馏目录的一级子目录（第XX章_xxx），课 = 章内 .md 文件（无章目录时直接列文件）
+function chaptersOf(courseDir) {
+  const out = [];
+  for (const e of fs.readdirSync(courseDir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'zh-CN-numeric'))) {
+    if (!e.isDirectory() || e.name.startsWith('_')) continue;
+    out.push(e.name);
+  }
+  return out;
+}
+
+// 蒸馏驱动课程上下文：进度存 COURSES_DIR（蒸馏目录会被重蒸馏清空，不能写入）
+function loadDistilledCourseContext(subject, courseId, message, wantAdvance) {
+  const courseDir = resolveDistilledCourse(subject, courseId);
+  if (!courseDir) return null;
+  const lessons = listLessons(courseDir);
+  if (!lessons.length) return null;
+
+  const progressFile = progressFileOf(subject, courseId);
+  const progress = loadProgressFile(progressFile);
+  let current = progress.current || lessons[0];
+  if (wantAdvance && progress.current) {
+    const adv = advanceLessonFile(progressFile, progress, lessons);
+    if (adv) current = adv;
+  }
+
+  const chapters = chaptersOf(courseDir);
+  const curChapter = chapters.find((ch) => {
+    const chDir = path.join(courseDir, ch);
+    return fs.readdirSync(chDir).some((f) => path.join(ch, f).replace(/\\/g, '/') === current || path.join(ch, f) === current);
+  });
+
+  const lessonPath = path.join(courseDir, current);
+  const lessonContent = fs.existsSync(lessonPath) ? fs.readFileSync(lessonPath, 'utf8') : '';
+  const learnedCount = Object.values(progress.lessons || {}).filter((l) => l.status === 'learned').length;
+
+  return {
+    courseDir,
+    courseName: path.basename(courseDir),
+    chapter: curChapter || '未知',
+    chapterList: chapters.join('；') || '（无）',
+    tocSection: curChapter ? fs.readdirSync(path.join(courseDir, curChapter)).filter((f) => f.endsWith('.md')).sort((a, b) => a.localeCompare(b, 'zh-CN-numeric')).join('；') : '（无）',
+    currentLesson: current,
+    lessonTitle: lessonTitle(progress, current),
+    lessonContent: lessonContent.slice(0, 12000) + (lessonContent.length > 12000 ? '\n…（课文其余部分略）' : ''),
+    totalLessons: lessons.length,
+    learnedCount,
+    progress: {
+      current: progress.current,
+      totalLessons: lessons.length,
+      learnedCount,
+    },
+  };
+}
+
+module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField, listCourses, listSubjectCourses, resolveDistilledCourse, loadDistilledCourseContext };

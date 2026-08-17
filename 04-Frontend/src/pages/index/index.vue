@@ -22,6 +22,31 @@
     </view>
 
     <view class="section">
+      <view class="section-title">选择课程（可选）</view>
+      <view class="style-grid">
+        <view
+          class="style-card"
+          :class="{ active: selectedCourse === '' }"
+          @click="selectedCourse = ''"
+        >
+          <view class="style-name">全科问答</view>
+          <view class="style-desc">不限课程，直接提问</view>
+        </view>
+        <view
+          v-for="c in courses"
+          :key="c.id"
+          class="style-card"
+          :class="{ active: c.id === selectedCourse, disabled: !c.available }"
+          @click="selectCourse(c)"
+        >
+          <view class="style-name">{{ c.name }}</view>
+          <view class="style-desc">{{ c.available ? `${c.chapters} 章 / ${c.lessons} 课` : '蒸馏完成后可学' }}</view>
+        </view>
+        <view v-if="!courses.length" class="style-desc" style="width:100%">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
+      </view>
+    </view>
+
+    <view class="section">
       <view class="section-title">授课风格</view>
       <view class="style-grid">
         <view
@@ -93,7 +118,7 @@
 </template>
 
 <script>
-import { getSubjects, getState, getHistory, deleteSession, getStyles } from '@/api'
+import { getSubjects, getState, getHistory, deleteSession, getStyles, getCourses } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -102,8 +127,10 @@ export default {
     return {
       subjects: [],
       styles: [],
+      courses: [],
       selectedSubject: '',
       selectedStyle: 'standard',
+      selectedCourse: '',
       state: null,
       history: { sessions: [] },
       expanded: false,
@@ -137,6 +164,12 @@ export default {
   onShow() {
     this.loadAll()
   },
+  watch: {
+    selectedSubject(subject) {
+      this.selectedCourse = ''
+      this.loadCourses(subject)
+    },
+  },
   methods: {
     async loadAll() {
       try {
@@ -156,9 +189,31 @@ export default {
         if (!this.selectedSubject) {
           this.selectedSubject = (state && state.currentSubject) || (subjects[0] && subjects[0].id) || ''
         }
+        await this.loadCourses(this.selectedSubject)
       } catch (e) {
         uni.showToast({ title: '后端服务不可用：' + e.message, icon: 'none' })
       }
+    },
+    async loadCourses(subject) {
+      if (!subject) {
+        this.courses = []
+        return
+      }
+      try {
+        this.courses = await getCourses(subject)
+        if (this.selectedCourse && !this.courses.some((c) => c.id === this.selectedCourse)) {
+          this.selectedCourse = ''
+        }
+      } catch (e) {
+        this.courses = []
+      }
+    },
+    selectCourse(c) {
+      if (!c.available) {
+        uni.showToast({ title: '该课程尚未蒸馏完成', icon: 'none' })
+        return
+      }
+      this.selectedCourse = c.id
     },
     subjectName(id) {
       const s = this.subjects.find((x) => x.id === id)
@@ -177,7 +232,7 @@ export default {
         .slice(0, 42)
     },
     goChat() {
-      uni.navigateTo({ url: `/pages/chat/chat?subject=${this.selectedSubject}&style=${this.selectedStyle}` })
+      uni.navigateTo({ url: `/pages/chat/chat?subject=${this.selectedSubject}&style=${this.selectedStyle}&course=${encodeURIComponent(this.selectedCourse || '')}` })
     },
     goChatBySession(s) {
       uni.navigateTo({ url: `/pages/chat/chat?subject=${s.subject || ''}&sessionId=${s.sessionId}` })
@@ -323,6 +378,9 @@ export default {
   font-size: 23rpx;
   color: #9ca3af;
   line-height: 1.5;
+}
+.style-card.disabled {
+  opacity: 0.55;
 }
 .card {
   background: #ffffff;

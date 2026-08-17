@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { SKILLS_DIR, MAX_CONTEXT_HISTORY } = require('../config');
 const { loadStyle } = require('./stylesService');
+const { listSubjectCourses, listLessons, chaptersOf } = require('./courseService');
 
 function styleBlock(styleId) {
   const content = loadStyle(styleId);
@@ -10,6 +11,24 @@ function styleBlock(styleId) {
   const name = (lines[0] || '').replace(/^#\s*/, '').trim() || styleId;
   const body = lines.slice(1).join('\n').trim();
   return `## 授课风格（${name}）\n${body}`;
+}
+
+// 学科书库课程范围：由蒸馏产物实时定义，替代 SKILL.md 写死的教学范围
+function courseScopeBlock(subject) {
+  const courses = listSubjectCourses(subject);
+  if (!courses.length) return null;
+  const lines = courses.map((c) => {
+    const dir = null;
+    const head = `- 《${c.name}》：${c.lessons} 课${c.chapters ? `，${c.chapters} 章` : ''}`;
+    return head;
+  });
+  return [
+    '## 本学科书库课程（你的教学范围，按蒸馏产物实时定义）',
+    '你在本学科内的教学范围以书库为准：涵盖以下已蒸馏课程，学生可随时指名学习其中任一课程。',
+    '回答广泛问题时，基于这些课程覆盖的知识回答；超出以下课程覆盖范围的内容，如实说明书库中没有对应材料，不要编造。',
+    ...lines,
+    '（课程详情以学生当前指定的课程为准；学生可要求「学《课程名》」切换课程。）',
+  ].join('\n');
 }
 
 function readSkillFile(subject, tutor, file) {
@@ -81,6 +100,8 @@ function buildSystemPrompt({ subject, tutor, userState, history, message, style 
     '',
     '## 学科知识目录',
     knowledge || '（暂无知识文件）',
+    '',
+    courseScopeBlock(subject) || '',
     '',
     '## 用户当前状态',
     JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: userState.knowledgePoints, recentErrors: userState.recentErrors }, null, 2),

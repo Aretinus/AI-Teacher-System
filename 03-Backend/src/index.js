@@ -11,7 +11,7 @@ const { refresh } = require('./services/refreshService');
 const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
 const { listStyles } = require('./services/stylesService');
-const { listCourses } = require('./services/courseService');
+const { listCourses, listSubjectCourses } = require('./services/courseService');
 const { externalRequest } = require('./runtimeClient');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', '02-DATA', 'uploads');
@@ -137,6 +137,13 @@ app.get('/api/books/courses', (req, res) => {
   res.json({ courses: listCourses() });
 });
 
+// 课程 = 蒸馏产物 distilled/{bookDir}/<一级目录>（数学=分类目录，物理=整本大书）
+app.get('/api/courses', (req, res) => {
+  const subject = req.query.subject;
+  if (!subject) return res.status(400).json({ error: 'subject is required' });
+  res.json({ courses: listSubjectCourses(subject) });
+});
+
 app.post('/api/ocr/scan', (req, res) => {
   try {
     res.json({ books: scanRaw((req.body || {}).subject || '') });
@@ -174,10 +181,10 @@ app.post('/api/upload', (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
@@ -192,10 +199,10 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.post('/api/chat/stream', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
