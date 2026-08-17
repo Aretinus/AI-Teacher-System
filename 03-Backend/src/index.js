@@ -10,6 +10,7 @@ const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
 const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
+const { listStyles } = require('./services/stylesService');
 const { listCourses } = require('./services/courseService');
 const { externalRequest } = require('./runtimeClient');
 
@@ -40,6 +41,10 @@ app.get('/api/health', async (req, res) => {
 
 app.get('/api/subjects', (req, res) => {
   res.json({ subjects: loadSubjects() });
+});
+
+app.get('/api/styles', (req, res) => {
+  res.json({ styles: listStyles() });
 });
 
 app.get('/api/settings', (req, res) => {
@@ -169,10 +174,10 @@ app.post('/api/upload', (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
@@ -187,10 +192,10 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.post('/api/chat/stream', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;

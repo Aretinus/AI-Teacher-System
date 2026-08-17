@@ -76,7 +76,7 @@ function parseTeachingResponse(text) {
   return null;
 }
 
-async function handleChat({ userId, subject, message, conversationId, stream }) {
+async function handleChat({ userId, subject, message, conversationId, stream, style }) {
   const userState = loadState(userId);
   const profile = loadProfile(userId);
   const history = loadHistory(userId);
@@ -100,11 +100,11 @@ async function handleChat({ userId, subject, message, conversationId, stream }) 
   if (wantCourse) {
     courseCtx = loadCourseContext(routeInfo.subject, tutor, message, /继续|下一课|下一节|接着/.test(message));
     if (courseCtx) {
-      messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx });
+      messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
     }
   }
   if (!messages) {
-    messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message });
+    messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message, style });
   }
   const userMessage = { role: 'user', content: message, at: new Date().toISOString() };
 

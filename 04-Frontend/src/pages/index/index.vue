@@ -21,6 +21,22 @@
       </view>
     </view>
 
+    <view class="section">
+      <view class="section-title">授课风格</view>
+      <view class="style-grid">
+        <view
+          v-for="st in styles"
+          :key="st.id"
+          class="style-card"
+          :class="{ active: st.id === selectedStyle }"
+          @click="selectedStyle = st.id"
+        >
+          <view class="style-name">{{ st.name }}</view>
+          <view v-if="st.desc" class="style-desc">{{ st.desc }}</view>
+        </view>
+      </view>
+    </view>
+
     <view class="new-chat-btn" @click="goChat()">
       <text class="new-chat-icon">✎</text>
       <text>新建对话（{{ subjectName(selectedSubject) }}）</text>
@@ -77,7 +93,7 @@
 </template>
 
 <script>
-import { getSubjects, getState, getHistory, deleteSession } from '@/api'
+import { getSubjects, getState, getHistory, deleteSession, getStyles } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -85,7 +101,9 @@ export default {
   data() {
     return {
       subjects: [],
+      styles: [],
       selectedSubject: '',
+      selectedStyle: 'standard',
       state: null,
       history: { sessions: [] },
       expanded: false,
@@ -122,14 +140,19 @@ export default {
   methods: {
     async loadAll() {
       try {
-        const [subjects, state, history] = await Promise.all([
+        const [subjects, state, history, styles] = await Promise.all([
           getSubjects(),
           getState(),
           getHistory(),
+          getStyles(),
         ])
         this.subjects = subjects
         this.state = state
         this.history = history
+        this.styles = styles
+        if (styles.length && !styles.some((x) => x.id === this.selectedStyle)) {
+          this.selectedStyle = styles[0].id
+        }
         if (!this.selectedSubject) {
           this.selectedSubject = (state && state.currentSubject) || (subjects[0] && subjects[0].id) || ''
         }
@@ -154,7 +177,7 @@ export default {
         .slice(0, 42)
     },
     goChat() {
-      uni.navigateTo({ url: `/pages/chat/chat?subject=${this.selectedSubject}` })
+      uni.navigateTo({ url: `/pages/chat/chat?subject=${this.selectedSubject}&style=${this.selectedStyle}` })
     },
     goChatBySession(s) {
       uni.navigateTo({ url: `/pages/chat/chat?subject=${s.subject || ''}&sessionId=${s.sessionId}` })
@@ -272,6 +295,34 @@ export default {
   margin-top: 8rpx;
   font-size: 24rpx;
   color: #9ca3af;
+}
+.style-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.style-card {
+  flex: 1;
+  min-width: 40%;
+  background: #ffffff;
+  border: 3rpx solid #e5e7eb;
+  border-radius: 20rpx;
+  padding: 22rpx 24rpx;
+}
+.style-card.active {
+  border-color: #4f8cff;
+  background: #f0f5ff;
+}
+.style-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+.style-desc {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  color: #9ca3af;
+  line-height: 1.5;
 }
 .card {
   background: #ffffff;

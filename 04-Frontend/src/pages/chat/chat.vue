@@ -84,6 +84,7 @@ export default {
     return {
       subjects: [],
       selectedSubject: '',
+      selectedStyle: 'standard',
       input: '',
       messages: [],
       conversationId: '',
@@ -120,6 +121,7 @@ export default {
 onLoad(options) {
       this.loadSubjects().then(() => {
         this.selectedSubject = options.subject || this.subjects[0]?.id || ''
+        this.selectedStyle = options.style || 'standard'
         if (options.sessionId) {
           this.conversationId = options.sessionId
           this.loadSession(options.sessionId)
@@ -259,7 +261,7 @@ onLoad(options) {
         const cur = this.messages[this.messages.length - 1]
         this.abortController = new AbortController()
         await streamChat(
-          { subject: this.selectedSubject, message: text + attachDesc, conversationId: this.conversationId || undefined },
+          { subject: this.selectedSubject, style: this.selectedStyle, message: text + attachDesc, conversationId: this.conversationId || undefined },
           {
             onSession: ({ sessionId }) => {
               this.conversationId = sessionId

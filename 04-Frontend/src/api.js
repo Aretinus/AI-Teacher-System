@@ -21,6 +21,10 @@ export function getSubjects() {
   return apiGet('/api/subjects').then((d) => d.subjects || [])
 }
 
+export function getStyles() {
+  return apiGet('/api/styles').then((d) => d.styles || [])
+}
+
 export function getSettings() {
   return apiGet('/api/settings')
 }
@@ -81,8 +85,8 @@ export function deleteSession(sessionId, userId = DEFAULT_USER) {
     })
 }
 
-export function sendMessage({ subject, message, conversationId, userId = DEFAULT_USER }) {
-  return apiPost('/api/chat', { userId, subject, message, conversationId })
+export function sendMessage({ subject, style, message, conversationId, userId = DEFAULT_USER }) {
+  return apiPost('/api/chat', { userId, subject, style, message, conversationId })
 }
 
 export function uploadFile(name, dataBase64) {
@@ -93,12 +97,12 @@ export function uploadFile(name, dataBase64) {
  * 流式对话：POST /api/chat/stream，解析 SSE 事件。
  * onDelta(deltaText)、onSession({sessionId, subject})、onDone(evaluation)、onError(msg)
  */
-export async function streamChat({ subject, message, conversationId, userId = DEFAULT_USER }, handlers = {}, signal) {
+export async function streamChat({ subject, style, message, conversationId, userId = DEFAULT_USER }, handlers = {}, signal) {
   const { onSession, onDelta, onDone, onError } = handlers
   const resp = await fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, subject, message, conversationId }),
+    body: JSON.stringify({ userId, subject, style, message, conversationId }),
     signal,
   })
   if (!resp.ok) {

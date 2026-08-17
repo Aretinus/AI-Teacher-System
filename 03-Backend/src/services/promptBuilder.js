@@ -1,6 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const { SKILLS_DIR, MAX_CONTEXT_HISTORY } = require('../config');
+const { loadStyle } = require('./stylesService');
+
+function styleBlock(styleId) {
+  const content = loadStyle(styleId);
+  if (!content) return '## 授课风格\n（未指定风格，按你惯用的清晰教学方式讲解。）';
+  const lines = content.split(/\r?\n/);
+  const name = (lines[0] || '').replace(/^#\s*/, '').trim() || styleId;
+  const body = lines.slice(1).join('\n').trim();
+  return `## 授课风格（${name}）\n${body}`;
+}
 
 function readSkillFile(subject, tutor, file) {
   const p = path.join(SKILLS_DIR, 'subjects', subject, tutor, file);
@@ -45,7 +55,7 @@ function readKnowledge(skillMd, subject, tutor) {
   return contents.join('\n\n');
 }
 
-function buildSystemPrompt({ subject, tutor, userState, history, message }) {
+function buildSystemPrompt({ subject, tutor, userState, history, message, style }) {
   const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
   const engineSkill = readCoreSkill('tutor-engine');
   const evaluatorSkill = readCoreSkill('evaluator');
@@ -65,6 +75,9 @@ function buildSystemPrompt({ subject, tutor, userState, history, message }) {
     '',
     '## 学科 Tutor 指令',
     tutorSkill || '（缺失）',
+    '',
+    '## 授课风格',
+    styleBlock(style),
     '',
     '## 学科知识目录',
     knowledge || '（暂无知识文件）',
@@ -87,7 +100,7 @@ function buildSystemPrompt({ subject, tutor, userState, history, message }) {
   ].join('\n');
 }
 
-function buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx }) {
+function buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx, style }) {
   const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
   const engineSkill = readCoreSkill('tutor-engine');
   const evaluatorSkill = readCoreSkill('evaluator');
@@ -106,6 +119,9 @@ function buildCourseSystemPrompt({ subject, tutor, userState, history, message, 
     '',
     '## 学科 Tutor 指令（含课程模式教学流程）',
     tutorSkill || '（缺失）',
+    '',
+    '## 授课风格',
+    styleBlock(style),
     '',
     '## 课程模式 · 本轮任务',
     `学生要求按《${courseCtx.courseName}》课程逐课学习。学生此前已完成 ${courseCtx.learnedCount} 课（不含当前课）。`,
@@ -143,17 +159,17 @@ function buildCourseSystemPrompt({ subject, tutor, userState, history, message, 
   ].join('\n');
 }
 
-function buildCourseMessages({ subject, tutor, userState, history, message, courseCtx }) {
+function buildCourseMessages({ subject, tutor, userState, history, message, courseCtx, style }) {
   return [
-    { role: 'system', content: buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx }) },
+    { role: 'system', content: buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx, style }) },
     ...(history.messages || []).slice(-2).map((m) => ({ role: m.role, content: m.content })),
     { role: 'user', content: message },
   ];
 }
 
-function buildMessages({ subject, tutor, userState, history, message }) {
+function buildMessages({ subject, tutor, userState, history, message, style }) {
   return [
-    { role: 'system', content: buildSystemPrompt({ subject, tutor, userState, history, message }) },
+    { role: 'system', content: buildSystemPrompt({ subject, tutor, userState, history, message, style }) },
     ...(history.messages || []).slice(-6).map((m) => ({ role: m.role, content: m.content })),
     { role: 'user', content: message },
   ];
