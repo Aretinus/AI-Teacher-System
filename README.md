@@ -8,7 +8,7 @@
 ## 一、开展进度（实时更新）
 
 ### 2026-08 初始 MVP（已交付）
-- **系统骨架**：Express 后端（端口 3000）+ 学科路由 + 本地模型运行时（agentskills-runtime，端口 8080，agnes-2.0-flash）；uni-app H5 前端（vite，端口 5173）
+- **系统骨架**：Express 后端（端口 3000）+ 学科路由 + 模型运行时（agentskills-runtime，端口 8080，本地进程转发 LLM 请求到 agnes-ai 云端 API，模型 `agnes-2.0-flash`）；uni-app H5 前端（vite，端口 5173）
 - **对话教学**：流式回复、学科路由（手动选择 / 关键词自动检测）、会话持久化
 - **课程模式全链路**：manifest.yaml 课程化、courseService 课程读取、课程意图识别（「学这本书 / 继续学 / 下一课」）
 - **学习状态跟踪**：知识点掌握度、学习目标、近期错误、会话历史（主页 / 学习概览）
@@ -47,9 +47,10 @@
 
 ```
 ┌─────────────┐    HTTP/SSE    ┌──────────────────┐   OpenAI 兼容协议   ┌────────────────────┐
-│  前端 uni-app │ ────────────▶ │  后端 Express      │ ─────────────────▶ │ 本地模型运行时        │
+│  前端 uni-app │ ────────────▶ │  后端 Express      │ ─────────────────▶ │ 模型运行时           │
 │  H5 (5173)   │               │  (3000)           │                    │  agentskills-runtime │
-└─────────────┘               │  对话/路由/课程/状态 │                    │  (8080, agnes-2.0)   │
+└─────────────┘               │  对话/路由/课程/状态 │                    │  (8080, 云端 LLM：    │
+                              └──────────────────┘                    │   agnes-2.0-flash)   │
                               └──────────────────┘                    └────────────────────┘
                                      │ 本地文件
                               ┌──────┴───────────────────────────────┐
@@ -115,10 +116,11 @@ AI-Teacher-System/
 
 ### 一键启动（推荐）
 双击 `start-dev.bat`：自动清理残留进程 → 启动 runtime / 后端 / 前端 → 健康检查 → 打开浏览器（http://127.0.0.1:5173）
+脚本使用相对路径，克隆到任意目录均可运行；若克隆后 runtime 未装或 .env 未配置，见下文「从零搭建」。
 
 ### 手动启动
 ```bat
-:: 1. 本地模型运行时（若已安装）
+:: 1. 模型运行时（npm 包自带，需先配置模型 key，见「从零搭建」第 4 步）
 cd 03-Backend\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin
 agentskills-runtime.exe
 
@@ -133,19 +135,71 @@ cd 04-Frontend && npm run dev:h5
 
 ---
 
-## 五、开发约定
+## 五、从零搭建（克隆部署）
 
-- **本地优先**：运行期全程离线——对话走本地运行时；OCR（RapidOCR）、蒸馏（teach.py）均为本地脚本，不调用任何在线服务
+> 以下说明用于在一台**全新的电脑**上克隆本项目并跑起来。仓库已排除大文件与隐私数据（见 .gitignore），需要按本节补齐。
+
+### 1. 前置依赖
+| 依赖 | 版本 | 用途 |
+|------|------|------|
+| Node.js | 18+（含 npm） | 后端 / 前端 / 模型运行时（npm 包） |
+| Python | 3.10–3.12 | OCR 工具链 venv、课程蒸馏 venv |
+| PostgreSQL | 可选（本机默认 127.0.0.1:5432） | runtime 的 ORM 数据库；缺失时 runtime 禁用数据库功能，其余正常 |
+
+### 2. 安装 npm 依赖（含约 1GB 的模型运行时）
+```bat
+cd 03-Backend && npm install
+cd ..\04-Frontend && npm install
+```
+`@opencangjie/skills` 为公开 npm 包，安装后自带 `agentskills-runtime.exe`（含运行时 DLL）。
+
+### 3. 配置模型 key（必需，否则对话无回复）
+编辑 `03-Backend\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin\.env`：
+```ini
+MODEL_CONFIG=openai:agnes-2.0-flash
+OPENAI_BASE_URL=https://apihub.agnes-ai.com/v1
+OPENAI_API_KEY=你的API密钥
+```
+> key 仅存在于本机 .env，不入库、不上传。若改用其他 OpenAI 兼容端点，改上述三行即可。运行时初始化（PostgreSQL、JWT、认证协议、Windows DLL 补齐等）详见 `05-Docs/环境搭建与运行时配置.md`。
+
+### 4. 课程蒸馏 Python 环境（book-learning-tutor）
+```bat
+cd 01-Skills\vendor\book-learning-tutor
+python setup_env.py          :: 或直接拷贝原机器的 venv_slim\ 目录
+```
+
+### 5. OCR 工具链环境（可选：不做 OCR 可跳过）
+```bat
+cd 06-Tools\ocr-toolkit
+python -m venv venv
+venv\Scripts\pip install -r requirements.txt
+```
+> `requirements.txt` 已入库（RapidOCR / PyMuPDF / onnxruntime 等）。最快的方式是从原机器直接拷贝 `06-Tools\ocr-toolkit\venv\` 和 `bin\`（含 OCR 模型二进制）。`.py` 脚本已入库，OCR 全本地运行、不联网。
+
+### 6. 启动
+双击 `start-dev.bat`（相对路径，任意位置可运行），或按上文「手动启动」。
+
+### 常见问题
+- **runtime 健康检查通过但对话无回复**：检查第 3 步的 `OPENAI_API_KEY` / `MODEL_CONFIG` / `OPENAI_BASE_URL` 是否与云端账号匹配。
+- **runtime 启动慢（约 2 分钟无响应）**：缺少 `DATABASE_URL` 配置，`start-dev.bat` 会自动补写（默认连本机 PostgreSQL 127.0.0.1:5432/uctoo，未装 PG 时 runtime 会自动禁用数据库功能）。
+- **首次 npm install 慢**：`@opencangjie/skills` 约 1GB，属正常。
+
+---
+
+## 六、开发约定
+
+- **本地优先**：OCR（RapidOCR）、蒸馏（teach.py）为本地脚本、全程不联网；对话模型经本地 runtime 进程转发到 agnes-ai 云端 API（按 token 计费）
 - **目录镜像**：raw / ocr / distilled 三层目录结构一致，产物按学科分类
 - **不污染源数据**：OCR 产物只写入 `02-DATA/books/ocr/`，源书不动
-- **Git 不入库**：node_modules、raw/、ocr/、venv、模型文件、settings.json、jwt_token.txt 等（见 .gitignore）
+- **Git 不入库**：node_modules、raw/、ocr/、uploads/、users/、sessions/、settings.json、jwt_token.txt、Python venv（`01-Skills/vendor/*/venv_slim/`、`06-Tools/ocr-toolkit/venv/`）、OCR 模型二进制（`06-Tools/ocr-toolkit/bin/`）、运行时源码（`06-Tools/agentskills-runtime-src/`，实际运行用的 runtime 在 npm 包内，该源码目录仅为开发参考）等（见 .gitignore）
 
-## 六、文档索引
+## 七、文档索引
 
 | 文档 | 说明 |
 |------|------|
 | `Dev_Plan.md` | 开发计划（Phase 0–9）与逐项进度 |
 | `05-Docs/需求清单与实时进度.md` | 需求清单与实时进度 |
+| `05-Docs/环境搭建与运行时配置.md` | 运行时初始化（PostgreSQL / JWT / DLL）与 .env 配置 |
 | `01-Skills/README.md` | 技能与课程引擎说明 |
 | `03-Backend/README.md` | 后端说明 |
 | `04-Frontend/README.md` | 前端说明 |

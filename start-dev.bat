@@ -3,11 +3,11 @@ setlocal
 cd /d "%~dp0"
 title AI Teacher System - one-click start
 
-set BACKEND_DIR=E:\Projects\AI-Teacher-System\03-Backend
-set FRONTEND_DIR=E:\Projects\AI-Teacher-System\04-Frontend
+set BACKEND_DIR=%~dp003-Backend
+set FRONTEND_DIR=%~dp004-Frontend
 set RUNTIME_DIR=%BACKEND_DIR%\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin
 set RUNTIME_ENV=%RUNTIME_DIR%\.env
-set LOG_DIR=E:\Projects\AI-Teacher-System\logs
+set LOG_DIR=%~dp0logs
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
 rem ---------- 0. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------

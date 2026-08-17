@@ -158,7 +158,7 @@
     <view class="section tips">
       <view class="section-title">说明</view>
       <view class="card">
-        <view class="tip-line">· 本地模型（默认）：无需配置，由 agentskills-runtime 提供（agnes-2.0-flash）</view>
+        <view class="tip-line">· 模型运行时（默认）：由 agentskills-runtime 提供（agnes-2.0-flash，云端 API，key 在 runtime .env）</view>
         <view class="tip-line">· OpenAI 兼容：支持任意提供 /v1/chat/completions 接口的服务</view>
         <view class="tip-line">· 切换提供商后新对话立即生效，历史对话可继续查看</view>
         <view class="tip-line">· API Key 保存在本地 02-DATA/settings.json，仅本机使用</view>
@@ -204,7 +204,7 @@ export default {
       pollTimer: null,
       subjects: [],
       providers: [
-        { id: 'runtime', name: '本地模型（默认）' },
+        { id: 'runtime', name: '模型运行时（默认）' },
         { id: 'openai', name: 'OpenAI 兼容' },
       ],
     }
