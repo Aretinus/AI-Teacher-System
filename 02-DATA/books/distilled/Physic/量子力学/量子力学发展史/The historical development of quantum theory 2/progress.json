@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "book": "The historical development of quantum theory 2",
+  "current": "第01章_Chapter_I._Werner_Heisenberg^_Scientific_Development_5/第01课_Chapter_I._Werner_Heisenberg^_Scientific_Development_5.md",
+  "total_lessons": 18,
+  "updated": null,
+  "lessons": {
+    "第01章_Chapter_I._Werner_Heisenberg^_Scientific_Development_5/第01课_Chapter_I._Werner_Heisenberg^_Scientific_Development_5.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter I. Werner Heisenberg^ Scientific Development 5",
+      "lesson": "Chapter I. Werner Heisenberg^ Scientific Development 5"
+    },
+    "第02章_Chapter_II._Towards_the_Recognition_of_the_Crisis_71/第01课_Chapter_II._Towards_the_Recognition_of_the_Crisis_71.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter II. Towards the Recognition of the Crisis 71",
+      "lesson": "Chapter II. Towards the Recognition of the Crisis 71"
+    },
+    "第03章_Chapter_III._The_Penultimate_Sharpening_of_the_Correspondence_125/第01课_Chapter_III._The_Penultimate_Sharpening_of_the_Correspo.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter III. The Penultimate Sharpening of the Correspondence 125",
+      "lesson": "Chapter III. The Penultimate Sharpening of the Correspondence 125"
+    },
+    "第04章_Chapter_IV._Sunrise_in_Helgoland_209/第01课_Chapter_IV._Sunrise_in_Helgoland_209.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter IV. Sunrise in Helgoland 209",
+      "lesson": "Chapter IV. Sunrise in Helgoland 209"
+    },
+    "第05章_Chapter_V._The_Discovery_of_Quantum_Mechanics_261/第01课_Chapter_V._The_Discovery_of_Quantum_Mechanics_261.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter V. The Discovery of Quantum Mechanics 261",
+      "lesson": "Chapter V. The Discovery of Quantum Mechanics 261"
+    },
+    "第06章_Chapter_I/第01课_Chapter_I.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter I",
+      "lesson": "Chapter I"
+    },
+    "第07章_Chapter_I_Werner_Heisenbergs_Scientific_Development/第01课_Chapter_I_Werner_Heisenbergs_Scientific_Development.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter I Werner Heisenbergs Scientific Development",
+      "lesson": "Chapter I Werner Heisenbergs Scientific Development"
+    },
+    "第08章_Chapter_I_Werner_Heisenberg^_Scientific_Development/第01课_Chapter_I_Werner_Heisenberg^_Scientific_Development.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter I Werner Heisenberg^ Scientific Development",
+      "lesson": "Chapter I Werner Heisenberg^ Scientific Development"
+    },
+    "第09章_Chapter_I_Werner_Heisenberg's_Scientific_Development/第01课_Chapter_I_Werner_Heisenberg's_Scientific_Development.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter I Werner Heisenberg's Scientific Development",
+      "lesson": "Chapter I Werner Heisenberg's Scientific Development"
+    },
+    "第10章_Chapter_II/第01课_Chapter_II.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter II",
+      "lesson": "Chapter II"
+    },
+    "第11章_Chapter_II_Towards_the_Recognition_of_the_Crisis/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter II Towards the Recognition of the Crisis",
+      "lesson": "本章导言"
+    },
+    "第11章_Chapter_II_Towards_the_Recognition_of_the_Crisis/第01课_2.07_p.m.,_and_would_leave_at_6.06_p.m._to_continue_his_journey_to_Würzb.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter II Towards the Recognition of the Crisis",
+      "lesson": "2.07 p.m., and would leave at 6.06 p.m. to continue his journey to Würzburg and Göttingen."
+    },
+    "第12章_Chapter_III/第01课_Chapter_III.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter III",
+      "lesson": "Chapter III"
+    },
+    "第13章_Chapter_IV/第01课_Chapter_IV.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter IV",
+      "lesson": "Chapter IV"
+    },
+    "第14章_Chapter_IV_Sunrise_in_Helgoland/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter IV Sunrise in Helgoland",
+      "lesson": "本章导言"
+    },
+    "第14章_Chapter_IV_Sunrise_in_Helgoland/第01课_Section_IV._1),_in_particular_the_remark_that_'the_conditions_so_far_did_not_suffice_comp.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter IV Sunrise in Helgoland",
+      "lesson": "Section IV. 1), in particular the remark that 'the conditions so far did not suffice completely to"
+    },
+    "第15章_Chapter_V/第01课_Chapter_V.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter V",
+      "lesson": "Chapter V"
+    },
+    "第16章_Chapter_V_The_Discovery_of_Quantum_Mechanics/第01课_Chapter_V_The_Discovery_of_Quantum_Mechanics.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Chapter V The Discovery of Quantum Mechanics",
+      "lesson": "Chapter V The Discovery of Quantum Mechanics"
+    }
+  }
+}
