@@ -6,9 +6,10 @@ AI 教师系统前端，基于 UniApp + Vue 3 + Vite，以 H5 为首个交付端
 
 | 页面 | 路径 | 功能 |
 |---|---|---|
-| 首页 | `pages/index/index` | 学科选择、继续学习、最近知识点、最近会话 |
-| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、学科切换 |
+| 首页 | `pages/index/index` | 学科选择（含全科提问）、课程选择（折叠面板）、授课风格、继续学习、最近知识点、最近会话 |
+| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、学科/课程回显 |
 | 学习概览 | `pages/overview/overview` | 知识点掌握度、近期错误、会话记录 |
+| 设置页 | `pages/settings/settings` | 模型配置（Runtime/OpenAI 兼容）、书籍加工（OCR 层/蒸馏层扫描、单选+多选批量、任务日志可复制） |
 
 ## 启动
 

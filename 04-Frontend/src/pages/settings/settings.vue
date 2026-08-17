@@ -107,7 +107,11 @@
         </view>
         <view v-if="ocrScanError" class="refresh-line fail">{{ ocrScanError }}</view>
         <view v-if="ocrLog.length" class="distill-log">
-          <view v-for="(l, i) in ocrLog" :key="i" class="distill-line">{{ l }}</view>
+          <view class="distill-log-head">
+            <text class="distill-log-title">日志</text>
+            <view class="copy-btn" @click="copyLog(ocrLog)">复制全部</view>
+          </view>
+          <view v-for="(l, i) in ocrLog" :key="i" class="distill-line" @click="copyLine(l)">{{ l }}</view>
         </view>
       </view>
 
@@ -161,7 +165,11 @@
           {{ distilling ? '蒸馏中…（可离开页面，任务在后台运行）' : (selectedScanBook.distilledDone ? '重新蒸馏选中的书籍' : '蒸馏选中的书籍') }}
         </view>
         <view v-if="distillLog.length" class="distill-log">
-          <view v-for="(l, i) in distillLog" :key="i" class="distill-line">{{ l }}</view>
+          <view class="distill-log-head">
+            <text class="distill-log-title">日志</text>
+            <view class="copy-btn" @click="copyLog(distillLog)">复制全部</view>
+          </view>
+          <view v-for="(l, i) in distillLog" :key="i" class="distill-line" @click="copyLine(l)">{{ l }}</view>
         </view>
       </view>
     </view>
@@ -407,6 +415,18 @@ export default {
     },
     isMulti(file) {
       return !!this.multiSelected[file]
+    },
+    copyLine(l) {
+      uni.setClipboardData({
+        data: l,
+        success: () => uni.showToast({ title: '已复制', icon: 'none' }),
+      })
+    },
+    copyLog(lines) {
+      uni.setClipboardData({
+        data: lines.join('\n'),
+        success: () => uni.showToast({ title: '已复制日志', icon: 'none' }),
+      })
     },
     toggleMulti(file) {
       if (this.multiSelected[file]) delete this.multiSelected[file]
@@ -1069,6 +1089,25 @@ export default {
   padding: 18rpx 22rpx;
   max-height: 480rpx;
   overflow-y: auto;
+}
+.distill-log-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+  padding-bottom: 10rpx;
+  border-bottom: 2rpx solid #374151;
+}
+.distill-log-title {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+.copy-btn {
+  font-size: 22rpx;
+  color: #60a5fa;
+  padding: 4rpx 16rpx;
+  border: 2rpx solid #4b5563;
+  border-radius: 10rpx;
 }
 .distill-line {
   font-size: 24rpx;
