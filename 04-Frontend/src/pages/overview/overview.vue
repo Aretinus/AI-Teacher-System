@@ -35,7 +35,8 @@
         <text>知识点掌握度（{{ subjectName(selectedSubject) }}）</text>
         <text class="history-toggle">{{ pointsExpanded ? '收起 ▲' : '展开 ▼' }}</text>
       </view>
-      <view v-if="pointsExpanded && pointsList.length" class="card">
+      <view v-if="pointsExpanded">
+        <view v-if="pointsList.length" class="card">
         <view v-for="p in pointsList" :key="p.key" class="point-item">
           <view class="point-head">
             <text class="point-name">{{ p.key }}</text>
@@ -51,6 +52,7 @@
         </view>
       </view>
       <view v-else class="card empty-card">该学科还没有知识点记录，先去对话吧</view>
+      </view>
     </view>
 
     <view v-if="state && state.recentErrors && state.recentErrors.length" class="section">
