@@ -31,8 +31,11 @@
     </view>
 
     <view class="section">
-      <view class="section-title">知识点掌握度（{{ subjectName(selectedSubject) }}）</view>
-      <view v-if="pointsList.length" class="card">
+      <view class="section-title history-title" @click="pointsExpanded = !pointsExpanded">
+        <text>知识点掌握度（{{ subjectName(selectedSubject) }}）</text>
+        <text class="history-toggle">{{ pointsExpanded ? '收起 ▲' : '展开 ▼' }}</text>
+      </view>
+      <view v-if="pointsExpanded && pointsList.length" class="card">
         <view v-for="p in pointsList" :key="p.key" class="point-item">
           <view class="point-head">
             <text class="point-name">{{ p.key }}</text>
@@ -99,6 +102,7 @@ export default {
       subjects: [],
       selectedSubject: '',
       expanded: false,
+      pointsExpanded: true,
     }
   },
   computed: {
