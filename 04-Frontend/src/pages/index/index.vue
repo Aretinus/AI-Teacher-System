@@ -36,17 +36,25 @@
           <view class="style-name">全科问答</view>
           <view class="style-desc">不限课程，直接提问</view>
         </view>
-        <view
-          v-for="c in courses"
-          :key="c.id"
-          class="style-card"
-          :class="{ active: c.id === selectedCourse, disabled: !c.available }"
-          @click="selectCourse(c)"
-        >
-          <view class="style-name">{{ c.name }}</view>
-          <view class="style-desc">{{ c.available ? `${c.chapters} 章 / ${c.lessons} 课` : '蒸馏完成后可学' }}</view>
+      </view>
+      <view class="course-panel">
+        <view class="course-panel-head" @click="coursePanelOpen = !coursePanelOpen">
+          <text class="course-panel-title">课程分支{{ courses.length ? `（${courses.length} 门）` : '' }}</text>
+          <text class="course-panel-toggle">{{ coursePanelOpen ? '收起 ▲' : '展开 ▼' }}</text>
         </view>
-        <view v-if="!courses.length" class="style-desc" style="width:100%">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
+        <view v-if="coursePanelOpen" class="style-grid course-panel-body">
+          <view
+            v-for="c in courses"
+            :key="c.id"
+            class="style-card"
+            :class="{ active: c.id === selectedCourse, disabled: !c.available }"
+            @click="selectCourse(c)"
+          >
+            <view class="style-name">{{ c.name }}</view>
+            <view class="style-desc">{{ c.available ? `${c.chapters} 章 / ${c.lessons} 课` : '蒸馏完成后可学' }}</view>
+          </view>
+          <view v-if="!courses.length" class="style-desc" style="width:100%">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
+        </view>
       </view>
     </view>
 
@@ -136,6 +144,7 @@ export default {
       subjectTouched: false,
       selectedStyle: 'standard',
       selectedCourse: '',
+      coursePanelOpen: false,
       state: null,
       history: { sessions: [] },
       expanded: false,
@@ -391,6 +400,27 @@ export default {
 }
 .style-card.disabled {
   opacity: 0.55;
+}
+.course-panel {
+  margin-top: 18rpx;
+}
+.course-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18rpx 4rpx;
+}
+.course-panel-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4b5563;
+}
+.course-panel-toggle {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+.course-panel-body {
+  margin-top: 4rpx;
 }
 .card {
   background: #ffffff;
