@@ -7,9 +7,11 @@ AI 教师系统前端，基于 UniApp + Vue 3 + Vite，以 H5 为首个交付端
 | 页面 | 路径 | 功能 |
 |---|---|---|
 | 首页 | `pages/index/index` | 学科选择（含全科提问）、课程选择（折叠面板）、授课风格、继续学习、最近知识点、最近会话 |
-| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、学科/课程回显 |
-| 学习概览 | `pages/overview/overview` | 知识点掌握度、近期错误、会话记录 |
-| 设置页 | `pages/settings/settings` | 模型配置（Runtime/OpenAI 兼容）、书籍加工（OCR 层/蒸馏层扫描、单选+多选批量、任务日志可复制） |
+| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、学科/课程回显、消息朗读、音色切换与试听、语音通话入口 |
+| 语音通话页 | `pages/voice/voice` | 实时语音对话（Web Speech API 识别 + SSE 回复 + TTS 朗读），退出对话页自动挂断 |
+| 设置页 | `pages/settings/settings` | 模型配置（Runtime/OpenAI 兼容）、AI 音色选择、书籍加工（OCR 层/蒸馏层扫描、单选+多选批量、任务日志可复制） |
+| 设置-模型 | `pages/settings/model` | 对话模型配置（runtime 模型 / OpenAI 兼容端点 + 测试连接） |
+| 设置-日志 | `pages/settings/log-history`、`log-detail` | OCR / 蒸馏任务日志（列表 + 详情，可复制整段/单行） |
 
 ## 启动
 
@@ -42,11 +44,23 @@ src/
 ├── utils/md.js      # Markdown + KaTeX 渲染（占位符防冲突）
 ├── components/
 │   └── md-render.vue
+├── services/
+│   ├── voice-call.js  # 语音通话状态机（识别/朗读/静音判定/挂断）
+│   └── tts.js         # 音色存取 + 失败自动切默认音色
 └── pages/
     ├── index/       # 首页
     ├── chat/        # 对话页
-    └── overview/    # 学习概览
+    ├── voice/       # 语音通话页
+    └── settings/    # 设置页（含 model / log-history / log-detail）
 ```
+
+## 语音与音色
+
+- **音色选择**：对话页顶部音色按钮（「晓晓 ▾」）与设置页「语音 → AI 音色」，选择写入 `localStorage.ttsVoice`；对话页面板内点击音色即试听（合成固定试听句）
+- **音色不可用兜底**：`POST /api/tts` 返回失败时提示「当前音色不可用，已切换为默认音色」，自动切回晓晓并同步选项（试听自动用默认音色重播、朗读/通话从当前句继续），见 `services/tts.js`
+- **消息朗读**：对话页消息操作栏喇叭按钮，逐句朗读（`/api/tts`，分段 ≤300 字）
+- **语音通话**：`pages/voice/voice` 全双工式对话（识别 → 回复 → 朗读循环）；退出对话页（返回/切换 Tab）自动挂断并 toast「语音通话已挂断」；回到对话页若通话仍在（最小化到聊天页场景）自动同步消息
+- **音色 ≠ 对话逻辑**：声音由 TTS 引擎决定（Edge / 本地 Qwen3-TTS），对话逻辑由对话模型决定（设置 → AI 模型）
 
 ## 流式协议
 

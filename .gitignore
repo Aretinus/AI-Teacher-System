@@ -31,6 +31,11 @@ logs/
 06-Tools/ocr-toolkit/venv/
 06-Tools/ocr-toolkit/downloads/
 
+# ===== 本地 TTS（venv 与模型体积过大，不入库）=====
+06-Tools/tts/venv/
+06-Tools/tts/models/
+06-Tools/tts/__pycache__/
+
 # ===== 系统文件 =====
 .DS_Store
 Thumbs.db

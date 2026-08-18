@@ -1,39 +1,51 @@
 <template>
   <view class="page">
     <view class="section">
-      <view class="section-title">AI 提供商</view>
-      <view class="card">
-        <view class="form-row">
-          <text class="label">提供商</text>
-          <picker :range="providerNames" :value="providerIndex" @change="onProviderChange" class="picker">
-            <view class="picker-value">{{ providerName }}</view>
-          </picker>
+      <view class="section-title">调试</view>
+      <view class="card debug-row" @click="toggleDebug">
+        <view class="debug-info">
+          <view class="debug-name">调试模式</view>
+          <view class="debug-sub">对话不写入学习记录（历史/进度/知识点）</view>
         </view>
-        <view class="form-row" v-if="form.provider === 'runtime'">
-          <text class="label">当前模型</text>
-          <text class="value">{{ form.modelName || 'agnes-2.0-flash' }}（本地运行时）</text>
+        <switch :checked="debugMode" color="#4f8cff" @change="onSwitchChange" style="transform: scale(0.8)" />
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">AI 模型</view>
+      <view class="card" @click="goModel">
+        <view class="model-row">
+          <view class="model-info">
+            <view class="model-line">
+              <text class="model-label">配置</text>
+              <text class="model-value">{{ activeProfileName }}</text>
+            </view>
+            <view class="model-line">
+              <text class="model-label">当前模型</text>
+              <text class="model-value">{{ form.modelName || 'agnes-2.0-flash' }}</text>
+            </view>
+          </view>
+          <view class="model-btn">切换 ›</view>
         </view>
-        <template v-if="form.provider !== 'runtime'">
-          <view class="form-row">
-            <text class="label">Base URL</text>
-            <input v-model="form.baseUrl" class="form-input" placeholder="https://api.openai.com/v1 或 https://api.deepseek.com/v1" />
-          </view>
-          <view class="form-row">
-            <text class="label">API Key</text>
-            <input v-model="form.apiKey" password class="form-input" placeholder="sk-..." />
-          </view>
-          <view class="form-row">
-            <text class="label">模型名</text>
-            <input v-model="form.modelName" class="form-input" placeholder="gpt-4o-mini / deepseek-chat / qwen-plus" />
-          </view>
-        </template>
       </view>
-      <view class="btn-row">
-        <view class="btn primary" @click="save">保存</view>
-        <view class="btn" :class="{ loading: testing }" @click="test">{{ testing ? '测试中…' : '测试连接' }}</view>
-      </view>
-      <view v-if="testResult" class="test-result" :class="testResult.ok ? 'ok' : 'fail'">
-        {{ testResult.ok ? '✓ ' + testResult.detail : '✗ ' + testResult.error }}
+    </view>
+
+    <view class="section">
+      <view class="section-title">语音</view>
+      <view class="card" @click="pickVoice">
+        <view class="model-row">
+          <view class="model-info">
+            <view class="model-line">
+              <text class="model-label">AI 音色</text>
+              <text class="model-value">{{ currentVoiceName }}</text>
+            </view>
+            <view class="model-line">
+              <text class="model-label">特征</text>
+              <text class="model-value">{{ currentVoiceDesc }}</text>
+            </view>
+          </view>
+          <view class="model-btn">选择 ›</view>
+        </view>
       </view>
     </view>
 
@@ -51,6 +63,13 @@
         <view class="subject-chips">
           <view v-for="s in subjects" :key="s.id" class="subject-chip" :class="{ active: s.id === distillSubject }" @click="selectSubject(s.id)">{{ s.name }}</view>
           <view v-if="canAddSubject" class="subject-chip add-chip" @click="addDistillSubject">＋ 添加「{{ distillSubject }}」</view>
+        </view>
+        <view class="log-entry">
+          <text class="log-entry-label">历史记录</text>
+          <view class="log-entry-btns">
+            <text class="log-entry-btn" @click="openLogHistory('ocr')">OCR 日志</text>
+            <text class="log-entry-btn" @click="openLogHistory('distill')">蒸馏日志</text>
+          </view>
         </view>
       </view>
 
@@ -108,10 +127,14 @@
         <view v-if="ocrScanError" class="refresh-line fail">{{ ocrScanError }}</view>
         <view v-if="ocrLog.length" class="distill-log">
           <view class="distill-log-head">
-            <text class="distill-log-title">日志</text>
-            <view class="copy-btn" @click="copyLog(ocrLog)">复制全部</view>
+            <text class="distill-log-title">日志（{{ ocrLog.length }} 条）</text>
+            <view class="log-btns">
+              <text class="copy-btn" @click="copySelection">复制选中</text>
+              <text class="copy-btn" @click="copyLog(ocrLog)">复制全部</text>
+            </view>
           </view>
-          <view v-for="(l, i) in ocrLog" :key="i" class="distill-line" @click="copyLine(l)">{{ l }}</view>
+          <view v-for="(l, i) in ocrLog.slice(-3)" :key="i" class="distill-line">{{ l }}</view>
+          <view v-if="ocrLog.length > 3" class="log-more" @click="openLogDetail('OCR', ocrLog)">查看完整日志（{{ ocrLog.length }} 条）›</view>
         </view>
       </view>
 
@@ -166,21 +189,15 @@
         </view>
         <view v-if="distillLog.length" class="distill-log">
           <view class="distill-log-head">
-            <text class="distill-log-title">日志</text>
-            <view class="copy-btn" @click="copyLog(distillLog)">复制全部</view>
+            <text class="distill-log-title">日志（{{ distillLog.length }} 条）</text>
+            <view class="log-btns">
+              <text class="copy-btn" @click="copySelection">复制选中</text>
+              <text class="copy-btn" @click="copyLog(distillLog)">复制全部</text>
+            </view>
           </view>
-          <view v-for="(l, i) in distillLog" :key="i" class="distill-line" @click="copyLine(l)">{{ l }}</view>
+          <view v-for="(l, i) in distillLog.slice(-3)" :key="i" class="distill-line">{{ l }}</view>
+          <view v-if="distillLog.length > 3" class="log-more" @click="openLogDetail('蒸馏', distillLog)">查看完整日志（{{ distillLog.length }} 条）›</view>
         </view>
-      </view>
-    </view>
-
-    <view class="section tips">
-      <view class="section-title">说明</view>
-      <view class="card">
-        <view class="tip-line">· 模型运行时（默认）：由 agentskills-runtime 提供（agnes-2.0-flash，云端 API，key 在 runtime .env）</view>
-        <view class="tip-line">· OpenAI 兼容：支持任意提供 /v1/chat/completions 接口的服务</view>
-        <view class="tip-line">· 切换提供商后新对话立即生效，历史对话可继续查看</view>
-        <view class="tip-line">· API Key 保存在本地 02-DATA/settings.json，仅本机使用</view>
       </view>
     </view>
 
@@ -189,7 +206,7 @@
 </template>
 
 <script>
-import { getSettings, saveSettings, testSettings, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob } from '@/api'
+import { getSettings, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -197,8 +214,10 @@ export default {
   data() {
     return {
       form: { provider: 'runtime', baseUrl: '', apiKey: '', modelName: '' },
-      testing: false,
-      testResult: null,
+      providers: [
+        { id: 'runtime', name: '模型运行时（默认）' },
+        { id: 'openai', name: 'OpenAI 兼容' },
+      ],
       scanBooks: [],
       scanError: '',
       scanning: false,
@@ -223,13 +242,20 @@ export default {
       collapsed: {},
       pollTimer: null,
       subjects: [],
-      providers: [
-        { id: 'runtime', name: '模型运行时（默认）' },
-        { id: 'openai', name: 'OpenAI 兼容' },
-      ],
+      debugMode: uni.getStorageSync('debugMode') === '1',
+      ttsVoices: [],
+      ttsVoice: uni.getStorageSync('ttsVoice') || 'xiaoxiao',
     }
   },
   computed: {
+    currentVoiceName() {
+      const v = this.ttsVoices.find((x) => x.key === this.ttsVoice)
+      return v ? v.name : (this.ttsVoice || '晓晓')
+    },
+    currentVoiceDesc() {
+      const v = this.ttsVoices.find((x) => x.key === this.ttsVoice)
+      return v ? v.label : '女声 · 温柔甜美'
+    },
     providerIndex() {
       const i = this.providers.findIndex((p) => p.id === this.form.provider)
       return i < 0 ? 0 : i
@@ -239,6 +265,11 @@ export default {
     },
     providerNames() {
       return this.providers.map((p) => p.name)
+    },
+    activeProfileName() {
+      const profiles = this.form.profiles || []
+      const active = profiles.find((p) => p.id === this.form.activeProfileId) || profiles[0]
+      return active ? active.name : '模型运行时'
     },
     canAddSubject() {
       const name = (this.distillSubject || '').trim()
@@ -290,11 +321,58 @@ export default {
   },
   onLoad() {
     this.load().then(() => this.rescan())
+    this.loadTtsVoices()
+  },
+  onShow() {
+    this.ttsVoice = uni.getStorageSync('ttsVoice') || 'xiaoxiao'
+    this.refreshSettings()
   },
   onUnload() {
     if (this.pollTimer) clearTimeout(this.pollTimer)
   },
   methods: {
+    setDebug(v) {
+      this.debugMode = v
+      uni.setStorageSync('debugMode', v ? '1' : '0')
+      uni.showToast({ title: v ? '调试模式已开启' : '调试模式已关闭', icon: 'none' })
+    },
+    onSwitchChange(e) {
+      if (e && e.stopPropagation) e.stopPropagation()
+      this.setDebug(!!(e.detail && e.detail.value))
+    },
+    toggleDebug() {
+      this.setDebug(!this.debugMode)
+    },
+    async loadTtsVoices() {
+      try {
+        this.ttsVoices = await getTtsVoices()
+      } catch (e) {
+        this.ttsVoices = []
+      }
+    },
+    pickVoice() {
+      const names = this.ttsVoices.map((v) => v.name + '（' + v.label + '）')
+      if (!names.length) {
+        uni.showToast({ title: '音色列表加载失败', icon: 'none' })
+        return
+      }
+      uni.showActionSheet({
+        itemList: names,
+        success: (r) => {
+          const v = this.ttsVoices[r.tapIndex]
+          if (!v) return
+          this.ttsVoice = v.key
+          uni.setStorageSync('ttsVoice', v.key)
+          uni.showToast({ title: '音色已切换：' + v.name, icon: 'none' })
+        },
+      })
+    },
+    async refreshSettings() {
+      try {
+        const settings = await getSettings()
+        this.form = { ...this.form, ...settings }
+      } catch (e) { /* 静默，onLoad 已兜底 */ }
+    },
     async load() {
       try {
         const [settings, subjects] = await Promise.all([getSettings(), getSubjects()])
@@ -305,28 +383,8 @@ export default {
         uni.showToast({ title: '加载设置失败：' + e.message, icon: 'none' })
       }
     },
-    onProviderChange(e) {
-      this.form.provider = this.providers[Number(e.detail.value)].id
-      this.testResult = null
-    },
-    async save() {
-      try {
-        await saveSettings(this.form)
-        uni.showToast({ title: '已保存', icon: 'success' })
-      } catch (e) {
-        uni.showToast({ title: '保存失败：' + e.message, icon: 'none' })
-      }
-    },
-    async test() {
-      this.testing = true
-      this.testResult = null
-      try {
-        this.testResult = await testSettings(this.form)
-      } catch (e) {
-        this.testResult = { ok: false, error: e.message }
-      } finally {
-        this.testing = false
-      }
+    goModel() {
+      uni.navigateTo({ url: '/pages/settings/model' })
     },
     async addDistillSubject() {
       const name = (this.distillSubject || '').trim()
@@ -416,10 +474,16 @@ export default {
     isMulti(file) {
       return !!this.multiSelected[file]
     },
-    copyLine(l) {
+    copySelection() {
+      const sel = document.getSelection()
+      const text = sel ? sel.toString().trim() : ''
+      if (!text) {
+        uni.showToast({ title: '请先长按选择要复制的文字', icon: 'none' })
+        return
+      }
       uni.setClipboardData({
-        data: l,
-        success: () => uni.showToast({ title: '已复制', icon: 'none' }),
+        data: text,
+        success: () => uni.showToast({ title: '已复制选中内容', icon: 'none' }),
       })
     },
     copyLog(lines) {
@@ -427,6 +491,13 @@ export default {
         data: lines.join('\n'),
         success: () => uni.showToast({ title: '已复制日志', icon: 'none' }),
       })
+    },
+    openLogDetail(title, lines) {
+      uni.setStorageSync('logDetail', { title, lines })
+      uni.navigateTo({ url: '/pages/settings/log-detail' })
+    },
+    openLogHistory(type) {
+      uni.navigateTo({ url: `/pages/settings/log-history?type=${type}&subject=${encodeURIComponent(this.distillSubject)}` })
     },
     toggleMulti(file) {
       if (this.multiSelected[file]) delete this.multiSelected[file]
@@ -745,6 +816,62 @@ export default {
   border-radius: 20rpx;
   padding: 24rpx 28rpx;
 }
+.model-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.debug-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.debug-info {
+  display: flex;
+  flex-direction: column;
+}
+.debug-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.debug-sub {
+  font-size: 24rpx;
+  color: #8a8f99;
+  margin-top: 6rpx;
+}
+.model-info {
+  flex: 1;
+}
+.model-line {
+  display: flex;
+  align-items: center;
+  padding: 6rpx 0;
+}
+.model-label {
+  width: 160rpx;
+  flex-shrink: 0;
+  color: #9ca3af;
+  font-size: 26rpx;
+}
+.model-value {
+  color: #1f2937;
+  font-size: 27rpx;
+  word-break: break-all;
+}
+.model-btn {
+  flex-shrink: 0;
+  margin-left: 20rpx;
+  font-size: 26rpx;
+  color: #4f8cff;
+  border: 2rpx solid #cfe0ff;
+  border-radius: 12rpx;
+  padding: 8rpx 24rpx;
+  background: #f0f5ff;
+}
+.model-btn:active {
+  background: #e0e9ff;
+}
 .form-row {
   display: flex;
   align-items: center;
@@ -997,6 +1124,35 @@ export default {
   color: #4f46e5;
   background: #eef2ff;
 }
+.log-entry {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding-top: 18rpx;
+  border-top: 2rpx solid #f3f4f6;
+}
+.log-entry-label {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+.log-entry-btns {
+  display: flex;
+  gap: 12rpx;
+  flex: 1;
+  justify-content: flex-end;
+}
+.log-entry-btn {
+  font-size: 24rpx;
+  color: #4f8cff;
+  border: 2rpx solid #cfe0ff;
+  border-radius: 12rpx;
+  padding: 6rpx 20rpx;
+  background: #f0f5ff;
+}
+.log-entry-btn:active {
+  background: #e0e9ff;
+}
 .btn.mini-btn {
   flex: 0 0 auto;
   width: auto;
@@ -1084,11 +1240,10 @@ export default {
 }
 .distill-log {
   margin-top: 20rpx;
-  background: #1f2937;
+  background: #f8fafc;
+  border: 2rpx solid #eef1f5;
   border-radius: 14rpx;
   padding: 18rpx 22rpx;
-  max-height: 480rpx;
-  overflow-y: auto;
 }
 .distill-log-head {
   display: flex;
@@ -1096,25 +1251,42 @@ export default {
   justify-content: space-between;
   margin-bottom: 12rpx;
   padding-bottom: 10rpx;
-  border-bottom: 2rpx solid #374151;
+  border-bottom: 2rpx solid #eef1f5;
 }
 .distill-log-title {
   font-size: 24rpx;
   color: #9ca3af;
 }
+.log-btns {
+  display: flex;
+  gap: 12rpx;
+}
 .copy-btn {
   font-size: 22rpx;
-  color: #60a5fa;
-  padding: 4rpx 16rpx;
-  border: 2rpx solid #4b5563;
+  color: #4f8cff;
+  border: 2rpx solid #cfe0ff;
   border-radius: 10rpx;
+  padding: 4rpx 16rpx;
+  background: #f0f5ff;
+}
+.copy-btn:active {
+  background: #e0e9ff;
 }
 .distill-line {
   font-size: 24rpx;
-  color: #d1d5db;
+  color: #374151;
   line-height: 1.6;
   font-family: Consolas, monospace;
   word-break: break-all;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.log-more {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #4f8cff;
+  text-align: right;
+  padding: 8rpx 4rpx;
 }
 .tip-line {
   font-size: 26rpx;

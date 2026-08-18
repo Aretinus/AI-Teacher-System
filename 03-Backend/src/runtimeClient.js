@@ -3,11 +3,91 @@ const https = require('https');
 const { Transform } = require('stream');
 const { RUNTIME_URL } = require('./config');
 
-function parseExternalUrl(baseUrl) {
+function parseExternalUrl(baseUrl, pathSuffix = '/chat/completions') {
   const s = (baseUrl || '').trim().replace(/\/$/, '');
   if (!s) throw new Error('baseUrl 未配置');
-  const u = new URL(s + '/chat/completions');
+  const u = new URL(s + pathSuffix);
   return { url: u, mod: u.protocol === 'https:' ? https : http };
+}
+
+function anthropicRequest(messages, { model, apiKey, baseUrl, stream }) {
+  let raw = (baseUrl || 'https://api.anthropic.com/v1').trim().replace(/\/$/, '');
+  if (!/\/v1$/.test(raw)) raw += '/v1';
+  const { url, mod } = parseExternalUrl(raw, '/messages');
+  const system = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n');
+  const rest = messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content }));
+  const body = JSON.stringify({ model: model || 'claude-sonnet-4-5', max_tokens: 4096, system: system || undefined, messages: rest, stream });
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey || '',
+      'anthropic-version': '2023-06-01',
+      'Content-Length': Buffer.byteLength(body),
+    },
+  };
+  return new Promise((resolve, reject) => {
+    const req = mod.request(url, options, (res) => {
+      if (res.statusCode !== 200) {
+        let chunks = [];
+        res.on('data', (c) => chunks.push(c));
+        res.on('end', () =>
+          reject(new Error(`Provider error (${res.statusCode}): ${Buffer.concat(chunks).toString('utf8').slice(0, 300)}`))
+        );
+        return;
+      }
+      if (!stream) {
+        let full = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => (full += chunk));
+        res.on('end', () => {
+          try {
+            const json = JSON.parse(full);
+            if (json.error) return reject(new Error(json.error.message || 'provider error'));
+            const text = (json.content && json.content[0] && json.content[0].text) || '';
+            resolve({ status: res.statusCode, response: { role: 'assistant', content: text }, type: 'response.completed' });
+          } catch (e) {
+            reject(new Error('Invalid provider response: ' + full.slice(0, 200)));
+          }
+        });
+        res.on('error', reject);
+      } else {
+        const conv = new Transform({
+          transform(chunk, _enc, cb) {
+            let buf = this._buf || '';
+            buf += chunk.toString('utf8');
+            this._buf = '';
+            const lines = buf.split('\n');
+            buf = lines.pop();
+            for (const line of lines) {
+              if (!line.startsWith('data:')) continue;
+              const payload = line.slice(5).trim();
+              if (!payload) continue;
+              try {
+                const evt = JSON.parse(payload);
+                if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+                  this.push(`data: ${JSON.stringify({ type: 'response.output_text.delta', delta: evt.delta.text })}\n`);
+                } else if (evt.type === 'message_stop') {
+                  this.push(`data: ${JSON.stringify({ type: 'response.completed', response: { content: '' } })}\n`);
+                }
+              } catch (e) { /* ignore */ }
+            }
+            this._buf = buf;
+            cb();
+          },
+          flush(cb) {
+            this.push(null);
+            cb();
+          },
+        });
+        res.pipe(conv);
+        res.on('error', reject);
+        resolve(conv);
+      }
+    });
+    req.on('error', reject);
+    req.end(body);
+  });
 }
 
 function externalRequest(messages, { model, apiKey, baseUrl, stream }) {
@@ -134,10 +214,18 @@ function parseJson(raw) {
   }
 }
 
-async function chatCompletions(messages, { model, stream = false, signal } = {}) {
+async function chatCompletions(messages, { model, stream = false, signal, explicitModel = false } = {}) {
   const { loadSettings } = require('./services/settingsService');
   const settings = loadSettings();
   if (settings.provider !== 'runtime') {
+    if (settings.provider === 'anthropic') {
+      return anthropicRequest(messages, {
+        model: settings.modelName || model,
+        apiKey: settings.apiKey,
+        baseUrl: settings.baseUrl,
+        stream,
+      });
+    }
     return externalRequest(messages, {
       model: settings.modelName || model,
       apiKey: settings.apiKey,
@@ -146,7 +234,7 @@ async function chatCompletions(messages, { model, stream = false, signal } = {})
     });
   }
   const { RUNTIME_MODEL } = require('./config');
-  const body = { model: model || RUNTIME_MODEL, messages, stream: true };
+  const body = { model: explicitModel ? (model || RUNTIME_MODEL) : (settings.modelName || model || RUNTIME_MODEL), messages, stream: true };
   const { host, port, base } = parseUrl();
   const data = JSON.stringify(body);
   return new Promise((resolve, reject) => {
@@ -212,4 +300,4 @@ async function aiHealth() {
   }
 }
 
-module.exports = { chatCompletions, health, aiHealth, buildRequest, parseJson, externalRequest };
+module.exports = { chatCompletions, health, aiHealth, buildRequest, parseJson, externalRequest, anthropicRequest };

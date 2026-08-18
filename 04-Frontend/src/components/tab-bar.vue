@@ -3,9 +3,6 @@
     <view class="tab-item" :class="{ active: active === 'index' }" @click="go('index')">
       <view class="tab-label">主页</view>
     </view>
-    <view class="tab-item" :class="{ active: active === 'overview' }" @click="go('overview')">
-      <view class="tab-label">学习概览</view>
-    </view>
     <view class="tab-item" :class="{ active: active === 'settings' }" @click="go('settings')">
       <view class="tab-label">设置</view>
     </view>
@@ -15,7 +12,6 @@
 <script>
 const MAP = {
   index: '/pages/index/index',
-  overview: '/pages/overview/overview',
   settings: '/pages/settings/settings',
 }
 

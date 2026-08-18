@@ -32,11 +32,19 @@
 - **课程自动绑定**：蒸馏完成后按所选学科自动绑定到对应技能的 `manifest.yaml`（courseDir）；无学科 / 学科下无技能 / 已有有效课程绑定 → 保持现状，后续蒸馏自动补上
 - **全链路验证**：Erdélyi《Asymptotic Expansions》（subject=math）→ 自动绑定「微积分教师」（calculus-tutor）→ 对话「学这本书」返回第 1 课完整教学（Poincaré 展开 + 练习题）✅
 
+### 2026-08 语音交互轮（已交付）
+- **语音通话**：对话页 → 语音通话页（Web Speech API 识别 + SSE 流式回复 + TTS 朗读循环）；静音判定（完结标点 650ms / 无标点 1.8s / 未完 3.2s 强制提交）；退出对话页自动挂断，最小化回聊天页通话不中断
+- **多音色 TTS**：22 个中文音色（设置页 + 对话页均可选，面板内点击即试听），选择存 localStorage；朗读（对话页喇叭按钮）与语音通话共用所选音色
+- **双引擎 TTS**：`03-Backend/tts-config.json`（engine: auto）本地 Qwen3-TTS（`06-Tools/tts`，GPU 机可用，代码零改动）优先、微软 Edge 免费在线 TTS 兜底；Edge 带 rate +8% / pitch +4Hz
+- **音色失败兜底**：微软免费服务对部分新音色间歇性拒绝，后端重试 3 次仍失败返回明确 502；前端提示「当前音色不可用」并自动切回默认音色（晓晓），选项同步，不静默冒充
+- **会话去重修复**：流式对话用户消息曾双写（预存 + 完成时再存），已修复并清洗历史数据（接口返回前过滤连续重复消息）
+
 ### 已入库书籍与课程
 | 学科 | 书籍 | 蒸馏产物（distilled/） | 绑定技能 |
 |------|------|------------------------|----------|
 | physics | 费恩曼物理学讲义（第 1 卷） | `Physic/费恩曼物理学讲义（英文版）/`（55 章） | feynman-mechanics（费曼式力学教师） |
 | physics | Landau Vol. 1. Mechanics. 3rd Ed | `Physic/朗道十卷（英文版）/Landau Vol. 1. Mechanics.3rd.Ed/` | —（暂空，物理默认走费恩曼课程） |
+| physics | 量子力学发展史（The historical development of quantum theory） | `Physic/量子力学/量子力学发展史/`（1-1~6-2 分部蒸馏） | — |
 | math | Asymptotic Expansions（Erdélyi） | `Math/01-分析/渐近分析（奇异摄动）/`（6 章） | calculus-tutor（微积分教师） |
 
 > 完整开发计划与逐项进度见 `Dev_Plan.md`。
@@ -50,9 +58,14 @@
 │  前端 uni-app │ ────────────▶ │  后端 Express      │ ─────────────────▶ │ 模型运行时           │
 │  H5 (5173)   │               │  (3000)           │                    │  agentskills-runtime │
 └─────────────┘               │  对话/路由/课程/状态 │                    │  (8080, 云端 LLM：    │
-                              └──────────────────┘                    │   agnes-2.0-flash)   │
-                              └──────────────────┘                    └────────────────────┘
-                                     │ 本地文件
+                              │  TTS / 语音合成     │                    │   agnes-2.0-flash)   │
+                              └──────────┬─────────┘                    └────────────────────┘
+                                         │ 音频（本地优先，Edge 兜底）
+                              ┌──────────┴─────────┐
+                              │ 06-Tools/tts        │
+                              │ Qwen3-TTS (8765)    │
+                              └────────────────────┘
+                                      │ 本地文件
                               ┌──────┴───────────────────────────────┐
                               │ 01-Skills（技能/课程）                 │
                               │ 02-DATA/books（raw → ocr → distilled）│
@@ -87,10 +100,11 @@ AI-Teacher-System/
 │   ├── users/            用户状态（知识点掌握度等）
 │   ├── sessions/         会话详情
 │   └── settings.json     本地设置（API Key 等，仅本机）
-├── 03-Backend/           Express 服务（对话、路由、课程、书籍加工 API）
-├── 04-Frontend/          uni-app H5（主页 / 对话 / 学习概览 / 设置）
+├── 03-Backend/           Express 服务（对话、路由、课程、书籍加工、TTS API）
+├── 04-Frontend/          uni-app H5（主页 / 对话 / 语音通话 / 设置）
 ├── 05-Docs/              需求文档与进度记录
 ├── 06-Tools/ocr-toolkit/ OCR 工具链（RapidOCR、djvu→pdf、文字层探查）
+├── 06-Tools/tts/         本地 TTS 服务（Qwen3-TTS，可选，默认 Edge 兜底）
 ├── Dev_Plan.md           开发计划（实时进度）
 └── start-dev.bat         一键启动
 ```
@@ -99,11 +113,16 @@ AI-Teacher-System/
 
 ## 三、功能说明
 
-### Web UI（四个页面）
+### Web UI（页面）
 - **主页**：学科选择、新建对话、继续学习卡片、知识点进度条、最近学习（可删除会话）
-- **对话**：流式教学回复（SSE）、KaTeX 渲染、附件上传、复制（LaTeX 原文 / 渲染文本）
-- **学习概览**：知识点掌握度、近期错误与订正、会话记录
-- **设置**：AI 提供商（本地模型默认 / OpenAI 兼容 + 测试连接）、书籍加工（OCR 层 / 蒸馏层）
+- **对话**：流式教学回复（SSE）、KaTeX 渲染、附件上传、复制（LaTeX 原文 / 渲染文本）、消息朗读、音色切换与试听
+- **语音通话**：实时语音对话（识别 → 回复 → 朗读循环），退出对话页自动挂断
+- **设置**：AI 提供商（本地模型默认 / OpenAI 兼容 + 测试连接）、AI 音色（22 音色）、书籍加工（OCR 层 / 蒸馏层）、任务日志（列表/详情/复制）
+
+### 语音合成（TTS）
+- 音色选择写入 `localStorage.ttsVoice`，对话页 / 设置页均可选，面板内点击即试听
+- 引擎策略见 `03-Backend/tts-config.json`：本地 Qwen3-TTS（可选服务）优先、微软 Edge 免费在线 TTS 兜底
+- Edge 服务不稳定时后端重试 3 次，仍失败前端提示并自动切回默认音色（晓晓）
 
 ### 书籍加工流水线（设置 → 书籍加工）
 1. **OCR 层**：扫描 `raw/` 下 pdf/djvu → 探查文字层 → 纯扫描件跑 RapidOCR（产物入 `ocr/` 镜像目录，可断点续跑）；djvu 直接转换即可蒸馏
@@ -176,7 +195,18 @@ venv\Scripts\pip install -r requirements.txt
 ```
 > `requirements.txt` 已入库（RapidOCR / PyMuPDF / onnxruntime 等）。最快的方式是从原机器直接拷贝 `06-Tools\ocr-toolkit\venv\` 和 `bin\`（含 OCR 模型二进制）。`.py` 脚本已入库，OCR 全本地运行、不联网。
 
-### 6. 启动
+### 6. 本地 TTS 环境（可选：不做本地音色可跳过）
+```bat
+cd 06-Tools\tts
+py -3.12 -m venv venv
+venv\Scripts\pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+venv\Scripts\pip install -i https://pypi.tuna.tsinghua.edu.cn/simple qwen-tts modelscope fastapi uvicorn
+venv\Scripts\python -m modelscope download --model Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice --local_dir models\Qwen3-TTS-12Hz-0.6B-CustomVoice
+venv\Scripts\python tts-server.py   :: 监听 8765；不启动则后端自动走 Edge
+```
+> 完整说明见 `06-Tools/tts/README.md`。有 GPU 的机器（如 R7000）装好后启动服务即自动启用本地音色，后端代码零改动。
+
+### 7. 启动
 双击 `start-dev.bat`（相对路径，任意位置可运行），或按上文「手动启动」。
 
 ### 常见问题
@@ -191,7 +221,7 @@ venv\Scripts\pip install -r requirements.txt
 - **本地优先**：OCR（RapidOCR）、蒸馏（teach.py）为本地脚本、全程不联网；对话模型经本地 runtime 进程转发到 agnes-ai 云端 API（按 token 计费）
 - **目录镜像**：raw / ocr / distilled 三层目录结构一致，产物按学科分类
 - **不污染源数据**：OCR 产物只写入 `02-DATA/books/ocr/`，源书不动
-- **Git 不入库**：node_modules、raw/、ocr/、uploads/、users/、sessions/、settings.json、jwt_token.txt、Python venv（`01-Skills/vendor/*/venv_slim/`、`06-Tools/ocr-toolkit/venv/`）、OCR 模型二进制（`06-Tools/ocr-toolkit/bin/`）、运行时源码（`06-Tools/agentskills-runtime-src/`，实际运行用的 runtime 在 npm 包内，该源码目录仅为开发参考）等（见 .gitignore）
+- **Git 不入库**：node_modules、raw/、ocr/、uploads/、users/、sessions/、settings.json、jwt_token.txt、Python venv（`01-Skills/vendor/*/venv_slim/`、`06-Tools/ocr-toolkit/venv/`、`06-Tools/tts/venv/`）、本地 TTS 模型（`06-Tools/tts/models/`）、OCR 模型二进制（`06-Tools/ocr-toolkit/bin/`）、运行时源码（`06-Tools/agentskills-runtime-src/`，实际运行用的 runtime 在 npm 包内，该源码目录仅为开发参考）等（见 .gitignore）
 
 ## 七、文档索引
 

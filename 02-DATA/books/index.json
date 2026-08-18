@@ -72,6 +72,30 @@
       "rawPath": "",
       "rawFile": "",
       "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 4"
+    },
+    {
+      "id": "asymptotic-expansions-first-edition-tentative-a-erd-lyi",
+      "title": "Asymptotic Expansions-First Edition (Tentative)-A. Erdélyi",
+      "subject": "math",
+      "rawPath": "",
+      "rawFile": "",
+      "distilledPath": "distilled/Math/01-分析/渐近分析（奇异摄动）/Asymptotic Expansions-First Edition (Tentative)-A. Erdélyi"
+    },
+    {
+      "id": "the-historical-development-of-quantum-theory-5-1",
+      "title": "The historical development of quantum theory 5-1",
+      "subject": "physics",
+      "rawPath": "",
+      "rawFile": "",
+      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 5-1"
+    },
+    {
+      "id": "量子力学讲义",
+      "title": "量子力学讲义",
+      "subject": "physics",
+      "rawPath": "",
+      "rawFile": "",
+      "distilledPath": "distilled/Physic/量子力学"
     }
   ]
 }

@@ -52,11 +52,32 @@ function appendHistory(userId, summary) {
 
 function deleteSession(userId, sessionId) {
   const history = loadHistory(userId);
+  const removed = (history.sessions || []).find((s) => s.sessionId === sessionId);
   const before = history.sessions.length;
   history.sessions = (history.sessions || []).filter((s) => s.sessionId !== sessionId);
   saveHistory(userId, history);
   const file = sessionFile(sessionId);
   if (fs.existsSync(file)) fs.unlinkSync(file);
+  if (removed && removed.subject) {
+    const stillHasSession = history.sessions.some((s) => s.subject === removed.subject);
+    if (!stillHasSession) {
+      const state = loadState(userId);
+      let changed = false;
+      const kp = state.knowledgePoints || {};
+      for (const k of Object.keys(kp)) {
+        if (kp[k] && kp[k].subject === removed.subject) {
+          delete kp[k];
+          changed = true;
+        }
+      }
+      if (state.currentSubject === removed.subject) {
+        state.currentSubject = null;
+        state.currentGoal = null;
+        changed = true;
+      }
+      if (changed) saveState(userId, state);
+    }
+  }
   return before !== history.sessions.length;
 }
 

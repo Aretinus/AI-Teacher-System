@@ -1,45 +1,45 @@
 {
   "version": 1,
   "book": "费恩曼物理学讲义（英文版）",
-  "current": "第03章_Chapter_3._The_Relation_of_Physics_to_Other_Sciences/第04课_Astronomy.md",
+  "current": "第01章_Chapter_1._Atoms_in_Motion/第00课_本章导言.md",
   "total_lessons": 345,
-  "updated": "2026-08-14T09:00:55.533Z",
+  "updated": null,
   "lessons": {
     "第01章_Chapter_1._Atoms_in_Motion/第00课_本章导言.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 1. Atoms in Motion",
       "lesson": "本章导言"
     },
     "第01章_Chapter_1._Atoms_in_Motion/第01课_Introduction.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 1. Atoms in Motion",
       "lesson": "Introduction"
     },
     "第01章_Chapter_1._Atoms_in_Motion/第02课_Matter_is_made_of_atoms.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 1. Atoms in Motion",
       "lesson": "Matter is made of atoms"
     },
     "第01章_Chapter_1._Atoms_in_Motion/第03课_Atomic_processes.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 1. Atoms in Motion",
       "lesson": "Atomic processes"
     },
     "第01章_Chapter_1._Atoms_in_Motion/第04课_Chemical_reactions.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 1. Atoms in Motion",
@@ -54,32 +54,32 @@
       "lesson": "本章导言"
     },
     "第02章_Chapter_2._Basic_Physics/第01课_Introduction.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 2. Basic Physics",
       "lesson": "Introduction"
     },
     "第02章_Chapter_2._Basic_Physics/第02课_Physics_before_1920.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 2. Basic Physics",
       "lesson": "Physics before 1920"
     },
     "第02章_Chapter_2._Basic_Physics/第03课_Quantum_physics.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 2. Basic Physics",
       "lesson": "Quantum physics"
     },
     "第02章_Chapter_2._Basic_Physics/第04课_Nuclei_and_particles.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 2. Basic Physics",
@@ -94,24 +94,24 @@
       "lesson": "本章导言"
     },
     "第03章_Chapter_3._The_Relation_of_Physics_to_Other_Sciences/第01课_Introduction.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 3. The Relation of Physics to Other Sciences",
       "lesson": "Introduction"
     },
     "第03章_Chapter_3._The_Relation_of_Physics_to_Other_Sciences/第02课_Chemistry.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 3. The Relation of Physics to Other Sciences",
       "lesson": "Chemistry"
     },
     "第03章_Chapter_3._The_Relation_of_Physics_to_Other_Sciences/第03课_Biology.md": {
-      "status": "learned",
-      "mastery": 0.8,
+      "status": "unstarted",
+      "mastery": 0,
       "unresolved": [],
       "quiz": [],
       "chapter": "Chapter 3. The Relation of Physics to Other Sciences",

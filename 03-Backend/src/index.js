@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { PORT, RUNTIME_MODEL, DEFAULT_USER } = require('./config');
 const { chatCompletions, health } = require('./runtimeClient');
@@ -10,11 +11,75 @@ const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
 const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
+const { listLogs, getLog } = require('./services/logService');
 const { listStyles } = require('./services/stylesService');
 const { listCourses, listSubjectCourses } = require('./services/courseService');
-const { externalRequest } = require('./runtimeClient');
+const { externalRequest, anthropicRequest } = require('./runtimeClient');
+const { spawn } = require('child_process');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', '02-DATA', 'uploads');
+
+// Edge TTS 音色（key → edge 全名）
+const TTS_VOICES = {
+  'xiaoxiao': 'zh-CN-XiaoxiaoNeural',
+  'xiaoyi': 'zh-CN-XiaoyiNeural',
+  'yunxi': 'zh-CN-YunxiNeural',
+  'yunjian': 'zh-CN-YunjianNeural',
+  'yunyang': 'zh-CN-YunyangNeural',
+  'yunfeng': 'zh-CN-YunfengNeural',
+  'yunjie': 'zh-CN-YunjieNeural',
+  'yunhao': 'zh-CN-YunhaoNeural',
+  'yunze': 'zh-CN-YunzeNeural',
+  'xiaochen': 'zh-CN-XiaochenNeural',
+  'xiaohan': 'zh-CN-XiaohanNeural',
+  'xiaomo': 'zh-CN-XiaomoNeural',
+  'xiaorui': 'zh-CN-XiaoruiNeural',
+  'xiaoxuan': 'zh-CN-XiaoxuanNeural',
+  'xiaoyan': 'zh-CN-XiaoyanNeural',
+  'xiaoyou': 'zh-CN-XiaoyouNeural',
+  'xiaozhen': 'zh-CN-XiaozhenNeural',
+  'xiaoshuang': 'zh-CN-XiaoshuangNeural',
+  'xiaobei': 'zh-CN-liaoning-XiaobeiNeural',
+  'xiaoni': 'zh-CN-shaanxi-XiaoniNeural',
+  'yunxia': 'zh-CN-YunxiaNeural',
+  'yunye': 'zh-CN-YunyeNeural',
+};
+const TTS_VOICE_LABELS = [
+  { key: 'xiaoxiao', name: '晓晓', label: '女声 · 温柔甜美', voice: 'zh-CN-XiaoxiaoNeural' },
+  { key: 'xiaoyi', name: '晓伊', label: '女声 · 活泼亲切', voice: 'zh-CN-XiaoyiNeural' },
+  { key: 'xiaochen', name: '晓辰', label: '女声 · 温柔', voice: 'zh-CN-XiaochenNeural' },
+  { key: 'xiaohan', name: '晓涵', label: '女声 · 温和', voice: 'zh-CN-XiaohanNeural' },
+  { key: 'xiaomo', name: '晓墨', label: '女声 · 活泼', voice: 'zh-CN-XiaomoNeural' },
+  { key: 'xiaorui', name: '晓睿', label: '女声 · 成熟', voice: 'zh-CN-XiaoruiNeural' },
+  { key: 'xiaoxuan', name: '晓萱', label: '女声 · 亲切', voice: 'zh-CN-XiaoxuanNeural' },
+  { key: 'xiaoyan', name: '晓颜', label: '女声 · 严谨', voice: 'zh-CN-XiaoyanNeural' },
+  { key: 'xiaozhen', name: '晓甄', label: '女声 · 知性', voice: 'zh-CN-XiaozhenNeural' },
+  { key: 'xiaoyou', name: '晓悠', label: '女声 · 儿童', voice: 'zh-CN-XiaoyouNeural' },
+  { key: 'xiaoshuang', name: '晓双', label: '女声 · 童声', voice: 'zh-CN-XiaoshuangNeural' },
+  { key: 'yunxi', name: '云希', label: '男声 · 阳光少年', voice: 'zh-CN-YunxiNeural' },
+  { key: 'yunjian', name: '云健', label: '男声 · 沉稳磁性', voice: 'zh-CN-YunjianNeural' },
+  { key: 'yunyang', name: '云扬', label: '男声 · 新闻播音', voice: 'zh-CN-YunyangNeural' },
+  { key: 'yunfeng', name: '云枫', label: '男声 · 温润', voice: 'zh-CN-YunfengNeural' },
+  { key: 'yunjie', name: '云杰', label: '男声 · 成熟', voice: 'zh-CN-YunjieNeural' },
+  { key: 'yunhao', name: '云浩', label: '男声 · 少年', voice: 'zh-CN-YunhaoNeural' },
+  { key: 'yunze', name: '云泽', label: '男声 · 青春', voice: 'zh-CN-YunzeNeural' },
+  { key: 'xiaobei', name: '小北', label: '女声 · 东北方言', voice: 'zh-CN-liaoning-XiaobeiNeural' },
+  { key: 'xiaoni', name: '小妮', label: '女声 · 陕西方言', voice: 'zh-CN-shaanxi-XiaoniNeural' },
+  { key: 'yunxia', name: '云霞', label: '男声 · 陕西方言', voice: 'zh-CN-YunxiaNeural' },
+  { key: 'yunye', name: '云烨', label: '男声 · 东北方言', voice: 'zh-CN-YunyeNeural' },
+];
+const EDGE_TTS = path.join(__dirname, '..', '..', '06-Tools', 'ocr-toolkit', 'venv', 'Scripts', 'edge-tts.exe');
+const TTS_PROXY = process.env.TTS_PROXY || 'http://127.0.0.1:10808';
+
+// 本地 TTS（Qwen3-TTS）配置，engine: auto=local 优先失败回落 edge / local / edge
+const TTS_CONFIG_PATH = path.join(__dirname, '..', 'tts-config.json');
+const TTS_CONFIG = fs.existsSync(TTS_CONFIG_PATH) ? JSON.parse(fs.readFileSync(TTS_CONFIG_PATH, 'utf8')) : {};
+const TTS_ENGINE = TTS_CONFIG.engine || 'edge';
+const LOCAL_TTS_URL = (TTS_CONFIG.local && TTS_CONFIG.local.url) || 'http://127.0.0.1:8765/tts';
+const LOCAL_TTS_TIMEOUT = (TTS_CONFIG.local && TTS_CONFIG.local.timeoutMs) || 180000;
+const TTS_INSTRUCT = TTS_CONFIG.instruct || '请用温和、耐心、清晰自然的语气讲课。';
+const EDGE_RATE = (TTS_CONFIG.edge && TTS_CONFIG.edge.rate) || '+8%';
+const EDGE_PITCH = (TTS_CONFIG.edge && TTS_CONFIG.edge.pitch) || '+4Hz';
 
 const app = express();
 app.use(express.json({ limit: '12mb' }));
@@ -61,19 +126,37 @@ app.post('/api/settings/test', async (req, res) => {
   if (provider !== 'runtime') {
     if (!baseUrl || !apiKey) return res.json({ ok: false, error: '请填写 baseUrl 与 API Key' });
     try {
-      const r = await externalRequest(
-        [{ role: 'user', content: 'ping' }],
-        { model: modelName || 'gpt-4o-mini', apiKey, baseUrl, stream: false }
-      );
+      const r = provider === 'anthropic'
+        ? await anthropicRequest(
+            [{ role: 'user', content: 'ping' }],
+            { model: modelName || 'claude-sonnet-4-5', apiKey, baseUrl, stream: false }
+          )
+        : await externalRequest(
+            [{ role: 'user', content: 'ping' }],
+            { model: modelName || 'gpt-4o-mini', apiKey, baseUrl, stream: false }
+          );
       const content = (r.response && r.response.content || '').trim();
       return res.json({ ok: true, detail: content ? content.slice(0, 80) : '连接成功' });
     } catch (e) {
       return res.json({ ok: false, error: e.message });
     }
   }
-  const { health } = require('./runtimeClient');
+  const { health, chatCompletions } = require('./runtimeClient');
   const rt = await health();
-  res.json(rt ? { ok: true, detail: `本地模型 ${rt.version || ''}` } : { ok: false, error: '本地运行时未启动（8080）' });
+  if (!rt) return res.json({ ok: false, error: '本地运行时未启动（8080）' });
+  const { RUNTIME_MODEL } = require('./config');
+  const target = modelName || RUNTIME_MODEL;
+  try {
+    const r = await chatCompletions(
+      [{ role: 'user', content: 'ping' }],
+      { model: target, stream: false, explicitModel: !!modelName }
+    );
+    const content = (r.response && r.response.content || '').trim();
+    const extra = content && content.toLowerCase() !== 'ping' ? `：${content.slice(0, 60)}` : '';
+    return res.json({ ok: true, detail: `本地模型 ${target} 可用（运行时 ${rt.version || ''}）${extra}` });
+  } catch (e) {
+    return res.json({ ok: false, error: `模型 ${target} 不可用：${e.message}` });
+  }
 });
 
 app.get('/api/users/:userId/state', (req, res) => {
@@ -96,7 +179,14 @@ app.get('/api/users/:userId/history', (req, res) => {
 app.get('/api/sessions/:sessionId', (req, res) => {
   const detail = loadSessionDetail(req.params.sessionId);
   if (!detail) return res.status(404).json({ error: 'session not found' });
-  res.json(detail);
+  // 清洗历史遗留的连续重复消息（同 role + 同 content）
+  const messages = [];
+  for (const m of detail.messages || []) {
+    const prev = messages[messages.length - 1];
+    if (prev && prev.role === m.role && prev.content === m.content) continue;
+    messages.push(m);
+  }
+  res.json({ ...detail, messages });
 });
 
 app.delete('/api/sessions/:sessionId', (req, res) => {
@@ -154,13 +244,26 @@ app.post('/api/ocr/scan', (req, res) => {
 
 app.post('/api/ocr/start', (req, res) => {
   try {
-    const { file } = req.body || {};
+    const { file, subject } = req.body || {};
     if (!file) return res.status(400).json({ error: 'file 必填' });
-    const jobId = startOcr({ file });
+    const jobId = startOcr({ file, subject });
     res.json({ jobId });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
+});
+
+app.get('/api/logs/:type', (req, res) => {
+  const type = req.params.type === 'ocr' ? 'ocr' : 'distill';
+  const subject = String(req.query.subject || '').trim() || undefined;
+  res.json({ logs: listLogs(type, subject) });
+});
+
+app.get('/api/logs/:type/:id', (req, res) => {
+  const type = req.params.type === 'ocr' ? 'ocr' : 'distill';
+  const log = getLog(type, req.params.id);
+  if (!log) return res.status(404).json({ error: 'log not found' });
+  res.json(log);
 });
 
 app.get('/api/ocr/job/:jobId', (req, res) => {
@@ -180,18 +283,101 @@ app.post('/api/upload', (req, res) => {
   res.json({ url: `/uploads/${file}`, name: safe });
 });
 
+function edgeTtsOnce(text, voice, res) {
+  return new Promise((resolve) => {
+    const outFile = path.join(os.tmpdir(), `tts_${Date.now()}_${Math.random().toString(36).slice(2)}.mp3`);
+    const args = ['--voice', voice, '--write-media', outFile];
+    if (EDGE_RATE) args.push(`--rate=${EDGE_RATE}`);
+    if (EDGE_PITCH) args.push(`--pitch=${EDGE_PITCH}`);
+    if (TTS_PROXY) args.push('--proxy', TTS_PROXY);
+    args.push('--text', text);
+    const child = spawn(EDGE_TTS, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    let err = '';
+    child.stderr.on('data', (c) => (err += c));
+    child.on('error', (e) => resolve({ ok: false, error: 'edge-tts 不可用：' + e.message }));
+    child.on('close', () => {
+      if (!fs.existsSync(outFile)) {
+        resolve({ ok: false, error: 'TTS 合成失败：' + err.slice(-300) });
+        return;
+      }
+      const buf = fs.readFileSync(outFile);
+      fs.unlink(outFile, () => {});
+      if (!buf.length) {
+        resolve({ ok: false, error: 'TTS 合成失败：' + err.slice(-300) });
+        return;
+      }
+      resolve({ ok: true, buf });
+    });
+  });
+}
+
+async function edgeTts(text, voice, res) {
+  // 微软免费 TTS 服务不稳定，重试 2 次；仍失败则返回明确错误，由前端提示并切换默认音色
+  let lastError = '';
+  for (let i = 0; i < 3; i++) {
+    const r = await edgeTtsOnce(text, voice, res);
+    if (r.ok) {
+      res.set({ 'Content-Type': 'audio/mpeg', 'Content-Length': r.buf.length });
+      return res.send(r.buf);
+    }
+    lastError = r.error;
+    if (i < 2) await new Promise((ok) => setTimeout(ok, 1000 * (i + 1)));
+  }
+  if (!res.headersSent) res.status(502).json({ error: lastError });
+}
+
+async function localTts(text, voice) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), LOCAL_TTS_TIMEOUT);
+  try {
+    const r = await fetch(LOCAL_TTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice, instruct: TTS_INSTRUCT }),
+      signal: controller.signal,
+    });
+    if (!r.ok) throw new Error('local tts status ' + r.status);
+    const buf = Buffer.from(await r.arrayBuffer());
+    if (!buf.length) throw new Error('local tts empty');
+    return buf;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+app.get('/api/tts/voices', (req, res) => {
+  res.json({ voices: TTS_VOICE_LABELS });
+});
+
+app.post('/api/tts', async (req, res) => {
+  const text = String(req.body.text || '').trim().slice(0, 3000);
+  if (!text) return res.status(400).json({ error: 'text 必填' });
+  const voice = req.body.voice || 'xiaoxiao';
+  if (TTS_ENGINE === 'local' || TTS_ENGINE === 'auto') {
+    try {
+      const buf = await localTts(text, voice);
+      res.set({ 'Content-Type': 'audio/wav', 'Content-Length': buf.length });
+      return res.send(buf);
+    } catch (e) {
+      console.warn('[tts] local 失败，回落 edge：', e.message);
+      if (TTS_ENGINE === 'local') return res.status(502).json({ error: '本地 TTS 不可用：' + e.message });
+    }
+  }
+  edgeTts(text, TTS_VOICES[voice] || TTS_VOICES.xiaoxiao, res);
+});
+
 app.post('/api/chat', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course, debug });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
   try {
     const response = await chatCompletions(messages, { model: RUNTIME_MODEL, stream: false });
     const content = response?.response?.content || response?.raw || '（空响应）';
-    const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: content, effectiveCourse: prepared.effectiveCourse });
+    const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: content, effectiveCourse: prepared.effectiveCourse, debug });
     res.json({ sessionId, subject: routeInfo.subject, reply: result.replyContent, evaluation: result.parsed?.evaluation || null, state: result.nextState });
   } catch (e) {
     res.status(502).json({ error: e.message });
@@ -199,17 +385,19 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.post('/api/chat/stream', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course });
+  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course, debug });
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
-  const detail = loadSessionDetailSafe(sessionId);
-  detail.subject = routeInfo.subject;
-  detail.messages.push(userMessage);
-  saveSessionDetail(sessionId, detail);
+  if (!debug) {
+    const detail = loadSessionDetailSafe(sessionId);
+    detail.subject = routeInfo.subject;
+    detail.messages.push(userMessage);
+    saveSessionDetail(sessionId, detail);
+  }
 
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
   res.setHeader('Cache-Control', 'no-cache');
@@ -239,8 +427,8 @@ app.post('/api/chat/stream', async (req, res) => {
       }
     });
     stream.on('end', async () => {
-      const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: full, effectiveCourse: prepared.effectiveCourse });
-      res.write(`event: done\ndata: ${JSON.stringify({ evaluation: result.parsed?.evaluation || null })}\n\n`);
+      const result = await persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse: full, effectiveCourse: prepared.effectiveCourse, debug, skipUserPush: true });
+      res.write(`event: done\ndata: ${JSON.stringify({ evaluation: result.parsed?.evaluation || null, replyContent: result.replyContent })}\n\n`);
       res.end();
     });
     stream.on('error', (e) => {

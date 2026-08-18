@@ -4,20 +4,82 @@ const { DATA_DIR, RUNTIME_MODEL } = require('../config');
 
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 
-const DEFAULTS = { provider: 'runtime', baseUrl: '', apiKey: '', modelName: RUNTIME_MODEL };
+const DEFAULT_PROFILE = { id: 'runtime', name: '模型运行时', provider: 'runtime', baseUrl: '', apiKey: '', modelName: RUNTIME_MODEL };
 
-function loadSettings() {
+function genId(prefix) {
+  return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+}
+
+function normalizeProfiles(list) {
+  const seen = new Set();
+  const out = [];
+  for (const p of (list || [])) {
+    const profile = {
+      id: p.id || genId('p'),
+      name: String(p.name || p.provider || '未命名配置'),
+      provider: ['runtime', 'openai', 'anthropic'].includes(p.provider) ? p.provider : 'runtime',
+      baseUrl: p.baseUrl || '',
+      apiKey: p.apiKey || '',
+      modelName: p.modelName || RUNTIME_MODEL,
+    };
+    if (seen.has(profile.id)) continue;
+    seen.add(profile.id);
+    out.push(profile);
+  }
+  if (!out.length) out.push({ ...DEFAULT_PROFILE });
+  return out;
+}
+
+// 兼容迁移：旧格式（顶层 provider/baseUrl/...）转成单个 profile
+function migrate(raw) {
+  if (raw && Array.isArray(raw.profiles)) {
+    return {
+      activeProfileId: raw.activeProfileId || raw.profiles[0].id,
+      profiles: normalizeProfiles(raw.profiles),
+    };
+  }
+  const legacy = { ...DEFAULT_PROFILE, ...raw };
+  return {
+    activeProfileId: legacy.id,
+    profiles: normalizeProfiles([legacy]),
+  };
+}
+
+function loadRaw() {
   try {
-    return { ...DEFAULTS, ...JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8')) };
+    return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
   } catch (e) {
-    return { ...DEFAULTS };
+    return null;
   }
 }
 
+// 返回展平的当前配置（兼容 runtimeClient 与前端旧用法）+ profiles 列表
+function loadSettings() {
+  const { activeProfileId, profiles } = migrate(loadRaw());
+  const active = profiles.find((p) => p.id === activeProfileId) || profiles[0];
+  return { ...active, profiles, activeProfileId: active.id };
+}
+
+// 支持两种写法：
+//  1) 新版：{ profiles: [...], activeProfileId } → 整体替换
+//  2) 旧版：{ provider/baseUrl/apiKey/modelName/name } → 合并进当前激活配置
 function saveSettings(next) {
-  const merged = { ...loadSettings(), ...next };
-  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
-  return merged;
+  if (next && Array.isArray(next.profiles)) {
+    const { activeProfileId, profiles } = migrate(next);
+    const data = { activeProfileId, profiles };
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    const active = profiles.find((p) => p.id === activeProfileId) || profiles[0];
+    return { ...active, profiles, activeProfileId: active.id };
+  }
+  const raw = loadRaw();
+  const { activeProfileId, profiles } = migrate(raw);
+  const active = profiles.find((p) => p.id === activeProfileId) || profiles[0];
+  const merged = { ...active, ...next };
+  const updated = normalizeProfiles(profiles.map((p) => (p.id === merged.id ? merged : p)));
+  const data = { activeProfileId: merged.id, profiles: updated };
+  fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), 'utf8');
+  const act = updated.find((p) => p.id === merged.id) || updated[0];
+  return { ...act, profiles: updated, activeProfileId: act.id };
 }
 
 module.exports = { loadSettings, saveSettings, SETTINGS_FILE };

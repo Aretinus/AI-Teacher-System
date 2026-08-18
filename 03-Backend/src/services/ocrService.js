@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const { DATA_DIR, SKILLS_DIR } = require('../config');
+const { saveJob } = require('./logService');
 
 const TOOLKIT_DIR = path.join(SKILLS_DIR, '..', '06-Tools', 'ocr-toolkit');
 const VENV_PY = path.join(TOOLKIT_DIR, 'venv', 'Scripts', 'python.exe');
@@ -181,19 +182,23 @@ function scanRaw(subject) {
   return files.sort((a, b) => a.sizeMB - b.sizeMB);
 }
 
-function startOcr({ file }) {
+function startOcr({ file, subject }) {
   const abs = path.resolve(String(file || '').trim());
   if (!fs.existsSync(abs)) throw new Error('文件不存在：' + file);
   const ext = path.extname(abs).toLowerCase();
   if (!OCR_EXTS.includes(ext)) throw new Error(`不支持的格式：${ext}（仅支持 pdf/djvu）`);
   const id = 'o' + Date.now();
-  const job = { id, status: 'running', log: [], startedAt: new Date().toISOString(), product: null, error: null };
+  const job = { id, status: 'running', log: [], startedAt: new Date().toISOString(), product: null, error: null, book: path.basename(abs), subject: subject || null };
   jobs.set(id, job);
-  runOcr(job, { file: abs, ext }).catch((e) => {
-    job.status = 'error';
-    job.error = e.message || String(e);
-    job.log.push('✗ ' + (e.message || String(e)));
-  });
+  runOcr(job, { file: abs, ext }).then(
+    () => saveJob('ocr', job),
+    (e) => {
+      job.status = 'error';
+      job.error = e.message || String(e);
+      job.log.push('✗ ' + (e.message || String(e)));
+      saveJob('ocr', job);
+    }
+  );
   return id;
 }
 

@@ -13,15 +13,35 @@
       }
     },
     {
-      "path": "pages/overview/overview",
+      "path": "pages/voice/voice",
       "style": {
-        "navigationBarTitleText": "学习概览"
+        "navigationBarTitleText": "语音通话",
+        "navigationBarBackgroundColor": "#1e2a4a",
+        "navigationBarTextStyle": "white"
       }
     },
     {
       "path": "pages/settings/settings",
       "style": {
         "navigationBarTitleText": "AI 提供商设置"
+      }
+    },
+    {
+      "path": "pages/settings/log-detail",
+      "style": {
+        "navigationBarTitleText": "日志详情"
+      }
+    },
+    {
+      "path": "pages/settings/log-history",
+      "style": {
+        "navigationBarTitleText": "日志历史"
+      }
+    },
+    {
+      "path": "pages/settings/model",
+      "style": {
+        "navigationBarTitleText": "模型设置"
       }
     }
   ],

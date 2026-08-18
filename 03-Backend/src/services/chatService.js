@@ -76,14 +76,14 @@ function parseTeachingResponse(text) {
   return null;
 }
 
-async function handleChat({ userId, subject, message, conversationId, stream, style, course }) {
+async function handleChat({ userId, subject, message, conversationId, stream, style, course, debug }) {
   const userState = loadState(userId);
   const profile = loadProfile(userId);
   const history = loadHistory(userId);
 
   const routing = route({ subject, message });
   const autoCourse = routing.route && routing.route.course ? routing.route.course : null;
-  const continueIntent = /继续|接着|下一课|下一节|下一章|再来/.test(message);
+  const continueIntent = debug ? false : /继续|接着|下一课|下一节|下一章|再来/.test(message);
   const namedCourse = (() => {
     if (course) return course;
     if (autoCourse) return autoCourse;
@@ -109,10 +109,11 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
 
   let messages;
   let courseCtx = null;
+  const wantAdvance = debug ? false : /继续|下一课|下一节|接着/.test(message);
   if (effectiveCourse) {
-    courseCtx = loadDistilledCourseContext(routeInfo.subject, effectiveCourse, message, /继续|下一课|下一节|接着/.test(message));
+    courseCtx = loadDistilledCourseContext(routeInfo.subject, effectiveCourse, message, wantAdvance);
   } else if (wantCourse) {
-    courseCtx = loadCourseContext(routeInfo.subject, tutor, message, /继续|下一课|下一节|接着/.test(message));
+    courseCtx = loadCourseContext(routeInfo.subject, tutor, message, wantAdvance);
   }
   if (courseCtx) {
     messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
@@ -124,9 +125,14 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
   return { sessionId, routeInfo, messages, userMessage, userState, profile, history, courseCtx, effectiveCourse };
 }
 
-async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse, effectiveCourse }) {
+async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse, effectiveCourse, debug, skipUserPush }) {
   const parsed = parseTeachingResponse(rawResponse);
   const replyContent = parsed?.response || rawResponse;
+
+  if (debug) {
+    return { parsed, replyContent, nextState: loadState(userId), summary: null, debug: true };
+  }
+
   const assistantMessage = { role: 'assistant', content: replyContent, at: new Date().toISOString() };
 
   let nextState = loadState(userId);
@@ -145,7 +151,11 @@ async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, raw
 
   const detail = loadSessionDetailSafe(sessionId);
   detail.subject = routeInfo.subject;
-  detail.messages.push(userMessage, assistantMessage);
+  if (skipUserPush) {
+    detail.messages.push(assistantMessage);
+  } else {
+    detail.messages.push(userMessage, assistantMessage);
+  }
   detail.evaluation = parsed?.evaluation || detail.evaluation;
   saveSessionDetail(sessionId, detail);
 

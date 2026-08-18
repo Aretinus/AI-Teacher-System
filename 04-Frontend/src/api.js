@@ -7,8 +7,16 @@ export async function apiGet(path) {
 }
 
 export async function apiPost(path, body) {
+  return apiSend(path, 'POST', body)
+}
+
+export async function apiPut(path, body) {
+  return apiSend(path, 'PUT', body)
+}
+
+async function apiSend(path, method, body) {
   const res = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
+    method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
@@ -25,6 +33,10 @@ export function getStyles() {
   return apiGet('/api/styles').then((d) => d.styles || [])
 }
 
+export function getTtsVoices() {
+  return apiGet('/api/tts/voices').then((d) => d.voices || [])
+}
+
 export function getCourses(subject) {
   return apiGet(`/api/courses?subject=${encodeURIComponent(subject)}`).then((d) => d.courses || [])
 }
@@ -34,7 +46,7 @@ export function getSettings() {
 }
 
 export function saveSettings(body) {
-  return apiPost('/api/settings', body)
+  return apiPut('/api/settings', body)
 }
 
 export function testSettings(body) {
@@ -57,8 +69,17 @@ export function scanOcrBooks(body) {
   return apiPost('/api/ocr/scan', body || {})
 }
 
-export function startOcr(file) {
-  return apiPost('/api/ocr/start', { file })
+export function startOcr(file, subject) {
+  return apiPost('/api/ocr/start', { file, subject })
+}
+
+export function getLogList(type, subject) {
+  const q = subject ? `?subject=${encodeURIComponent(subject)}` : ''
+  return apiGet(`/api/logs/${type}${q}`).then((d) => d.logs || [])
+}
+
+export function getLogDetail(type, id) {
+  return apiGet(`/api/logs/${type}/${encodeURIComponent(id)}`)
 }
 
 export function getOcrJob(jobId) {
@@ -101,12 +122,12 @@ export function uploadFile(name, dataBase64) {
  * 流式对话：POST /api/chat/stream，解析 SSE 事件。
  * onDelta(deltaText)、onSession({sessionId, subject})、onDone(evaluation)、onError(msg)
  */
-export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER }, handlers = {}, signal) {
+export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER, debug = false }, handlers = {}, signal) {
   const { onSession, onDelta, onDone, onError } = handlers
   const resp = await fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, subject, style, course, message, conversationId }),
+    body: JSON.stringify({ userId, subject, style, course, message, conversationId, debug }),
     signal,
   })
   if (!resp.ok) {
@@ -139,7 +160,7 @@ export async function streamChat({ subject, style, course, message, conversation
           full += evt.data.delta || ''
           onDelta && onDelta(evt.data.delta || '', full)
         } else if (evt.event === 'done') {
-          onDone && onDone(evt.data.evaluation || null, full, sessionId, resolvedSubject)
+          onDone && onDone(evt.data.evaluation || null, full, sessionId, resolvedSubject, evt.data.replyContent || null)
         } else if (evt.event === 'error') {
           onError && onError(evt.data.error || '未知错误')
         }

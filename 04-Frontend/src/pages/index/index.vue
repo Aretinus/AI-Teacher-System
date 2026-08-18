@@ -96,15 +96,6 @@
         </view>
       </view>
       <view v-else class="card empty-card">该学科还没有学习记录，去开始第一课吧</view>
-      <view class="recent-points">
-        <view v-for="(kp, key) in topPoints" :key="key" class="point-item">
-          <view class="point-name">{{ key }}</view>
-          <view class="point-bar">
-            <view class="point-fill" :style="{ width: pct(kp.mastery) }"></view>
-          </view>
-          <text class="point-num">{{ Math.round((kp.mastery || 0) * 100) }}%</text>
-        </view>
-      </view>
     </view>
 
     <view class="section">
@@ -151,17 +142,6 @@ export default {
     }
   },
   computed: {
-    topPoints() {
-      if (!this.state || !this.state.knowledgePoints) return []
-      return Object.entries(this.state.knowledgePoints)
-        .filter(([, v]) => v.subject === this.selectedSubject)
-        .sort((a, b) => (b[1].mastery || 0) - (a[1].mastery || 0))
-        .slice(0, 4)
-        .reduce((acc, [k, v]) => {
-          acc[k] = v
-          return acc
-        }, {})
-    },
     sessionsOfSubject() {
       return (this.history.sessions || []).filter((s) => s.subject === this.selectedSubject)
     },
@@ -238,9 +218,6 @@ export default {
       const s = this.subjects.find((x) => x.id === id)
       return s ? s.name : (id || '未选择')
     },
-    pct(m) {
-      return Math.max(4, Math.round((m || 0) * 100)) + '%'
-    },
     oneLine(s) {
       if (!s) return ''
       return String(s)
@@ -271,9 +248,6 @@ export default {
       } catch (e) {
         uni.showToast({ title: '删除失败：' + e.message, icon: 'none' })
       }
-    },
-    goOverview() {
-      uni.redirectTo({ url: '/pages/overview/overview' })
     },
     goSettings() {
       uni.redirectTo({ url: '/pages/settings/settings' })
@@ -442,44 +416,6 @@ export default {
 }
 .goal {
   max-width: 70%;
-  text-align: right;
-}
-.recent-points {
-  margin-top: 18rpx;
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 20rpx 28rpx;
-}
-.point-item {
-  display: flex;
-  align-items: center;
-  padding: 10rpx 0;
-}
-.point-name {
-  width: 300rpx;
-  font-size: 26rpx;
-  color: #4b5563;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.point-bar {
-  flex: 1;
-  height: 16rpx;
-  background: #eef1f5;
-  border-radius: 8rpx;
-  margin: 0 16rpx;
-  overflow: hidden;
-}
-.point-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4f8cff, #7c3aed);
-  border-radius: 8rpx;
-}
-.point-num {
-  font-size: 24rpx;
-  color: #6b7280;
-  width: 90rpx;
   text-align: right;
 }
 .history-item {

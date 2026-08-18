@@ -1,0 +1,12 @@
+{
+  "engine": "auto",
+  "instruct": "请用温和、耐心、清晰自然的语气讲课。",
+  "local": {
+    "url": "http://127.0.0.1:8765/tts",
+    "timeoutMs": 180000
+  },
+  "edge": {
+    "rate": "+8%",
+    "pitch": "+4Hz"
+  }
+}

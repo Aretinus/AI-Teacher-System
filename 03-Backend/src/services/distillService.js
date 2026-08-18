@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 const { SKILLS_DIR, DATA_DIR } = require('../config');
+const { saveJob } = require('./logService');
 
 const VENDOR_BLT = path.join(SKILLS_DIR, 'vendor', 'book-learning-tutor');
 const PYTHON = path.join(VENDOR_BLT, 'venv_slim', 'Scripts', 'python.exe');
@@ -127,13 +128,19 @@ function startDistill({ file, name, subject }) {
   const abs = path.resolve(String(file || '').trim());
   if (!fs.existsSync(abs)) throw new Error('文件不存在：' + file);
   const id = 'd' + Date.now();
-  const job = { id, status: 'running', log: [], startedAt: new Date().toISOString(), book: null, subject: subject || null, rawFile: path.basename(abs), rawPath: '' };
+  const bookName = (name && String(name).trim()) || path.basename(abs, path.extname(abs));
+  const job = { id, status: 'running', log: [], startedAt: new Date().toISOString(), book: bookName, subject: subject || null, rawFile: path.basename(abs), rawPath: '' };
   if (abs.startsWith(BOOKS_DIR)) job.rawPath = path.relative(BOOKS_DIR, path.dirname(abs));
   jobs.set(id, job);
-  runDistill(job, { file: abs, name }).catch((e) => {
-    job.status = 'error';
-    job.log.push('✗ ' + (e.message || String(e)));
-  });
+  runDistill(job, { file: abs, name: bookName }).then(
+    () => saveJob('distill', job),
+    (e) => {
+      job.status = 'error';
+      job.error = e.message || String(e);
+      job.log.push('✗ ' + (e.message || String(e)));
+      saveJob('distill', job);
+    }
+  );
   return id;
 }
 
