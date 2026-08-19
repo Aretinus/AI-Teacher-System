@@ -1,6 +1,7 @@
 const http = require('http');
 const https = require('https');
 const { Transform } = require('stream');
+const { StringDecoder } = require('string_decoder');
 const { RUNTIME_URL } = require('./config');
 
 function parseExternalUrl(baseUrl, pathSuffix = '/chat/completions') {
@@ -54,8 +55,9 @@ function anthropicRequest(messages, { model, apiKey, baseUrl, stream }) {
       } else {
         const conv = new Transform({
           transform(chunk, _enc, cb) {
+            const decoder = this._decoder || (this._decoder = new StringDecoder('utf8'));
             let buf = this._buf || '';
-            buf += chunk.toString('utf8');
+            buf += decoder.write(chunk);
             this._buf = '';
             const lines = buf.split('\n');
             buf = lines.pop();
@@ -76,6 +78,12 @@ function anthropicRequest(messages, { model, apiKey, baseUrl, stream }) {
             cb();
           },
           flush(cb) {
+            const decoder = this._decoder;
+            if (decoder) {
+              let buf = this._buf || '';
+              buf += decoder.end();
+              if (buf.trim()) this.push(buf + '\n');
+            }
             this.push(null);
             cb();
           },
@@ -136,8 +144,9 @@ function externalRequest(messages, { model, apiKey, baseUrl, stream }) {
       } else {
         const conv = new Transform({
           transform(chunk, _enc, cb) {
+            const decoder = this._decoder || (this._decoder = new StringDecoder('utf8'));
             let buf = this._buf || '';
-            buf += chunk.toString('utf8');
+            buf += decoder.write(chunk);
             this._buf = '';
             const lines = buf.split('\n');
             buf = lines.pop();
@@ -158,7 +167,16 @@ function externalRequest(messages, { model, apiKey, baseUrl, stream }) {
             this._buf = buf;
             cb();
           },
-          flush(cb) { cb(); },
+          flush(cb) {
+            const decoder = this._decoder;
+            if (decoder) {
+              let buf = this._buf || '';
+              buf += decoder.end();
+              if (buf.trim()) this.push(buf + '\n');
+            }
+            this.push(null);
+            cb();
+          },
         });
         res.pipe(conv);
         resolve({ status: res.statusCode, stream: conv });

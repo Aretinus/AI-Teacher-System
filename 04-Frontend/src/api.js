@@ -121,14 +121,25 @@ export function uploadFile(name, dataBase64) {
 /**
  * 流式对话：POST /api/chat/stream，解析 SSE 事件。
  * onDelta(deltaText)、onSession({sessionId, subject})、onDone(evaluation)、onError(msg)
+ * 空闲超时（idleTimeoutMs，默认 60000）：超过该时长无任何数据 → abort 并返回 { timedOut: true }（不触发 onError）
  */
-export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER, debug = false }, handlers = {}, signal) {
+export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER, debug = false, idleTimeoutMs = 60000 }, handlers = {}, signal) {
   const { onSession, onDelta, onDone, onError } = handlers
+  const idleCtrl = new AbortController()
+  let idleTimer = null
+  const resetIdle = () => {
+    clearTimeout(idleTimer)
+    idleTimer = setTimeout(() => idleCtrl.abort(), idleTimeoutMs)
+  }
+  if (signal) {
+    if (signal.aborted) return { aborted: true }
+    signal.addEventListener('abort', () => idleCtrl.abort())
+  }
   const resp = await fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, subject, style, course, message, conversationId, debug }),
-    signal,
+    signal: idleCtrl.signal,
   })
   if (!resp.ok) {
     const data = await resp.json().catch(() => ({}))
@@ -142,8 +153,10 @@ export async function streamChat({ subject, style, course, message, conversation
   let sessionId = null
   let resolvedSubject = null
   let aborted = false
+  let timedOut = false
   try {
     while (true) {
+      resetIdle()
       const { done, value } = await reader.read()
       if (done) break
       buf += decoder.decode(value, { stream: true })
@@ -168,14 +181,19 @@ export async function streamChat({ subject, style, course, message, conversation
     }
   } catch (e) {
     if (e.name === 'AbortError') {
-      aborted = true
-      onError && onError('已停止')
+      if (signal && signal.aborted) {
+        aborted = true
+        onError && onError('已停止')
+      } else {
+        timedOut = true
+      }
     } else {
       throw e
     }
   }
-  if (!sessionId && !aborted) onError && onError('连接已关闭')
-  return { sessionId, subject: resolvedSubject, full, aborted }
+  clearTimeout(idleTimer)
+  if (!sessionId && !aborted && !timedOut) onError && onError('连接已关闭')
+  return { sessionId, subject: resolvedSubject, full, aborted, timedOut }
 }
 
 function parseSSEBlock(block) {

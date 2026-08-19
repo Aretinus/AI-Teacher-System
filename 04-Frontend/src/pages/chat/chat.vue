@@ -50,6 +50,8 @@
               <text v-if="m.content" class="user-text">{{ m.content }}</text>
             </view>
             <view v-if="m.role === 'assistant' && m.streaming" class="streaming">
+              <text v-if="m.retrying" class="streaming-text">回复超时，正在重试（{{ m.retrying }}/3）…</text>
+              <text v-else class="streaming-text">正在思考…</text>
               <view class="dot"></view><view class="dot"></view><view class="dot"></view>
             </view>
           </view>
@@ -475,40 +477,56 @@ onLoad(options) {
       try {
         const cur = this.messages[this.messages.length - 1]
         this.abortController = new AbortController()
-        await streamChat(
-          { subject: this.selectedSubject, style: this.selectedStyle, course: this.selectedCourse || undefined, message: text + attachDesc, conversationId: this.conversationId || undefined, debug: uni.getStorageSync('debugMode') === '1' },
-          {
-            onSession: ({ sessionId, subject: resolved }) => {
-              this.conversationId = sessionId
-              if (!this.selectedSubject && resolved && this.subjects.some((x) => x.id === resolved)) {
-                this.selectedSubject = resolved
-              }
+        const MAX_ATTEMPTS = 4
+        for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+          if (attempt > 1) {
+            cur.content = ''
+            cur.retrying = attempt - 1
+          }
+          const result = await streamChat(
+            { subject: this.selectedSubject, style: this.selectedStyle, course: this.selectedCourse || undefined, message: text + attachDesc, conversationId: this.conversationId || undefined, debug: uni.getStorageSync('debugMode') === '1' },
+            {
+              onSession: ({ sessionId, subject: resolved }) => {
+                this.conversationId = sessionId
+                if (!this.selectedSubject && resolved && this.subjects.some((x) => x.id === resolved)) {
+                  this.selectedSubject = resolved
+                }
+              },
+              onDelta: (delta, full) => {
+                const isJsonReply = /^\s*\{/.test(full.trimStart())
+                if (!isJsonReply) cur.content = full
+                this.scrollToBottom()
+              },
+              onDone: (evaluation, full, sessionId, subject, replyContent) => {
+                cur.streaming = false
+                if (replyContent) cur.content = replyContent
+                else if (!cur.content.trim()) cur.content = full || '（空回复）'
+                this.streaming = false
+                this.scrollToBottom()
+                if (voiceCall.state.active) voiceCall.speakReply(replyContent || cur.content)
+              },
+              onError: (msg) => {
+                cur.streaming = false
+                this.errorMsg = msg
+                this.streaming = false
+                if (!cur.content.trim()) cur.content = ''
+              },
             },
-            onDelta: (delta, full) => {
-              const isJsonReply = /^\s*\{/.test(full.trimStart())
-              if (!isJsonReply) cur.content = full
-              this.scrollToBottom()
-            },
-            onDone: (evaluation, full, sessionId, subject, replyContent) => {
-              cur.streaming = false
-              if (replyContent) cur.content = replyContent
-              else if (!cur.content.trim()) cur.content = full || '（空回复）'
-              this.streaming = false
-              this.scrollToBottom()
-              if (voiceCall.state.active) voiceCall.speakReply(replyContent || cur.content)
-            },
-            onError: (msg) => {
-              cur.streaming = false
-              this.errorMsg = msg
-              this.streaming = false
-              if (!cur.content.trim()) cur.content = ''
-            },
-          },
-          this.abortController.signal
-        )
+            this.abortController.signal
+          )
+          if (result && result.timedOut && attempt < MAX_ATTEMPTS) continue
+          if (result && result.timedOut) {
+            cur.streaming = false
+            this.errorMsg = '回复超时，请稍后重试'
+            this.streaming = false
+          }
+          break
+        }
+        cur.retrying = 0
         this.abortController = null
       } catch (e) {
         const cur = this.messages[this.messages.length - 1]
+        cur.retrying = 0
         cur.streaming = false
         this.errorMsg = e.message
         this.streaming = false
@@ -983,8 +1001,14 @@ onLoad(options) {
 }
 .streaming {
   display: inline-flex;
+  align-items: center;
   gap: 8rpx;
   margin-top: 10rpx;
+}
+.streaming-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-right: 4rpx;
 }
 .dot {
   width: 12rpx;

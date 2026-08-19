@@ -234,31 +234,48 @@ async function sendFinal(text) {
   emit()
   try {
     abortController = new AbortController()
-    await streamChat(
-      { subject, style: 'standard', course: course || undefined, message: text, conversationId: sessionId || undefined },
-      {
-        onSession: ({ sessionId: sid, subject: resolved }) => {
-          sessionId = sid
-          if (!subject && resolved) subject = resolved
-          emit()
+    const MAX_ATTEMPTS = 4
+    let result = null
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      if (attempt > 1) {
+        uni.showToast({ title: `回复超时，正在重试（${attempt - 1}/3）…`, icon: 'none' })
+        setPhase('thinking')
+      }
+      result = await streamChat(
+        { subject, style: 'standard', course: course || undefined, message: text, conversationId: sessionId || undefined },
+        {
+          onSession: ({ sessionId: sid, subject: resolved }) => {
+            sessionId = sid
+            if (!subject && resolved) subject = resolved
+            emit()
+          },
+          onDelta: () => {},
+          onDone: (evaluation, full, sid, resolvedSubject, replyContent) => {
+            const content = replyContent || full || '（空回复）'
+            messages.push({ role: 'assistant', content })
+            emit()
+            playReply(content)
+          },
+          onError: (msg) => {
+            lastError = msg
+            messages.push({ role: 'assistant', content: '（语音回复失败：' + msg + '）' })
+            emit()
+            resumeListeningAfterError()
+          },
         },
-        onDelta: () => {},
-        onDone: (evaluation, full, sid, resolvedSubject, replyContent) => {
-          const content = replyContent || full || '（空回复）'
-          messages.push({ role: 'assistant', content })
-          emit()
-          playReply(content)
-        },
-        onError: (msg) => {
-          lastError = msg
-          messages.push({ role: 'assistant', content: '（语音回复失败：' + msg + '）' })
-          emit()
-          resumeListeningAfterError()
-        },
-      },
-      abortController.signal
-    )
+        abortController.signal
+      )
+      if (!result || !result.timedOut || attempt >= MAX_ATTEMPTS) break
+    }
     abortController = null
+    if (result && result.timedOut) {
+      lastError = '回复超时'
+      if (active) {
+        messages.push({ role: 'assistant', content: '（语音回复失败：回复超时，请再说一次）' })
+        emit()
+        resumeListeningAfterError()
+      }
+    }
   } catch (e) {
     abortController = null
     if (active) {
