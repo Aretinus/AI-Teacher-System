@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
-const { SKILLS_DIR, DATA_DIR } = require('../config');
+const { SKILLS_DIR, DATA_DIR, ROOT_DIR } = require('../config');
 const { saveJob } = require('./logService');
 
 const VENDOR_BLT = path.join(SKILLS_DIR, 'vendor', 'book-learning-tutor');
@@ -10,6 +10,7 @@ const BOOKS_DIR = path.join(DATA_DIR, 'books');
 const BOOKS_INDEX = path.join(BOOKS_DIR, 'index.json');
 const DISTILLED_DIR = path.join(BOOKS_DIR, 'distilled');
 const TMP_COURSE_DIR = path.join(VENDOR_BLT, '书库');
+const FEX_DIR = path.join(ROOT_DIR, '06-Tools', 'formula-extraction');
 const SUBJECTS_INDEX = path.join(SKILLS_DIR, 'subjects', 'index.json');
 const OCR_STATUS = path.join(BOOKS_DIR, 'raw', '_ocr_status.json');
 
@@ -154,9 +155,12 @@ function runDistill(job, { file, name }) {
   return new Promise((resolve, reject) => {
     const bookName = (name && String(name).trim()) || path.basename(file, path.extname(file));
     const py = fs.existsSync(PYTHON) ? PYTHON : 'python';
-    job.log.push(`▶ 开始蒸馏《${bookName}》（本地处理，不联网）`);
+    const sub = job.subject || 'unknown';
+    job.log.push(`▶ 开始蒸馏《${bookName}》（学科：${sub}）`);
     job.log.push(`   输入：${file}`);
-    const child = spawn(py, ['teach.py', file, '--name', bookName], {
+    const args = ['teach.py', file, '--name', bookName];
+    if (job.subject) args.push('--subject', String(job.subject));
+    const child = spawn(py, args, {
       cwd: VENDOR_BLT,
       windowsHide: true,
       env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' },
@@ -227,7 +231,27 @@ function finalize(job, bookName) {
   appendBook(job.book);
   const bindMsg = bindCourseToManifest(job, dest);
   if (bindMsg) job.log.push('· ' + bindMsg);
+  cleanupDistillArtifacts(job, destName);
   job.log.push(`✅ 蒸馏完成：${path.relative(BOOKS_DIR, dest)}/（${chapters} 个章节目录）`);
+}
+
+// 蒸馏成功（课程已拷入 distilled）后清理过程产物：work/（P2T/质检/精修）、参考/（切章）、书库/（课程已拷走）。
+// 失败保留现场排查；清理失败仅记日志，不阻塞结果。
+function cleanupDistillArtifacts(job, destName) {
+  const targets = [
+    path.join(FEX_DIR, 'work', destName),
+    path.join(VENDOR_BLT, '参考', destName),
+    path.join(TMP_COURSE_DIR, destName),
+  ];
+  for (const t of targets) {
+    try {
+      if (!fs.existsSync(t)) continue;
+      fs.rmSync(t, { recursive: true, force: true });
+      job.log.push(`· 已清理过程产物：${path.relative(ROOT_DIR, t).split(path.sep).join('/')}`);
+    } catch (e) {
+      job.log.push(`! 清理失败（跳过，不影响结果）：${e.message}`);
+    }
+  }
 }
 
 // 蒸馏产物自动绑定到对应学科的技能 manifest（courseDir）。

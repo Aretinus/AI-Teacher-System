@@ -36,6 +36,10 @@ logs/
 06-Tools/tts/models/
 06-Tools/tts/__pycache__/
 
+# ===== 公式书蒸馏过程产物（P2T/质检/精修，蒸馏成功自动清理）=====
+06-Tools/formula-extraction/work/
+06-Tools/formula-extraction/__pycache__/
+
 # ===== 系统文件 =====
 .DS_Store
 Thumbs.db

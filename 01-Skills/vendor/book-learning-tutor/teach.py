@@ -48,12 +48,19 @@ def pick_python() -> str:
 
 
 def main() -> int:
+    # 管道下 stdout/stderr 编码可能回退 GBK（venv_slim shim 转发），强制 UTF-8 防 ▶/✅ 等字符崩溃
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     ap = argparse.ArgumentParser(
         prog="teach.py",
         description="把一本本地书变成逐课课程（抽取→转md→课程化），然后开始教学。",
     )
     ap.add_argument("path", help="本地书文件：pdf/epub/djvu/mobi/azw/azw3/docx/txt/md/cbz")
     ap.add_argument("--name", default=None, help="可选显式书名；缺省用文件名")
+    ap.add_argument("--subject", default=None, help="可选学科 id（math/physics → 公式书走新蒸馏管道）")
     args = ap.parse_args()
 
     book = Path(args.path)
@@ -64,10 +71,12 @@ def main() -> int:
     py = pick_python()
     name = args.name or book.stem
 
-    print(f"▶ 正在把《{book.name}》课程化……（本地处理，不联网、不爬取）\n")
+    print(f"▶ 正在把《{book.name}》课程化……（本地处理，不联网、不爬取）\n", flush=True)
     cmd = [py, str(PIPELINE), "all-local", str(book)]
     if args.name:
         cmd += ["--name", args.name]
+    if args.subject:
+        cmd += ["--subject", args.subject]
     rc = subprocess.run(cmd, cwd=str(ROOT)).returncode
     if rc != 0:
         print("\n✗ 课程化失败，详见上方报错。")

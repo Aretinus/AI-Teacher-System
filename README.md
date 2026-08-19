@@ -39,13 +39,20 @@
 - **音色失败兜底**：微软免费服务对部分新音色间歇性拒绝，后端重试 3 次仍失败返回明确 502；前端提示「当前音色不可用」并自动切回默认音色（晓晓），选项同步，不静默冒充
 - **会话去重修复**：流式对话用户消息曾双写（预存 + 完成时再存），已修复并清洗历史数据（接口返回前过滤连续重复消息）
 
+### 2026-08 公式书蒸馏管道（已交付，FEM 全本验证）
+- **公式书专用识别**（`06-Tools/formula-extraction`）：P2T 初蒸（CPU 本地，30-40s/页）→ 质检打分（阈值 30）→ 可疑页分批 MinerU 云端精修 → `book.md` 合并
+- **结构切章**：章/节结构取自 **PDF 文本层 Contents**（无 OCR 乱码），按印刷页码 + offset 校准（FEM 实测 offset=3，短语匹配多数票）切 `book.md` 的页标记；无 Contents 的书自动回退正文标题切章（`## Chapter N` 宽容正则）
+- **Web 一键集成**：设置 → 书籍加工 → 蒸馏层选学科 → `POST /api/books/distill {file,name,subject}` → `teach.py --subject` 透传 → 公式书分支（学科信号 + 数学符号密度启发式检测）
+- **全本验证**：FEM《Finite Element Method Lecture Notes》83 页 → P2T 约 60 分钟 → 质检 16 可疑页 + 区间聚拢 18 页精修 → **5 章 32 节全部正确切分**（含 3.9/3.10、第 4/5 章，旧管道会丢失）→ course_gen → `distilled/Math/09-计算数学/数值PDE与有限元/<书名>/`（5 章 31 课）→ math hasCourses=True
+- **产物清理**：蒸馏成功自动删 `work/`、`参考/`、`书库/` 三处过程产物（失败保留排查）
+- **已知限制**（硬件受限，仅用 P2T）：英文公式书部分页 OCR 噪声质检漏检（如 "Weightedrsiul metoi"），章标题行在节首显示为字面文本（内容无损）；决策记录见 `06-Tools/formula-extraction/README.md` 九
+
 ### 已入库书籍与课程
 | 学科 | 书籍 | 蒸馏产物（distilled/） | 绑定技能 |
 |------|------|------------------------|----------|
-| physics | 费恩曼物理学讲义（第 1 卷） | `Physic/费恩曼物理学讲义（英文版）/`（55 章） | feynman-mechanics（费曼式力学教师） |
-| physics | Landau Vol. 1. Mechanics. 3rd Ed | `Physic/朗道十卷（英文版）/Landau Vol. 1. Mechanics.3rd.Ed/` | —（暂空，物理默认走费恩曼课程） |
-| physics | 量子力学发展史（The historical development of quantum theory） | `Physic/量子力学/量子力学发展史/`（1-1~6-2 分部蒸馏） | — |
-| math | Asymptotic Expansions（Erdélyi） | `Math/01-分析/渐近分析（奇异摄动）/`（6 章） | calculus-tutor（微积分教师） |
+| math | Finite Element Method Lecture Notes（A. A. Salih） | `Math/09-计算数学/数值PDE与有限元/`（5 章 31 课） | calculus-tutor（微积分教师） |
+
+> 旧蒸馏课程（费恩曼物理学讲义、朗道、量子力学发展史、渐近分析、数学物理方法）已随本次清理从仓库删除；后续可用新公式管道重蒸。
 
 > 完整开发计划与逐项进度见 `Dev_Plan.md`。
 
@@ -104,6 +111,7 @@ AI-Teacher-System/
 ├── 04-Frontend/          uni-app H5（主页 / 对话 / 语音通话 / 设置）
 ├── 05-Docs/              需求文档与进度记录
 ├── 06-Tools/ocr-toolkit/ OCR 工具链（RapidOCR、djvu→pdf、文字层探查）
+├── 06-Tools/formula-extraction/ 公式书蒸馏管道（P2T→质检→MinerU 精修→切章；work/ 不入库）
 ├── 06-Tools/tts/         本地 TTS 服务（Qwen3-TTS，可选，默认 Edge 兜底）
 ├── Dev_Plan.md           开发计划（实时进度）
 └── start-dev.bat         一键启动
@@ -221,7 +229,7 @@ venv\Scripts\python tts-server.py   :: 监听 8765；不启动则后端自动走
 - **本地优先**：OCR（RapidOCR）、蒸馏（teach.py）为本地脚本、全程不联网；对话模型经本地 runtime 进程转发到 agnes-ai 云端 API（按 token 计费）
 - **目录镜像**：raw / ocr / distilled 三层目录结构一致，产物按学科分类
 - **不污染源数据**：OCR 产物只写入 `02-DATA/books/ocr/`，源书不动
-- **Git 不入库**：node_modules、raw/、ocr/、uploads/、users/、sessions/、settings.json、jwt_token.txt、Python venv（`01-Skills/vendor/*/venv_slim/`、`06-Tools/ocr-toolkit/venv/`、`06-Tools/tts/venv/`）、本地 TTS 模型（`06-Tools/tts/models/`）、OCR 模型二进制（`06-Tools/ocr-toolkit/bin/`）、运行时源码（`06-Tools/agentskills-runtime-src/`，实际运行用的 runtime 在 npm 包内，该源码目录仅为开发参考）等（见 .gitignore）
+- **Git 不入库**：node_modules、raw/、ocr/、uploads/、users/、sessions/、settings.json、jwt_token.txt、Python venv（`01-Skills/vendor/*/venv_slim/`、`06-Tools/ocr-toolkit/venv/`、`06-Tools/tts/venv/`）、本地 TTS 模型（`06-Tools/tts/models/`）、OCR 模型二进制（`06-Tools/ocr-toolkit/bin/`）、公式蒸馏过程产物（`06-Tools/formula-extraction/work/`，蒸馏成功自动清理）、运行时源码（`06-Tools/agentskills-runtime-src/`，实际运行用的 runtime 在 npm 包内，该源码目录仅为开发参考）等（见 .gitignore）
 
 ## 七、文档索引
 

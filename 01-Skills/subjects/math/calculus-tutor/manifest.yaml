@@ -4,7 +4,7 @@ subject: math
 entry: SKILL.md
 knowledgePath: knowledge
 data:
-  courseDir: ../../../../02-DATA/books/distilled/Math/01-分析/渐近分析（奇异摄动）
+  courseDir: ../../../../02-DATA/books/distilled/Math/09-计算数学/数值PDE与有限元/Finite Element Method Lecture Notes-First Edition (Tentative)-A. A. Salih
   books: []
   exercises: ../../../../02-DATA/materials/exercises/math
   references: ../../../../02-DATA/materials/reference/math

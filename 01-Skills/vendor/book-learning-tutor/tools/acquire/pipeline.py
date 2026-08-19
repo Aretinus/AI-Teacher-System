@@ -642,12 +642,13 @@ def _selftest_figures_collision():
         _rmtree_force(book_dir)
 
 
-def all_local(path, book_name=None):
+def all_local(path, book_name=None, subject=None):
     """本地书一键课程化：ingest → course_gen（不联网、不爬取）。
 
     仅接受单个书文件；目录请直接用 ingest 后逐本 course_gen。
     path：本地书文件路径（pdf/epub/djvu/mobi/azw/azw3/docx/fb2/cbz/txt/md）。
     book_name：可选显式书名；缺省用文件名 stem。
+    subject：可选学科 id（math/physics → 公式书走新蒸馏管道）。
     产物：书库/<书名>/ 课程（含 progress.json）。
     """
     import subprocess
@@ -667,12 +668,313 @@ def all_local(path, book_name=None):
             raise SystemExit(f"[all-local] 漫画课程生成失败（exit={r.returncode}）")
         print(f"[all-local] 完成（漫画）→ 书库/{_safe(name)}/")
         return
+    if fmt == "pdf" and _is_formula_book(p, subject):
+        _distill_formula_book(p, name)   # 公式书 → P2T 初蒸 + MinerU 云端精修
+        return
     ingest(str(p), name)                       # → 参考/<书名>/
     ref_dir = REF_DIR / _safe(name)
     cg = Path(__file__).resolve().parent.parent / "structure" / "course_gen.py"
     r = subprocess.run([sys.executable, str(cg), str(ref_dir), "--book", name], cwd=str(ROOT))
     if r.returncode != 0:
         raise SystemExit(f"[all-local] 课程生成失败（exit={r.returncode}）")
+    print(f"[all-local] 完成 → 书库/{_safe(name)}/（可开始逐课教学）")
+
+
+# ---------------------------------------------------------------------------
+# 公式书蒸馏：P2T 本地初蒸 → 质检 → MinerU 云端精修（06-Tools/formula-extraction）
+# 章/节结构取自 PDF 文本层 Contents（干净），正文切片取自管道产物 refined/book.md。
+# ---------------------------------------------------------------------------
+
+# 仓库根（pipeline.py = 01-Skills/vendor/book-learning-tutor/tools/acquire/，向上 6 级）
+_PROJ_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
+FEX_DIR = _PROJ_ROOT / "06-Tools" / "formula-extraction"
+
+_FORMULA_MATH_SYMS = "δ∂∇∫∑αβγλμωπεθφψστ∞±−×≈≤≥≠∈√→"
+
+
+def _system_python():
+    import shutil
+    return shutil.which("python") or sys.executable
+
+
+def _is_formula_book(path, subject=None):
+    """公式书判定：学科信号优先（math/physics → 公式书）；缺省时启发式检测。
+
+    启发式：前 12 页文本层的数学符号密度（希腊字母/积分/偏导等），
+    累计 ≥ 阈值（12）判公式书。FEM 讲义实测前 12 页 ~25+ 符号。
+    """
+    if subject in ("math", "physics"):
+        return True
+    try:
+        import fitz
+        doc = fitz.open(path)
+        hit = 0
+        for pno in range(min(12, doc.page_count)):
+            t = doc[pno].get_text()
+            hit += sum(1 for c in t if c in _FORMULA_MATH_SYMS)
+            if hit >= 12:
+                return True
+        return False
+    except Exception:
+        return False
+
+
+def _pdf_contents_entries(path):
+    """PyMuPDF 读文本层 Contents → [(num, title, printed_page)]。
+
+    num：条目编号（章无小数点，如 "2"；节含小数点，如 "2.1"；三级节 "3.5.1"）。
+    printed_page：印刷页码（与 PDF 页号存在常数偏移，需 _pdf_print_offset 校准）。
+    """
+    import fitz
+    doc = fitz.open(path)
+    text = ""
+    for pno in range(min(12, doc.page_count)):
+        t = doc[pno].get_text()
+        if "ontents" in t.lower():
+            text += "\n" + t
+    entries = []
+    cur = None
+    for ln in text.splitlines():
+        tok = ln.strip()
+        if not tok:
+            continue
+        if re.fullmatch(r"\d+(?:\.\d+)*", tok):
+            if cur is None or cur[1] is None:
+                cur = [tok, None, None]
+            else:
+                cur[2] = int(tok)
+                entries.append(tuple(cur))
+                cur = None
+        elif re.fullmatch(r"\.{4,}", tok) or tok in ("CONTENTS", "Contents", "CONTENTS."):
+            continue
+        else:
+            m = re.match(r"^(\d+(?:\.\d+)*)\s+(.+)$", tok)
+            if m and (cur is None or cur[1] is None):
+                cur = [m.group(1), m.group(2), None]
+                continue
+            if cur is None:
+                cur = [None, tok, None]
+            elif cur[1] is None:
+                cur[1] = tok
+            else:
+                cur[1] += " " + tok
+    return [e for e in entries if e[1] and e[2]]
+
+
+def _pdf_print_offset(doc, entries):
+    """印刷页码 → PDF 页号 偏移校准（pdf = printed + offset）。
+
+    对每个 Contents 条目，检查 PDF 页 printed+o 附近 ±1 页的文本层是否含该节标题的
+    前两个实质词（剥点线后），多数票取 o。不依赖页眉格式，对任何书鲁棒。
+    """
+    import collections
+    clean = []
+    for num, title, printed in entries:
+        t = _strip_dots(title)
+        words = [w for w in t.split() if re.search(r"[A-Za-z]", w)]
+        if len(words) >= 2 and printed:
+            clean.append((words[:2], printed))
+    if not clean:
+        return None
+    votes = collections.Counter()
+    for words, printed in clean:
+        for o in range(-5, 16):
+            pno = printed + o - 1
+            if not (0 <= pno < doc.page_count):
+                continue
+            t = doc[pno].get_text()
+            if t and words[0] in t and words[1] in t:
+                votes[o] += 1
+    return max(votes, key=votes.get) if votes else None
+
+
+def _strip_dots(t):
+    """剥 Contents 标题尾部/内部的点线（'. . . . . .' 页码引导线）。"""
+    t = re.sub(r"(?:\.\s*){2,}\s*$", "", t.strip())
+    t = re.sub(r"\s+\.\s+\.\s*", " ", t)
+    return t.strip()
+
+
+def _clean_heading(num, title):
+    """节标题清洗：数字前缀 + 可读英文后缀；后缀为 OCR 乱码时只留数字；无编号标题保留可读原文。"""
+    t = _strip_dots(title or "")
+    if re.fullmatch(r"\d+(?:\.\d+)*", t):
+        return t
+    words = t.split()
+    if words and all(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9'’\-.,:()\[\]]*", w) for w in words) and len(words) >= 1:
+        return f"{num} {t}" if num else t
+    return num or t
+
+
+def _md_heading_sections(book_md):
+    """无 Contents 的书：按 book.md 正文标题切章/切节。
+
+    章边界 = `## <Chapter|Clapter|Capter|Chapeter…> N`（P2T OCR 变体宽容匹配）；
+    节 = 其余 `## ` 标题行（带编号的提取编号清洗，无编号乱码标题保留原文或降级）。
+    章头正文（章标题页后无节标题的正文）作为 section=None 条目挂章下（course_gen 章首课）。
+    每节正文按页标记 <!-- page N --> 顺序拼接，标题所在页归属该标题所在节。
+    """
+    pages = {}
+    for m in re.finditer(r"<!-- page (\d+) -->\s*\n?(.*?)(?=<!-- page |\Z)", book_md, re.S):
+        pages[int(m.group(1))] = m.group(2)
+    if not pages:
+        raise SystemExit("[公式管道] book.md 无页标记，产物异常")
+
+    ch_re = re.compile(r"^##\s*[Cc][Hh]?[Aa]?[Pp]?[Tt]?[Ee][Rr]\s*(\d+)")
+    num_re = re.compile(r"^(\d+(?:\.\d+)*)\s*")
+
+    sections = []
+    chapter = None
+    cur_title = None
+    cur_is_ch = False
+    cur_parts = []
+
+    def flush():
+        nonlocal cur_title, cur_is_ch, cur_parts
+        if cur_parts and (cur_title is not None or cur_is_ch):
+            body = "\n\n".join(cur_parts).strip()
+            if body:
+                if cur_is_ch:
+                    sections.append({"chapter": chapter, "section": None,
+                                     "title": cur_title, "text": body})
+                else:
+                    sections.append({"chapter": chapter, "section": cur_title,
+                                     "title": cur_title, "text": body})
+        cur_title = None
+        cur_is_ch = False
+        cur_parts = []
+
+    for pno in sorted(pages):
+        lines = pages[pno].splitlines()
+        seg_start = 0
+        for i, ln in enumerate(lines):
+            if not ln.startswith("## "):
+                continue
+            if i > 0:
+                cur_parts.append("\n".join(lines[seg_start:i]))
+            seg_start = i + 1
+            flush()
+            head = ln[3:].strip()
+            m = ch_re.match(ln)
+            if m:
+                chapter = f"第{m.group(1)}章"
+                cur_is_ch = True
+                cur_title = head
+            else:
+                num_m = num_re.match(head)
+                cur_title = _clean_heading(num_m.group(1) if num_m else None, head)
+        cur_parts.append("\n".join(lines[seg_start:]))
+    flush()
+
+    if not sections:
+        raise SystemExit("[公式管道] 按正文标题切分为空")
+    return sections
+
+
+def _split_formula_book(book_md, pdf_path):
+    """refined/book.md + PDF → [(chapter, section, title, text), ...]。
+
+    优先：PDF 文本层 Contents 条目（印刷页 + offset → PDF 页）→ book.md 的 <!-- page N --> 切片。
+    章 = 无小数点编号条目；节 = 小数点编号条目（含三级）；正文按页范围拼接。
+    无 Contents 或有效条目过少（<3）→ 回退 _md_heading_sections（按正文标题切章），两法共存。
+    """
+    entries = _pdf_contents_entries(pdf_path)
+    valid = [e for e in entries if e[0] and e[2]]
+    if not entries or len(valid) < 3:
+        print("[公式管道] 无可用 Contents 目录（有效条目 %d），改用正文标题切章" % len(valid))
+        return _md_heading_sections(book_md)
+    import fitz
+    doc = fitz.open(pdf_path)
+    offset = _pdf_print_offset(doc, entries)
+    if offset is None:
+        offset = 0
+    pages = {}
+    for m in re.finditer(r"<!-- page (\d+) -->\s*\n?(.*?)(?=<!-- page |\Z)", book_md, re.S):
+        pages[int(m.group(1))] = m.group(2)
+    if not pages:
+        raise SystemExit("[公式管道] book.md 无页标记，产物异常")
+
+    items = []
+    for num, title, printed in entries:
+        if not num:
+            continue
+        items.append((num, title, printed + offset))
+    items.sort(key=lambda x: x[2])
+
+    sections = []
+    chapter = None
+    for i, (num, title, pdf_p) in enumerate(items):
+        end_p = items[i + 1][2] if i + 1 < len(items) else max(pages) + 1
+        body = "\n\n".join(pages.get(p, "") for p in range(pdf_p, end_p)).strip()
+        if "." not in num:  # 章条目：即使与首节同页（空 body），也先更新章上下文
+            chapter = f"第{num}章 {title}"
+            if not body:
+                continue
+            sections.append({"chapter": chapter, "section": None,
+                             "title": title, "text": body})
+        else:  # 节条目（含三级）
+            if not body:
+                continue
+            sec_title = _clean_heading(num, title)
+            sections.append({"chapter": chapter or f"第{num}章 {title}",
+                             "section": sec_title, "title": sec_title,
+                             "text": body})
+    if not sections:
+        raise SystemExit("[公式管道] 按 Contents 切分为空")
+    return sections
+
+
+def _distill_formula_book(path, name):
+    """公式书一键课程化：run_pipeline（P2T→质检→MinerU 精修）→ 切章 → course_gen。
+
+    耗时大头在 P2T 本地初蒸（~100s/页，83 页约 2 小时），进度随 stdout 透传。
+    """
+    import subprocess
+    import shutil
+    print(f"[公式管道] 检测到公式书《{name}》，走 P2T 初蒸 + MinerU 云端精修（本地+云端）")
+    work = FEX_DIR / "work" / _safe(name)
+    rp = FEX_DIR / "run_pipeline.py"
+    if not rp.exists():
+        raise SystemExit(f"[公式管道] 未找到 {rp}，请先部署 06-Tools/formula-extraction")
+    py = _system_python()
+    r = subprocess.run([py, str(rp), "--pdf", str(path), "--out", str(work),
+                        "--language", "ch"], cwd=str(FEX_DIR))
+    if r.returncode != 0:
+        raise SystemExit(f"[公式管道] run_pipeline 失败（exit={r.returncode}）")
+    book_md = work / "refined" / "book.md"
+    if not book_md.exists():
+        raise SystemExit("[公式管道] 未产出 refined/book.md")
+    sections = _split_formula_book(book_md.read_text(encoding="utf-8"), str(path))
+
+    out_dir = REF_DIR / _safe(name)
+    if out_dir.exists():
+        _rmtree_force(str(out_dir))
+    out_dir.mkdir(parents=True)
+    figures_src = work / "distill" / "figures"
+    figures_dst = out_dir / "figures"
+    if figures_src.exists():
+        shutil.copytree(str(figures_src), str(figures_dst))
+    manifest = []
+    for i, sec in enumerate(sections, 1):
+        text = sec["text"]
+        if figures_src.exists():
+            text = text.replace("\\", "/")
+        fn = out_dir / f"{i:04d}_{_safe(sec['title'])[:40]}.txt"
+        write_robust(fn, text, label="参考")
+        manifest.append({"chapter": sec["chapter"], "section": sec["section"],
+                         "title": sec["title"], "file": fn.name})
+    write_robust(out_dir / "_sections.json",
+                 json.dumps(manifest, ensure_ascii=False, indent=2), label="参考")
+    meta = {"name": name, "format": "pdf", "bookType": "academic",
+            "chapterCount": len(sections), "needsOcr": False,
+            "source": "local-file", "formulaPipeline": True}
+    write_robust(out_dir / "_meta.json",
+                 json.dumps(meta, ensure_ascii=False, indent=2), label="参考")
+    print(f"[公式管道] 切章完成：{len(sections)} 节 → 参考/{_safe(name)}/，开始课程生成…")
+    cg = Path(__file__).resolve().parent.parent / "structure" / "course_gen.py"
+    r = subprocess.run([sys.executable, str(cg), str(out_dir), "--book", name], cwd=str(ROOT))
+    if r.returncode != 0:
+        raise SystemExit(f"[公式管道] 课程生成失败（exit={r.returncode}）")
     print(f"[all-local] 完成 → 书库/{_safe(name)}/（可开始逐课教学）")
 
 
@@ -841,6 +1143,7 @@ def main():
     pst = sub.add_parser("selftest")
     pa = sub.add_parser("all"); pa.add_argument("kw"); pa.add_argument("--idx", type=int, nargs="*"); pa.add_argument("--max", type=int, default=None)
     pl = sub.add_parser("all-local"); pl.add_argument("path"); pl.add_argument("--name", default=None)
+    pl.add_argument("--subject", default=None, help="学科 id（math/physics → 公式书走新蒸馏管道）")
     pp = sub.add_parser("progress", help="进度/测验写回与汇总（替代手改 progress.json）")
     pp.add_argument("book")
     pp.add_argument("--next", action="store_true", help="把当前课标记完成并推进到下一课")
@@ -882,7 +1185,7 @@ def main():
     elif args.cmd == "selftest":
         selftest()
     elif args.cmd == "all-local":
-        all_local(args.path, args.name)
+        all_local(args.path, args.name, args.subject)
     elif args.cmd == "all":
         try:
             res, cache = search_all(args.kw, args.idx)

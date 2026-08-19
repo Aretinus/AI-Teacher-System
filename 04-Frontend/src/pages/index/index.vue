@@ -9,11 +9,11 @@
       <view class="section-title">选择学科</view>
       <view class="subject-grid">
         <view class="subject-card" :class="{ active: selectedSubject === '' }" @click="pickSubject('')">
-          <view class="subject-name">全科提问</view>
-          <view class="subject-skill">自动判断学科与课程</view>
+          <view class="subject-name">综合问答</view>
+          <view class="subject-skill">跨学科自由提问</view>
         </view>
         <view
-          v-for="s in subjects"
+          v-for="s in availableSubjects"
           :key="s.id"
           class="subject-card"
           :class="{ active: s.id === selectedSubject }"
@@ -34,7 +34,7 @@
           @click="selectedCourse = ''"
         >
           <view class="style-name">全科问答</view>
-          <view class="style-desc">不限课程，直接提问</view>
+          <view class="style-desc">本学科全知识，不限课程直接提问</view>
         </view>
       </view>
       <view class="course-panel">
@@ -58,7 +58,7 @@
       </view>
     </view>
 
-    <view v-if="selectedSubject" class="section">
+    <view class="section">
       <view class="section-title">授课风格</view>
       <view class="style-grid">
         <view
@@ -142,6 +142,9 @@ export default {
     }
   },
   computed: {
+    availableSubjects() {
+      return (this.subjects || []).filter((s) => s.hasCourses)
+    },
     sessionsOfSubject() {
       return (this.history.sessions || []).filter((s) => s.subject === this.selectedSubject)
     },
@@ -181,7 +184,8 @@ export default {
           this.selectedStyle = styles[0].id
         }
         if (!this.subjectTouched) {
-          this.selectedSubject = (state && state.currentSubject) || ''
+          const cur = (state && state.currentSubject) || ''
+          this.selectedSubject = this.availableSubjects.some((x) => x.id === cur) ? cur : ''
         }
         await this.loadCourses(this.selectedSubject)
       } catch (e) {
@@ -215,8 +219,9 @@ export default {
       this.selectedCourse = c.id
     },
     subjectName(id) {
+      if (!id) return '综合问答'
       const s = this.subjects.find((x) => x.id === id)
-      return s ? s.name : (id || '未选择')
+      return s ? s.name : '未选择'
     },
     oneLine(s) {
       if (!s) return ''

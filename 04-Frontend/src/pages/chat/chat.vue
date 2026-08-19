@@ -193,10 +193,10 @@ export default {
     headerTitle() {
       const s = this.subjects.find((x) => x.id === this.selectedSubject)
       if (this.selectedCourse) return `${s ? s.name : '学科'} · 《${this.selectedCourse}》`
-      return s ? s.name : '全科提问'
+      return s ? s.name : '综合问答'
     },
     emptyTitle() {
-      if (!this.selectedSubject && !this.selectedCourse) return '全科提问（自动判断学科与课程）'
+      if (!this.selectedSubject && !this.selectedCourse) return '综合问答（跨学科自由提问）'
       const s = this.subjects.find((x) => x.id === this.selectedSubject)
       if (this.selectedCourse) return `${s ? s.name : ''} · 课程《${this.selectedCourse}》`
       return `向 ${s ? s.name : ''}教师提问`

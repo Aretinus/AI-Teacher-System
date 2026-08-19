@@ -105,7 +105,11 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/api/subjects', (req, res) => {
-  res.json({ subjects: loadSubjects() });
+  const subjects = loadSubjects().map((s) => ({
+    ...s,
+    hasCourses: listSubjectCourses(s.id).length > 0,
+  }));
+  res.json({ subjects });
 });
 
 app.get('/api/styles', (req, res) => {

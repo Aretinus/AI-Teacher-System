@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "book": "Finite Element Method Lecture Notes-First Edition (Tentative)-A. A. Salih",
+  "current": "第01章_Introduction/第00课_本章导言.md",
+  "total_lessons": 32,
+  "updated": null,
+  "lessons": {
+    "第01章_Introduction/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Introduction",
+      "lesson": "本章导言"
+    },
+    "第01章_Introduction/第01课_1.1.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Introduction",
+      "lesson": "1.1"
+    },
+    "第01章_Introduction/第02课_1.2.3_Weighted_Residual_Method.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Introduction",
+      "lesson": "1.2.3 Weighted Residual Method"
+    },
+    "第02章_Direct_Approach_to_Finite_Element_Method/第01课_2.2_Linear_Spring_System.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Direct Approach to Finite Element Method",
+      "lesson": "2.2 Linear Spring System"
+    },
+    "第02章_Direct_Approach_to_Finite_Element_Method/第02课_2.3_Solution_of_System_of_Equations.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Direct Approach to Finite Element Method",
+      "lesson": "2.3 Solution of System of Equations"
+    },
+    "第02章_Direct_Approach_to_Finite_Element_Method/第03课_2.4_Direct_Approach_to_Steady-Sate_Heat_Conduction_Pr.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Direct Approach to Finite Element Method",
+      "lesson": "2.4 Direct Approach to Steady-Sate Heat Conduction Problem"
+    },
+    "第03章_Calculus_of_Variations/第01课_3.2_Functionals.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.2 Functionals"
+    },
+    "第03章_Calculus_of_Variations/第02课_3.3_First_Variation_of_Functionals.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.3 First Variation of Functionals"
+    },
+    "第03章_Calculus_of_Variations/第03课_3.5_Maxima_and_Minima.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.5 Maxima and Minima"
+    },
+    "第03章_Calculus_of_Variations/第04课_3.5.1_Maxima_and_minima_of_functionals.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.5.1 Maxima and minima of functionals"
+    },
+    "第03章_Calculus_of_Variations/第05课_3.6_The_Simplest_Problem.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.6 The Simplest Problem"
+    },
+    "第03章_Calculus_of_Variations/第06课_3.6.2.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.6.2"
+    },
+    "第03章_Calculus_of_Variations/第07课_3.6.3_Special_cases.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.6.3 Special cases"
+    },
+    "第03章_Calculus_of_Variations/第08课_3.7.1_Variational_problems_with_high-order_derivatives.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.7.1 Variational problems with high-order derivatives"
+    },
+    "第03章_Calculus_of_Variations/第09课_3.8.1_Shortest_distance.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.8.1 Shortest distance"
+    },
+    "第03章_Calculus_of_Variations/第10课_3.8.2_The_brachistochrone_problem.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.8.2 The brachistochrone problem"
+    },
+    "第03章_Calculus_of_Variations/第11课_3.8.3.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.8.3"
+    },
+    "第03章_Calculus_of_Variations/第12课_3.9_Construction_of_Functionals_from_PDEs.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.9 Construction of Functionals from PDEs"
+    },
+    "第03章_Calculus_of_Variations/第13课_3.10.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Calculus of Variations",
+      "lesson": "3.10"
+    },
+    "第04章_Weighted_Residual_Methods/第01课_4.1_Introduction.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Weighted Residual Methods",
+      "lesson": "4.1 Introduction"
+    },
+    "第04章_Weighted_Residual_Methods/第02课_4.2_Point_Collocation_Method.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Weighted Residual Methods",
+      "lesson": "4.2 Point Collocation Method"
+    },
+    "第04章_Weighted_Residual_Methods/第03课_4.3_Subdomain_Collocation_Method.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Weighted Residual Methods",
+      "lesson": "4.3 Subdomain Collocation Method"
+    },
+    "第04章_Weighted_Residual_Methods/第04课_4.4_Least_Square_Method.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Weighted Residual Methods",
+      "lesson": "4.4 Least Square Method"
+    },
+    "第04章_Weighted_Residual_Methods/第05课_4.5_Galerkin_Method.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Weighted Residual Methods",
+      "lesson": "4.5 Galerkin Method"
+    },
+    "第05章_Finite_Element_Method/第01课_5.1.1_Steps_in_FEM.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.1.1 Steps in FEM"
+    },
+    "第05章_Finite_Element_Method/第02课_5.1.2_Selection_of_Elements.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.1.2 Selection of Elements"
+    },
+    "第05章_Finite_Element_Method/第03课_5.1.3_One-dimensional_Linear_Element.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.1.3 One-dimensional Linear Element"
+    },
+    "第05章_Finite_Element_Method/第04课_5.1.4_One-dimensional_Quadratic_Element.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.1.4 One-dimensional Quadratic Element"
+    },
+    "第05章_Finite_Element_Method/第05课_5.2_Two-dimensional_Elements.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.2 Two-dimensional Elements"
+    },
+    "第05章_Finite_Element_Method/第06课_5.2.1_Linear_Triangular_Element.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.2.1 Linear Triangular Element"
+    },
+    "第05章_Finite_Element_Method/第07课_5.2.2_Bilinear_Rectangular_Element.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.2.2 Bilinear Rectangular Element"
+    },
+    "第05章_Finite_Element_Method/第08课_5.3_Finite_Element_Equations.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "Finite Element Method",
+      "lesson": "5.3 Finite Element Equations"
+    }
+  }
+}

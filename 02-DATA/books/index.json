@@ -2,100 +2,12 @@
   "version": "1.0",
   "books": [
     {
-      "id": "feynman-lectures-vol-1",
-      "title": "费恩曼物理学讲义（第一卷）",
-      "subject": "physics",
-      "rawPath": "raw/Physic/费恩曼物理学讲义（英文版）",
-      "rawFile": "费恩曼物理学讲义(第1卷·新千年版·英文版)-[美]费恩曼＆莱顿＆桑兹-2010.pdf",
-      "distilledPath": "distilled/Physic/费恩曼物理学讲义（英文版）"
-    },
-    {
-      "id": "landau-vol-1-mechanics-3rd-ed",
-      "title": "Landau Vol. 1. Mechanics.3rd.Ed",
-      "subject": "physics",
-      "rawPath": "raw/Physic/朗道十卷（英文版）",
-      "rawFile": "Landau Vol. 1. Mechanics.3rd.Ed.pdf",
-      "distilledPath": "distilled/Physic/朗道十卷（英文版）/Landau Vol. 1. Mechanics.3rd.Ed"
-    },
-    {
-      "id": "asymptotic-expansions-erdelyi",
-      "title": "Asymptotic Expansions Erdelyi",
+      "id": "finite-element-method-lecture-notes-first-edition-tentative-a-a-salih",
+      "title": "Finite Element Method Lecture Notes-First Edition (Tentative)-A. A. Salih",
       "subject": "math",
       "rawPath": "",
       "rawFile": "",
-      "distilledPath": "distilled/Math/01-分析/渐近分析（奇异摄动）"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-6-2",
-      "title": "The historical development of quantum theory 6-2",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 6-2"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-1-1",
-      "title": "The historical development of quantum theory 1-1",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 1-1"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-1-2",
-      "title": "The historical development of quantum theory 1-2",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 1-2"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-2",
-      "title": "The historical development of quantum theory 2",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 2"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-3",
-      "title": "The historical development of quantum theory 3",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 3"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-4",
-      "title": "The historical development of quantum theory 4",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 4"
-    },
-    {
-      "id": "asymptotic-expansions-first-edition-tentative-a-erd-lyi",
-      "title": "Asymptotic Expansions-First Edition (Tentative)-A. Erdélyi",
-      "subject": "math",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Math/01-分析/渐近分析（奇异摄动）/Asymptotic Expansions-First Edition (Tentative)-A. Erdélyi"
-    },
-    {
-      "id": "the-historical-development-of-quantum-theory-5-1",
-      "title": "The historical development of quantum theory 5-1",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学/量子力学发展史/The historical development of quantum theory 5-1"
-    },
-    {
-      "id": "量子力学讲义",
-      "title": "量子力学讲义",
-      "subject": "physics",
-      "rawPath": "",
-      "rawFile": "",
-      "distilledPath": "distilled/Physic/量子力学"
+      "distilledPath": "distilled/Math/09-计算数学/数值PDE与有限元/Finite Element Method Lecture Notes-First Edition (Tentative)-A. A. Salih"
     }
   ]
 }

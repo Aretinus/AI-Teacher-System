@@ -4,6 +4,47 @@
 
 ## 问题列表（按时间倒序）
 
+### P25. 蒸馏日志尾部 UnicodeEncodeError（▶ 字符 GBK flush 崩溃）
+- **现象**：teach.py 开头 `print("▶ 正在把…")` 在蒸馏日志末尾报 `UnicodeEncodeError: 'gbk' codec can't encode character '\u25b6'`，但退出码 0、产物正常
+- **根因**：venv_slim python.exe 是转发 shim，经 shim 创建的 stdout 管道编码回退 GBK；print 输出全缓冲到进程退出才 flush，flush 遇 ▶ 崩溃（stderr traceback 混入日志），此时 main 已 return 0
+- **解决**：`teach.py` main() 开头对 `sys.stdout/stderr` 执行 `reconfigure(encoding="utf-8", errors="replace")`；print 加 `flush=True`
+- **状态**：已修复（2026-08-19）
+
+### P24. Windows PowerShell 传中文 JSON body 被 GBK 破坏
+- **现象**：PowerShell `Invoke-RestMethod` POST 含中文的 JSON 触发蒸馏，teach.py 报"文件不存在"
+- **根因**：PowerShell 5.1 管道/参数编码为 GBK，中文路径在请求体中被破坏
+- **解决**：改用 Python `urllib.request`（UTF-8 body）发 POST，或脚本内 `os.walk` 按 ASCII 定位真实路径
+- **状态**：已修复（2026-08-19）
+
+### P23. venv_slim python.exe 是转发 shim（非真 venv）
+- **现象**：每次 python 调用出现 venv_slim + 系统 Python 两个进程（父子链），一度误判为重复蒸馏
+- **根因**：`venv_slim\Scripts\python.exe`（599KB）是转发 shim，运行时再启动系统 Python39（103KB stub）实际执行
+- **解决**：运维上识别该父子链为同一任务，勿重复触发；环境变量（PYTHONUTF8 等）由 shim 转发继承
+- **状态**：已确认（2026-08-19）
+
+### P22. PDF 目录同行编号（3.10）解析失败致章节丢失
+- **现象**：`3.10 Rayleigh–Ritz Method` 同行编号拆不出，3.9 之后及第 4/5 章内容全部丢失
+- **根因**：目录行只匹配 `编号.标题` 的旧正则，同行编号（无点线分隔）不匹配
+- **解决**：增加 `^(\d+(?:\.\d+)*)\s+(.+)$` 拆分；配套修复 `"ontents"` 大小写敏感（全大写 "CONTENTS" 续页被跳过）与 `_clean_heading` 无编号时重复拼接标题
+- **状态**：已修复（2026-08-19，FEM 全本验证 5 章 32 节全对）
+
+### P21. 印刷页码与 PDF 页码存在偏移（offset 校准）
+- **现象**：目录页码（印刷页）与 PDF 实际页不一致，切章错位
+- **根因**：PDF 含封面/前言等非教学页，印刷页码整体后移（FEM 实测 offset=3）
+- **解决**：`_pdf_print_offset` 短语匹配校准——取条目标题前两个实质词在 `printed+offset±1` 页文本层出现为候选，多数票决定 offset
+- **状态**：已修复（2026-08-19）
+
+### P20. 无 Contents 目录的书无法切章
+- **现象**：部分书无文本层 Contents（或有效条目 <3），正文按页码切章失效
+- **解决**：`_md_heading_sections` fallback——按正文 `## Chapter/Clapter/…apter N` 宽容正则 `^##\s*[Cc][Hh]?[Aa]?[Pp]?[Tt]?[Ee][Rr]\s*(\d+)` 切章、其余 `## ` 为节；两法共存，Contents 优先
+- **状态**：已实现（2026-08-19）
+
+### P19. P2T 对英文公式书 OCR 噪声质检漏检
+- **现象**：页 45 等段（如 "Weightedrsiul metoi s geiclss"）英文词内字母错乱，质检 score=0 未命中
+- **根因**：质检规则（text_garbage/orphan_chars/long_cjk_run）面向中文书/孤立字符，英文词内乱码不触发现有模式
+- **解决**：暂接受（硬件受限只能用 P2T）；后续可加"词内非字母比例 / 词典校验"类规则
+- **状态**：已知限制（2026-08-19）
+
 ### P17. 一键更新误报"courseDir 不存在"为失效
 - **现象**：math/calculus-tutor 无课程书籍（仅问答模式），refresh 校验 courseDir 报 invalid
 - **解决**：courseDir 缺失降级为 info 级提示（noCourse："未配置课程书籍（仅问答模式）"），仅缺 SKILL.md 才算失效
