@@ -316,16 +316,16 @@ function edgeTtsOnce(text, voice, res) {
 }
 
 async function edgeTts(text, voice, res) {
-  // 微软免费 TTS 服务不稳定，重试 2 次；仍失败则返回明确错误，由前端提示并切换默认音色
+  // 微软免费 TTS 服务不稳定：重试 1 次、短等待即失败，避免拖慢语音交互；失败由前端提示
   let lastError = '';
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     const r = await edgeTtsOnce(text, voice, res);
     if (r.ok) {
       res.set({ 'Content-Type': 'audio/mpeg', 'Content-Length': r.buf.length });
       return res.send(r.buf);
     }
     lastError = r.error;
-    if (i < 2) await new Promise((ok) => setTimeout(ok, 1000 * (i + 1)));
+    if (i < 1) await new Promise((ok) => setTimeout(ok, 800));
   }
   if (!res.headersSent) res.status(502).json({ error: lastError });
 }

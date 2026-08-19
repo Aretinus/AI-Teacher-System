@@ -221,7 +221,10 @@ onLoad(options) {
   onShow() {
     const vs = voiceCall.state
     this.voiceActive = vs.active
-    if (vs.active && vs.sessionId && vs.sessionId === this.conversationId && vs.messages.length > this.messages.length) {
+    // 通话中或刚结束：语音产生的用户/回复消息同步回对话页。
+    // sessionId 与本页会话一致，或本页尚无会话（新对话页直接语音通话）时，接管语音会话并重载
+    if (vs.sessionId && vs.messages.length > this.messages.length && (!this.conversationId || vs.sessionId === this.conversationId)) {
+      this.conversationId = vs.sessionId
       this.messages = []
       this.loadSession(vs.sessionId)
     }

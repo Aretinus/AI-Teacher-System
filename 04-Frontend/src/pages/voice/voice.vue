@@ -20,13 +20,18 @@
     </view>
 
     <scroll-view scroll-y class="v-log" :scroll-into-view="logAnchor">
-      <view v-if="!messages.length" class="v-log-empty">
+      <view v-if="!messages.length && !listeningText" class="v-log-empty">
         <text>我在听，请开始说话，说完停顿一下即可</text>
       </view>
       <view v-for="(m, i) in messages" :key="i" :id="'log-' + i" class="v-log-item" :class="m.role">
         <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }}</view>
         <view class="v-log-text">{{ m.content }}</view>
       </view>
+      <view v-if="listeningText" :id="'log-' + messages.length" class="v-log-item user">
+        <view class="v-log-label">你 <text v-if="phaseLabel" class="v-live-flag">{{ phaseLabel }}</text></view>
+        <view class="v-log-text v-log-live">{{ listeningText }}<text v-if="phase === 'listening'" class="v-cursor">▌</text></view>
+      </view>
+      <view v-if="notice" class="v-notice">{{ notice }}</view>
     </scroll-view>
 
     <view v-if="error" class="v-error">{{ error }}</view>
@@ -59,6 +64,22 @@ export default {
     },
     error() {
       return this.state.error
+    },
+    listeningText() {
+      return this.state.listeningText
+    },
+    phase() {
+      return this.state.phase
+    },
+    phaseLabel() {
+      const p = this.state.phase
+      if (p === 'listening') return '聆听中'
+      if (p === 'thinking') return '思考中'
+      if (p === 'speaking') return '播报中'
+      return ''
+    },
+    notice() {
+      return this.state.notice
     },
     phaseText() {
       return PHASE_TEXT[this.state.phase] || ''
@@ -219,10 +240,11 @@ export default {
 .v-log {
   flex: 1;
   min-height: 0;
-  margin: 20rpx 30rpx 0;
+  width: calc(100% - 60rpx);
+  margin: 20rpx auto 0;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 24rpx;
-  padding: 20rpx;
+  padding: 10rpx 0;
   box-sizing: border-box;
 }
 .v-log-empty {
@@ -231,8 +253,14 @@ export default {
   font-size: 26rpx;
   padding: 40rpx 0;
 }
+.v-notice {
+  text-align: center;
+  color: #fcd34d;
+  font-size: 24rpx;
+  padding: 12rpx 0 4rpx;
+}
 .v-log-item {
-  margin-bottom: 18rpx;
+  margin: 0 20rpx 18rpx;
 }
 .v-log-item.user {
   text-align: right;
@@ -255,6 +283,30 @@ export default {
   border-radius: 16rpx;
   padding: 12rpx 20rpx;
   color: #f3f4f6;
+  box-sizing: border-box;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+.v-log-live {
+  background: rgba(52, 211, 153, 0.22);
+  border: 1rpx solid rgba(52, 211, 153, 0.5);
+  color: #d1fae5;
+}
+.v-live-flag {
+  font-size: 20rpx;
+  color: #6ee7b7;
+  margin-left: 8rpx;
+}
+.v-cursor {
+  display: inline-block;
+  margin-left: 2rpx;
+  color: #6ee7b7;
+  animation: blinkCursor 1s infinite;
+}
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 .v-error {
   flex-shrink: 0;

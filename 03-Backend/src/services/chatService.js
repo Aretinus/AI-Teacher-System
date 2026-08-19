@@ -127,7 +127,18 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
 
 async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, rawResponse, effectiveCourse, debug, skipUserPush }) {
   const parsed = parseTeachingResponse(rawResponse);
-  const replyContent = parsed?.response || rawResponse;
+  let replyContent;
+  if (parsed?.response && String(parsed.response).trim()) {
+    replyContent = parsed.response;
+  } else if (parsed && parsed.type === 'teaching-response') {
+    // 模型输出了 teaching-response JSON 但 response 字段为空/缺失：不要拿 JSON 当回复
+    replyContent = '（老师正在组织回复，请再说一遍或换个问法～）';
+  } else if (rawResponse && rawResponse.trim()) {
+    replyContent = rawResponse;
+  } else {
+    // 模型完全没输出：兜底
+    replyContent = '（老师刚才没有回应，请再说一遍，或换个问题～）';
+  }
 
   if (debug) {
     return { parsed, replyContent, nextState: loadState(userId), summary: null, debug: true };

@@ -4,6 +4,24 @@
 
 ## 问题列表（按时间倒序）
 
+### P28. H5 scroll-view 的 padding 失效导致容器贴边不对称
+- **现象**：语音通话页文本区域容器左侧距屏幕约 1cm、右侧完全贴进屏幕边缘，左右不对称
+- **根因**：uni-app H5 的 scroll-view 内 padding 计算不可靠（margin 生效但 padding 未按预期参与宽度），右侧内容贴边
+- **解决**：容器改用 `width: calc(100% - 60rpx)` + `margin: 20rpx auto 0` 显式居中，左右对称；配合消息条目 `margin: 0 20rpx` 统一气泡边距
+- **状态**：已修复（2026-08-19）
+
+### P27. 模型偶发输出空回复（teaching-response JSON 的 response 字段为空）
+- **现象**：对「继续」「嗯」等超短消息，AI 偶尔返回空内容；后端日志显示模型输出 ```json 包裹的 teaching-response（违反 prompt 硬性要求），`response.completed` 的 content 恒为空，部分请求 response 字段缺失/为空
+- **根因**：模型对无上下文短消息只输出状态信息（knowledgePoints/recentErrors），未生成教学文本；后端 `parsed?.response || rawResponse` 逻辑在 parsed 成功但 response 空时会拿整个 JSON 当回复（或全空）
+- **解决**：三层兜底——prompt 硬性要求 response 必须非空（无论消息多短）；后端 parsed 无 response 时给引导文案而非 JSON；前端再兜一层（空内容/JSON 开头均拦截）
+- **状态**：已修复（2026-08-19）
+
+### P26. Chrome Web Speech 语音识别依赖 Google 服务、国内网络不通时静默失败
+- **现象**：语音通话识别器正常启动（recog started）但无任何结果，控制台反复 `recog error: network`，UI 无反馈（原代码静默重启="没反应"）
+- **根因**：Chrome 的 Web Speech API 走 Google 在线语音服务（speech-api 端点），国内网络不可达；系统代理（ProxyEnable）对 Chrome 的识别请求不总是生效
+- **解决**：开启系统代理（127.0.0.1:10808）+ 一键脚本以 `--proxy-server=http://127.0.0.1:10808` 启动独立 Chrome 实例强制走代理；Edge 的识别走微软服务国内直连可达（备选）
+- **状态**：已修复（2026-08-19）
+
 ### P25. 蒸馏日志尾部 UnicodeEncodeError（▶ 字符 GBK flush 崩溃）
 - **现象**：teach.py 开头 `print("▶ 正在把…")` 在蒸馏日志末尾报 `UnicodeEncodeError: 'gbk' codec can't encode character '\u25b6'`，但退出码 0、产物正常
 - **根因**：venv_slim python.exe 是转发 shim，经 shim 创建的 stdout 管道编码回退 GBK；print 输出全缓冲到进程退出才 flush，flush 遇 ▶ 崩溃（stderr traceback 混入日志），此时 main 已 return 0

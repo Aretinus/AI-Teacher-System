@@ -16,6 +16,10 @@ let interimText = ''
 let lastResultAt = 0
 let silenceTimer = null
 let restarting = false
+let recogState = 'idle' // idle | starting | recognizing | stopped | error
+let notice = '' // 用户可见的识别状态提示（无声音/网络异常等）
+let stopAutoRestart = false // 权限被拒等不可恢复错误：停止自动重启
+let recogRetries = 0 // 网络类错误连续重试计数
 
 let ttsQueue = []
 let ttsIndex = 0
@@ -39,8 +43,17 @@ function emit() {
     subject,
     course,
     messages: messages.slice(),
+    listeningText: (finalText + interimText).trim(),
+    recogState,
+    notice,
     error: lastError,
   })
+}
+
+function setRecogState(s, note) {
+  recogState = s
+  if (note !== undefined) notice = note
+  emit()
 }
 
 function setPhase(p) {
@@ -78,8 +91,8 @@ function splitSentences(text) {
   return segs
 }
 
-function restartListening() {
-  if (!active || phase !== 'listening') return
+function restartListening(silent) {
+  if (!active || (phase !== 'listening' && phase !== 'speaking')) return
   if (restarting) return
   restarting = true
   clearSilenceTimer()
@@ -88,13 +101,16 @@ function restartListening() {
       try { recog.stop() } catch (e) {}
     }
     recog = createRecog()
+    stopAutoRestart = false
+    if (!silent) setRecogState('starting', '正在启动语音识别…')
     recog.start()
     finalText = ''
     interimText = ''
+    console.log('[voiceCall] recog.start() @', new Date().toLocaleTimeString())
   } catch (e) {
     restarting = false
     lastError = '语音引擎启动失败：' + e.message
-    emit()
+    setRecogState('error', lastError)
   }
 }
 
@@ -116,6 +132,21 @@ function hasContent(text) {
   return stripFillers(text)
     .replace(/[\s,，。.！!？?；;、…：:]+/g, '')
     .trim().length > 0
+}
+
+// 判断用户语音是否要求打断播报：需有实质内容、足够长、且不是 AI 自己声音的回声
+function shouldInterrupt(text, speakingText) {
+  const clean = stripFillers(text).replace(/\s+/g, '')
+  if (clean.length < 3) return false // 短应声/噪声，不打断
+  const spk = String(speakingText || '').replace(/\s+/g, '')
+  if (!spk) return true
+  // 回声特征：用户内容被 AI 正在播报的文本包含，或字符重合度过高
+  if (spk.includes(clean)) return false
+  const setA = new Set(clean)
+  let shared = 0
+  for (const ch of spk) if (setA.has(ch)) shared++
+  const ratio = shared / Math.max(1, clean.length)
+  return ratio <= 0.85
 }
 
 // 根据内容判断一句话的完结程度（而不是只靠静音时长）
@@ -174,12 +205,43 @@ function createRecog() {
 
   r.onresult = (e) => {
     lastResultAt = Date.now()
+    if (recogState !== 'recognizing') setRecogState('recognizing', '')
+    // interim 结果是累积快照（同一段话每次事件都会携带最新完整文本），必须重算而非 +=
+    let interim = ''
     for (let i = e.resultIndex; i < e.results.length; i++) {
       if (e.results[i].isFinal) finalText += e.results[i][0].transcript
-      else interimText += e.results[i][0].transcript
+      else interim += e.results[i][0].transcript
+    }
+    interimText = interim
+    const combined = (finalText + interimText).trim()
+    // AI 播报期间监听：评估用户说话内容，有实质新问题才打断播报并立即回答
+    if (phase === 'speaking' && hasContent(combined) && shouldInterrupt(combined, ttsQueue.join(''))) {
+      console.log('[voiceCall] interrupt decision: combined="' + combined + '" => INTERRUPT')
+      clearSilenceTimer()
+      try { recog.stop() } catch (e) {}
+      const t = combined
+      finalText = ''
+      interimText = ''
+      console.log('[voiceCall] interrupt during speaking: "' + t + '"')
+      stopTTS()
+      setPhase('thinking')
+      emit()
+      sendFinal(t)
+      return
+    }
+    if (phase === 'speaking' && hasContent(combined)) {
+      console.log('[voiceCall] speaking-utterance (no interrupt): "' + combined + '" len=' + stripFillers(combined).length)
     }
     emit()
     scheduleSilenceCheck()
+  }
+
+  r.onstart = () => {
+    restarting = false
+    lastResultAt = Date.now()
+    setRecogState('recognizing', '')
+    scheduleSilenceCheck()
+    console.log('[voiceCall] recog started, waiting for speech…')
   }
 
   r.onspeechstart = () => {
@@ -193,19 +255,52 @@ function createRecog() {
   }
 
   r.onerror = (e) => {
+    console.warn('[voiceCall] recog error:', e.error)
     if (!active) return
-    if (e.error === 'no-speech' || e.error === 'aborted' || e.error === 'network') {
+    if (e.error === 'no-speech') {
+      // 没听到声音：给用户可见提示，短暂后重启识别器（AI 播报期间静默重启、不打扰）
+      restarting = false
+      if (phase === 'speaking') {
+        setTimeout(() => restartListening(true), 600)
+        return
+      }
+      setRecogState('stopped', '没有听清，请再试一次')
+      setTimeout(restartListening, 600)
+      return
+    }
+    if (e.error === 'network' || e.error === 'service-not-allowed') {
+      // Chrome 语音识别走 Google 在线服务，网络不可达时静默失败——必须提示
+      restarting = false
+      recogRetries++
+      if (recogRetries >= 3) {
+        stopAutoRestart = true
+        setRecogState('error', '语音识别服务连接失败（浏览器依赖在线语音服务，请检查网络/代理后重新进入通话）')
+        return
+      }
+      setRecogState('error', '语音识别服务连接失败（' + recogRetries + '/3），自动重试中…')
+      setTimeout(restartListening, 2000)
+      return
+    }
+    if (e.error === 'aborted') {
       restarting = false
       if (phase === 'listening') setTimeout(restartListening, 400)
       return
     }
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      lastError = '麦克风权限被拒绝，请在浏览器地址栏允许麦克风后重试'
+      stopAutoRestart = true
+      setRecogState('error', lastError)
+      emit()
+      return
+    }
     lastError = '语音识别错误：' + (e.error || 'unknown')
-    emit()
+    setRecogState('error', lastError)
   }
 
   r.onend = () => {
     restarting = false
     if (!active) return
+    if (stopAutoRestart) return
     if (phase === 'listening') {
       const t = finalText.trim()
       if (t) {
@@ -230,6 +325,8 @@ function finalizeUtterance() {
 }
 
 async function sendFinal(text) {
+  finalText = ''
+  interimText = ''
   messages.push({ role: 'user', content: text })
   emit()
   try {
@@ -251,7 +348,13 @@ async function sendFinal(text) {
           },
           onDelta: () => {},
           onDone: (evaluation, full, sid, resolvedSubject, replyContent) => {
-            const content = replyContent || full || '（空回复）'
+            let content = replyContent || full || ''
+            if (!content.trim()) content = '（老师刚才没有回应，请再说一遍，或换个问题～）'
+            // 模型偶发把 teaching-response JSON 当回复输出（response 字段为空时后端兜底，
+            // 此处再兜一层：内容看起来是 JSON 对象时提示重说）
+            if (content.trim().startsWith('{') || content.trim().startsWith('```json')) {
+              content = '（老师正在组织回复，请再说一遍或换个问法～）'
+            }
             messages.push({ role: 'assistant', content })
             emit()
             playReply(content)
@@ -297,6 +400,7 @@ async function playReply(text) {
   if (!active) return
   stopTTS()
   setPhase('speaking')
+  restartListening(true) // 播报期间同步监听麦克风，用户开口即可打断
   const token = ++ttsToken
   ttsQueue = splitSentences(text)
   ttsIndex = 0
@@ -350,7 +454,7 @@ function stopTTS() {
 
 export const voiceCall = {
   get state() {
-    return { active, phase, sessionId, subject, course, messages: messages.slice(), error: lastError }
+    return { active, phase, sessionId, subject, course, messages: messages.slice(), listeningText: (finalText + interimText).trim(), recogState, notice, error: lastError }
   },
   start({ subject: s, course: c, conversationId }) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -362,6 +466,10 @@ export const voiceCall = {
     sessionId = conversationId || ''
     messages = []
     lastError = ''
+    notice = ''
+    recogState = 'idle'
+    stopAutoRestart = false
+    recogRetries = 0
     abortController = null
     setPhase('listening')
     setTimeout(restartListening, 200)
@@ -375,6 +483,8 @@ export const voiceCall = {
       try { recog.stop() } catch (e) {}
       recog = null
     }
+    finalText = ''
+    interimText = ''
     if (abortController) {
       try { abortController.abort() } catch (e) {}
       abortController = null
