@@ -9,7 +9,7 @@ const { loadSubjects } = require('./services/routerService');
 const { loadState, saveState, loadProfile, loadHistory, saveSessionDetail, loadSessionDetail, deleteSession } = require('./services/dataService');
 const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
-const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
+const { scanSubjectBooks, startDistill, getJob, listLibrarySubjects } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
 const { listLogs, getLog } = require('./services/logService');
 const { listStyles } = require('./services/stylesService');
@@ -105,11 +105,16 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/api/subjects', (req, res) => {
-  const subjects = loadSubjects().map((s) => ({
+  const registered = loadSubjects().map((s) => ({
     ...s,
     hasCourses: listSubjectCourses(s.id).length > 0,
   }));
-  res.json({ subjects });
+  // 合并书库实时学科（未注册文件夹）：通用教学模式，无技能/课程
+  const regIds = new Set(registered.map((s) => String(s.id).toLowerCase()));
+  const extra = listLibrarySubjects()
+    .filter((s) => !regIds.has(String(s.id).toLowerCase()))
+    .map((s) => ({ id: s.id, name: s.name, bookDir: s.bookDir, skills: [], defaultSkill: '', registered: false, hasCourses: false }));
+  res.json({ subjects: [...registered, ...extra] });
 });
 
 app.get('/api/styles', (req, res) => {
@@ -201,6 +206,11 @@ app.delete('/api/sessions/:sessionId', (req, res) => {
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 app.use('/uploads', express.static(UPLOAD_DIR));
 
+// 书库学科清单（已注册 + 书库目录实时扫描），供书籍加工页选择学科
+app.get('/api/books/subjects', (req, res) => {
+  res.json({ subjects: listLibrarySubjects() });
+});
+
 app.post('/api/books/scan', (req, res) => {
   try {
     const { subject, src } = req.body || {};
@@ -238,9 +248,10 @@ app.get('/api/courses', (req, res) => {
   res.json({ courses: listSubjectCourses(subject) });
 });
 
-app.post('/api/ocr/scan', (req, res) => {
+app.post('/api/ocr/scan', async (req, res) => {
   try {
-    res.json({ books: scanRaw((req.body || {}).subject || '') });
+    const books = await scanRaw((req.body || {}).subject || '');
+    res.json({ books });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }

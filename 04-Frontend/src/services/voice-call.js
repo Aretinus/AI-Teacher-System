@@ -1,4 +1,4 @@
-import { streamChat } from '@/api'
+import { streamChat, getSession } from '@/api'
 import { API_BASE } from '@/config'
 import { onTtsFail } from '@/services/tts'
 
@@ -27,6 +27,7 @@ let ttsAudio = null
 let ttsToken = 0
 
 let abortController = null
+let interrupted = false // 用户手动打断：抑制后续错误兜底消息
 
 const SILENCE_BASE_MS = 650 // 明确完结（标点/语气词）的基础静音判定
 const SILENCE_PLAIN_MS = 1800 // 无标点长句：给足思考时间
@@ -92,7 +93,7 @@ function splitSentences(text) {
 }
 
 function restartListening(silent) {
-  if (!active || (phase !== 'listening' && phase !== 'speaking')) return
+  if (!active || phase !== 'listening') return
   if (restarting) return
   restarting = true
   clearSilenceTimer()
@@ -121,6 +122,16 @@ function clearSilenceTimer() {
   }
 }
 
+// 停止语音识别并丢弃半截内容（AI 播报期间不收录麦克风，避免把 AI 声音当作用户输入）
+function stopRecog() {
+  clearSilenceTimer()
+  try {
+    if (recog) recog.stop()
+  } catch (e) {}
+  finalText = ''
+  interimText = ''
+}
+
 function stripFillers(text) {
   return String(text)
     .replace(/(嗯|呃|啊|哦|额|em+|那个|这个|就是说|就是|然后|那么|那|反正|其实)/g, '')
@@ -132,21 +143,6 @@ function hasContent(text) {
   return stripFillers(text)
     .replace(/[\s,，。.！!？?；;、…：:]+/g, '')
     .trim().length > 0
-}
-
-// 判断用户语音是否要求打断播报：需有实质内容、足够长、且不是 AI 自己声音的回声
-function shouldInterrupt(text, speakingText) {
-  const clean = stripFillers(text).replace(/\s+/g, '')
-  if (clean.length < 3) return false // 短应声/噪声，不打断
-  const spk = String(speakingText || '').replace(/\s+/g, '')
-  if (!spk) return true
-  // 回声特征：用户内容被 AI 正在播报的文本包含，或字符重合度过高
-  if (spk.includes(clean)) return false
-  const setA = new Set(clean)
-  let shared = 0
-  for (const ch of spk) if (setA.has(ch)) shared++
-  const ratio = shared / Math.max(1, clean.length)
-  return ratio <= 0.85
 }
 
 // 根据内容判断一句话的完结程度（而不是只靠静音时长）
@@ -213,25 +209,6 @@ function createRecog() {
       else interim += e.results[i][0].transcript
     }
     interimText = interim
-    const combined = (finalText + interimText).trim()
-    // AI 播报期间监听：评估用户说话内容，有实质新问题才打断播报并立即回答
-    if (phase === 'speaking' && hasContent(combined) && shouldInterrupt(combined, ttsQueue.join(''))) {
-      console.log('[voiceCall] interrupt decision: combined="' + combined + '" => INTERRUPT')
-      clearSilenceTimer()
-      try { recog.stop() } catch (e) {}
-      const t = combined
-      finalText = ''
-      interimText = ''
-      console.log('[voiceCall] interrupt during speaking: "' + t + '"')
-      stopTTS()
-      setPhase('thinking')
-      emit()
-      sendFinal(t)
-      return
-    }
-    if (phase === 'speaking' && hasContent(combined)) {
-      console.log('[voiceCall] speaking-utterance (no interrupt): "' + combined + '" len=' + stripFillers(combined).length)
-    }
     emit()
     scheduleSilenceCheck()
   }
@@ -258,12 +235,8 @@ function createRecog() {
     console.warn('[voiceCall] recog error:', e.error)
     if (!active) return
     if (e.error === 'no-speech') {
-      // 没听到声音：给用户可见提示，短暂后重启识别器（AI 播报期间静默重启、不打扰）
+      // 没听到声音：给用户可见提示，短暂后重启识别器
       restarting = false
-      if (phase === 'speaking') {
-        setTimeout(() => restartListening(true), 600)
-        return
-      }
       setRecogState('stopped', '没有听清，请再试一次')
       setTimeout(restartListening, 600)
       return
@@ -325,9 +298,10 @@ function finalizeUtterance() {
 }
 
 async function sendFinal(text) {
+  interrupted = false
   finalText = ''
   interimText = ''
-  messages.push({ role: 'user', content: text })
+  messages.push({ role: 'user', content: text, at: new Date().toISOString() })
   emit()
   try {
     abortController = new AbortController()
@@ -355,13 +329,14 @@ async function sendFinal(text) {
             if (content.trim().startsWith('{') || content.trim().startsWith('```json')) {
               content = '（老师正在组织回复，请再说一遍或换个问法～）'
             }
-            messages.push({ role: 'assistant', content })
+            messages.push({ role: 'assistant', content, at: new Date().toISOString() })
             emit()
             playReply(content)
           },
           onError: (msg) => {
+            if (interrupted) return
             lastError = msg
-            messages.push({ role: 'assistant', content: '（语音回复失败：' + msg + '）' })
+            messages.push({ role: 'assistant', content: '（语音回复失败：' + msg + '）', at: new Date().toISOString() })
             emit()
             resumeListeningAfterError()
           },
@@ -371,19 +346,19 @@ async function sendFinal(text) {
       if (!result || !result.timedOut || attempt >= MAX_ATTEMPTS) break
     }
     abortController = null
-    if (result && result.timedOut) {
+    if (!interrupted && result && result.timedOut) {
       lastError = '回复超时'
       if (active) {
-        messages.push({ role: 'assistant', content: '（语音回复失败：回复超时，请再说一次）' })
+        messages.push({ role: 'assistant', content: '（语音回复失败：回复超时，请再说一次）', at: new Date().toISOString() })
         emit()
         resumeListeningAfterError()
       }
     }
   } catch (e) {
     abortController = null
-    if (active) {
+    if (active && !interrupted) {
       lastError = e.message
-      messages.push({ role: 'assistant', content: '（语音回复失败：' + e.message + '）' })
+      messages.push({ role: 'assistant', content: '（语音回复失败：' + e.message + '）', at: new Date().toISOString() })
       emit()
       resumeListeningAfterError()
     }
@@ -400,7 +375,7 @@ async function playReply(text) {
   if (!active) return
   stopTTS()
   setPhase('speaking')
-  restartListening(true) // 播报期间同步监听麦克风，用户开口即可打断
+  stopRecog() // 播报期间停止收录麦克风，避免 AI 声音被识别成用户输入
   const token = ++ttsToken
   ttsQueue = splitSentences(text)
   ttsIndex = 0
@@ -471,9 +446,22 @@ export const voiceCall = {
     stopAutoRestart = false
     recogRetries = 0
     abortController = null
+    interrupted = false
     setPhase('listening')
     setTimeout(restartListening, 200)
     emit()
+    // 载入当前会话已有文本，与对话页同步显示
+    if (sessionId) {
+      getSession(sessionId)
+        .then((d) => {
+          if (!active || !d || !Array.isArray(d.messages)) return
+          messages = d.messages
+            .filter((m) => m.role === 'user' || m.role === 'assistant')
+            .map((m) => ({ role: m.role, content: m.content || '', at: m.at }))
+          emit()
+        })
+        .catch(() => { /* 会话加载失败不阻塞通话 */ })
+    }
     return { ok: true }
   },
   end() {
@@ -495,6 +483,22 @@ export const voiceCall = {
   speakReply(text) {
     if (!active) return false
     playReply(text)
+    return true
+  },
+  // 手动打断：思考中 → 中止请求；播报中 → 停止声音；随后重新聆听
+  interrupt() {
+    if (!active || (phase !== 'speaking' && phase !== 'thinking')) return false
+    interrupted = true
+    if (phase === 'speaking') stopTTS()
+    stopRecog()
+    if (abortController) {
+      try { abortController.abort() } catch (e) {}
+      abortController = null
+    }
+    setPhase('listening')
+    setRecogState('starting', '已打断，正在聆听…')
+    setTimeout(() => restartListening(), 100)
+    emit()
     return true
   },
   onEvent(cb) {

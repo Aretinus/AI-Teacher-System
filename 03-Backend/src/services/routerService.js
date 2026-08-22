@@ -48,7 +48,8 @@ function routeAll({ subject, message }) {
   }
   if (subject) {
     const s = findSubject(subject);
-    if (!s) return { route: null, candidates: loadSubjects().map((x) => x.id), reason: 'subject-not-supported' };
+    // 未注册学科（书库实时新增）：通用教学模式，无技能/课程上下文，仅按学科名教学
+    if (!s) return { route: { subject, tutor: null, mode: 'manual-generic', confidence: 1.0 } };
     return { route: { subject: s.id, tutor: s.defaultSkill || s.skills[0], mode: 'manual', confidence: 1.0 } };
   }
   const detected = detectSubject(message);

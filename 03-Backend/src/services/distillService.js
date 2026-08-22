@@ -23,17 +23,70 @@ function safeName(name) {
   return s || 'untitled';
 }
 
-// 学科 id → 书库顶层目录（raw/ocr 镜像），取自 subjects/index.json 的 bookDir
+// 学科 id → 书库顶层目录（raw/ocr 镜像）：优先取 subjects/index.json 的 bookDir；
+// 未注册学科（书库实时新增的文件夹）直接把学科名当目录名
 function bookDirOf(subject) {
   const id = String(subject || '').trim();
   if (!id) return null;
   try {
     const idx = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8'));
     const s = (idx.subjects || []).find((x) => x.id === id);
-    return (s && s.bookDir) || null;
-  } catch (e) {
-    return null;
+    if (s && s.bookDir) return s.bookDir;
+  } catch (e) { /* 索引缺失时按目录名处理 */ }
+  return id;
+}
+
+// 书库文件夹名 → 中文名（未注册学科显示用；未收录的文件夹原样显示）
+const FOLDER_NAMES = {
+  math: '数学',
+  physic: '物理',
+  physics: '物理',
+  chemistry: '化学',
+  biology: '生物',
+  economics: '经济学',
+  literature: '文学',
+  philosophy: '哲学',
+  history: '历史',
+  taoism: '道家',
+  confucianism: '儒家',
+  buddhism: '佛学',
+  traditionalchinesemedicine: '中医',
+  psychology: '心理学',
+  sociology: '社会学',
+  computerScience: '计算机科学',
+};
+
+// 书库学科清单：已注册学科 + 书库三层顶层目录并集中未注册的文件夹（实时反映书库变化）
+function listLibrarySubjects() {
+  let registered = [];
+  try {
+    registered = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8')).subjects || [];
+  } catch (e) { /* 无索引时全部视为未注册 */ }
+  const out = [];
+  const seen = new Set();
+  for (const s of registered) {
+    out.push({ id: s.id, name: s.name || s.id, bookDir: s.bookDir || null, registered: true });
+    seen.add(String(s.id).toLowerCase());
+    if (s.bookDir) seen.add(String(s.bookDir).toLowerCase());
   }
+  const dirs = new Set();
+  for (const layer of ['raw', 'ocr', 'distilled']) {
+    let entries;
+    try {
+      entries = fs.readdirSync(path.join(BOOKS_DIR, layer), { withFileTypes: true });
+    } catch (e) {
+      continue;
+    }
+    for (const e of entries) {
+      if (e.isDirectory() && !e.name.startsWith('.') && !e.name.startsWith('_')) dirs.add(e.name);
+    }
+  }
+  for (const d of [...dirs].sort()) {
+    if (seen.has(d.toLowerCase())) continue;
+    const name = FOLDER_NAMES[d.toLowerCase()] || d;
+    out.push({ id: d, name, bookDir: d, registered: false });
+  }
+  return out;
 }
 
 // 产物判定：新产物有 progress.json；旧产物无 progress.json，但目录内有 00_/01_… 编号条目（章节目录、目录整理）
@@ -111,7 +164,7 @@ function scanSubjectBooks(subject, src) {
           file: full,
           folder: relDir ? relDir.split('/').slice(1).join('/') : '',
           ext,
-          sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024),
+          sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024 * 100) / 100,
           destPath: di.destPath,
           distilledDone: di.distilledDone,
           needOcr,
@@ -313,4 +366,4 @@ function appendBook(book) {
   fs.writeFileSync(BOOKS_INDEX, JSON.stringify(index, null, 2), 'utf8');
 }
 
-module.exports = { scanSubjectBooks, startDistill, getJob, appendBook };
+module.exports = { scanSubjectBooks, startDistill, getJob, appendBook, listLibrarySubjects };

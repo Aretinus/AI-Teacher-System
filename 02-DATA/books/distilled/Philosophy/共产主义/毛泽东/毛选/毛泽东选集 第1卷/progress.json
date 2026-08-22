@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "book": "毛泽东选集 第1卷",
+  "current": "第01章_毛泽东选集（第一卷）/第01课_矛盾论.md",
+  "total_lessons": 1,
+  "updated": null,
+  "lessons": {
+    "第01章_毛泽东选集（第一卷）/第01课_矛盾论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东选集（第一卷）",
+      "lesson": "矛盾论"
+    }
+  }
+}

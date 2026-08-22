@@ -62,6 +62,7 @@
               {{ ttsMsgId === m.id ? '停止' : '朗读' }}
             </text>
           </view>
+          <view v-if="m.at && !(m.role === 'assistant' && m.streaming)" class="msg-time">{{ fmtTime(m.at) }}</view>
         </view>
       </view>
 
@@ -130,7 +131,7 @@
           <view v-if="!sessionHistory.length" class="panel-empty">暂无会话记录</view>
           <view v-for="s in sessionHistory" :key="s.sessionId" class="panel-item" @click="loadSessionFromHistory(s)">
             <view class="panel-item-head">
-              <text class="panel-item-date">{{ s.date }}</text>
+              <text class="panel-item-date">{{ fmtTime(s.lastAt || s.date) }}</text>
               <text v-if="s.knowledgePoint" class="panel-item-kp">{{ s.knowledgePoint }}</text>
             </view>
             <view class="panel-item-summary">{{ oneLine(s.summary) }}</view>
@@ -202,12 +203,22 @@ export default {
       return `向 ${s ? s.name : ''}教师提问`
     },
     samplePrompt() {
-      return this.selectedSubject === 'physics'
-        ? '卫星为什么不会掉下来？'
-        : '为什么导数表示变化率？'
+      const prompts = {
+        math: '为什么导数表示变化率？',
+        physics: '卫星为什么不会掉下来？',
+        Economics: '供需关系是怎么决定价格的？',
+        Literature: '《小王子》里的玫瑰象征着什么？',
+        Philosophy: '忒修斯之船悖论说明了什么？',
+        Taoism: '道家说的“无为”是不作为吗？',
+        TraditionalChineseMedicine: '中医的阴阳五行是什么？',
+      }
+      if (prompts[this.selectedSubject]) return prompts[this.selectedSubject]
+      const s = this.subjects.find((x) => x.id === this.selectedSubject)
+      return s && s.name ? `我想入门${s.name}，应该从哪里学起？` : '帮我制定一个学习计划'
     },
   },
 onLoad(options) {
+      voiceCall.onEvent(this.onVoiceEvent)
       this.loadSubjects().then(() => {
         this.selectedSubject = options.subject || ''
         this.selectedStyle = options.style || 'standard'
@@ -232,6 +243,7 @@ onLoad(options) {
     if (!this.ttsVoices.length) this.loadTtsVoices()
   },
   onUnload() {
+    voiceCall.offEvent(this.onVoiceEvent)
     this.streaming = false
     this.stopTTS()
     this.stopPreview()
@@ -319,9 +331,10 @@ onLoad(options) {
         if (detail && detail.messages && detail.messages.length) {
           for (const m of detail.messages) {
             if (m.role === 'user' || m.role === 'assistant') {
-              this.pushMessage(m.role, m.content || '')
+              this.pushMessage(m.role, m.content || '', { at: m.at, attachments: m.attachments })
             }
           }
+          this.$nextTick(() => this.scrollToBottom())
         }
       } catch (e) {
         uni.showToast({ title: '会话恢复失败', icon: 'none' })
@@ -347,6 +360,17 @@ onLoad(options) {
         .replace(/\s+/g, ' ')
         .trim()
         .slice(0, 42)
+    },
+    fmtTime(iso) {
+      if (!iso) return ''
+      const d = new Date(iso)
+      if (isNaN(d.getTime())) return String(iso)
+      const pad = (n) => String(n).padStart(2, '0')
+      const hm = pad(d.getHours()) + ':' + pad(d.getMinutes())
+      const now = new Date()
+      if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) return hm
+      const md = pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      return (d.getFullYear() === now.getFullYear() ? '' : d.getFullYear() + '-') + md + ' ' + hm
     },
     async openHistory() {
       this.historyPanel = true
@@ -464,6 +488,10 @@ onLoad(options) {
         this.stopStream()
         return
       }
+      if (this.voiceActive) {
+        uni.showToast({ title: '语音通话进行中，请先在通话页点「取消通话」', icon: 'none' })
+        return
+      }
       const text = this.input.trim()
       if (!text && !this.pendingFiles.length) return
       if (!this.selectedSubject) return
@@ -471,9 +499,9 @@ onLoad(options) {
       this.pendingFiles = []
       this.input = ''
       this.errorMsg = ''
-      this.pushMessage('user', text, attachments.length ? { attachments } : {})
+      this.pushMessage('user', text, { at: new Date().toISOString(), ...(attachments.length ? { attachments } : {}) })
       const attachDesc = attachments.map((a) => `（附文件：${a.name}）`).join(' ')
-      this.pushMessage('assistant', '', { streaming: true })
+      this.pushMessage('assistant', '', { streaming: true, at: new Date().toISOString() })
       this.streaming = true
       this.scrollToBottom()
 
@@ -549,6 +577,15 @@ onLoad(options) {
     scrollToBottom() {
       const last = this.messages[this.messages.length - 1]
       this.scrollInto = last ? `msg-${last.id}` : ''
+    },
+    // 语音通话期间：以语音页消息为准实时同步到对话页
+    onVoiceEvent(s) {
+      if (!s) return
+      this.voiceActive = !!s.active
+      if (!s.active) return
+      this.messages = (s.messages || []).map((m, i) => ({ id: 'v' + i, role: m.role, content: m.content, at: m.at }))
+      if (s.sessionId && s.sessionId !== this.conversationId) this.conversationId = s.sessionId
+      this.$nextTick(() => this.scrollToBottom())
     },
     // ---------- 语音输出（后端 Edge TTS） ----------
     cleanForTTS(text) {
@@ -990,6 +1027,16 @@ onLoad(options) {
   gap: 24rpx;
   margin-top: 6rpx;
   padding-left: 6rpx;
+}
+.msg-time {
+  margin-top: 4rpx;
+  padding: 0 8rpx;
+  font-size: 20rpx;
+  color: #b0b7c3;
+  text-align: left;
+}
+.msg-row.user .msg-time {
+  text-align: right;
 }
 .copy-btn {
   font-size: 24rpx;

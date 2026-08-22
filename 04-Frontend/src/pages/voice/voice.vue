@@ -6,6 +6,7 @@
         <text>{{ statusText }}</text>
       </view>
       <view class="v-actions">
+        <view v-if="phase === 'speaking' || phase === 'thinking'" class="v-btn v-btn-warn" @click="interrupt">打断</view>
         <view class="v-btn" @click="minimize">最小化</view>
         <view class="v-btn v-btn-danger" @click="hangUp">取消通话</view>
       </view>
@@ -24,8 +25,12 @@
         <text>我在听，请开始说话，说完停顿一下即可</text>
       </view>
       <view v-for="(m, i) in messages" :key="i" :id="'log-' + i" class="v-log-item" :class="m.role">
-        <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }}</view>
+        <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }} <text v-if="m.at" class="v-log-time">{{ fmtTime(m.at) }}</text></view>
         <view class="v-log-text">{{ m.content }}</view>
+      </view>
+      <view v-if="phase === 'thinking'" :id="'log-' + messages.length" class="v-log-item assistant">
+        <view class="v-log-label">AI 老师</view>
+        <view class="v-log-text v-log-live v-thinking">正在思考<span class="v-tdot">·</span><span class="v-tdot">·</span><span class="v-tdot">·</span></view>
       </view>
       <view v-if="listeningText" :id="'log-' + messages.length" class="v-log-item user">
         <view class="v-log-label">你 <text v-if="phaseLabel" class="v-live-flag">{{ phaseLabel }}</text></view>
@@ -67,9 +72,6 @@ export default {
     },
     listeningText() {
       return this.state.listeningText
-    },
-    phase() {
-      return this.state.phase
     },
     phaseLabel() {
       const p = this.state.phase
@@ -127,6 +129,20 @@ export default {
       voiceCall.end()
       uni.showToast({ title: '语音通话已取消', icon: 'none' })
       setTimeout(() => uni.navigateBack(), 400)
+    },
+    interrupt() {
+      voiceCall.interrupt()
+    },
+    fmtTime(iso) {
+      if (!iso) return ''
+      const d = new Date(iso)
+      if (isNaN(d.getTime())) return String(iso)
+      const pad = (n) => String(n).padStart(2, '0')
+      const hm = pad(d.getHours()) + ':' + pad(d.getMinutes())
+      const now = new Date()
+      if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) return hm
+      const md = pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      return (d.getFullYear() === now.getFullYear() ? '' : d.getFullYear() + '-') + md + ' ' + hm
     },
   },
 }
@@ -188,6 +204,15 @@ export default {
 .v-btn-danger {
   background: rgba(239, 68, 68, 0.35);
   border-color: rgba(239, 68, 68, 0.6);
+}
+.v-btn-warn {
+  background: rgba(245, 158, 11, 0.4);
+  border-color: rgba(245, 158, 11, 0.75);
+}
+.v-log-time {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 8rpx;
 }
 .v-avatar-wrap {
   flex-shrink: 0;
@@ -307,6 +332,24 @@ export default {
 @keyframes blinkCursor {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+.v-thinking {
+  color: #bfdbfe;
+}
+.v-tdot {
+  display: inline-block;
+  margin-left: 6rpx;
+  animation: tdance 1.2s infinite;
+}
+.v-tdot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.v-tdot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes tdance {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-4rpx); }
 }
 .v-error {
   flex-shrink: 0;

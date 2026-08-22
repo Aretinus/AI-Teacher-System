@@ -6,10 +6,10 @@ AI 教师系统前端，基于 UniApp + Vue 3 + Vite，以 H5 为首个交付端
 
 | 页面 | 路径 | 功能 |
 |---|---|---|
-| 首页 | `pages/index/index` | 学科选择（含全科提问）、课程选择（折叠面板）、授课风格、继续学习、最近知识点、最近会话 |
-| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、学科/课程回显、消息朗读、音色切换与试听、语音通话入口 |
-| 语音通话页 | `pages/voice/voice` | 实时语音对话（Web Speech API 识别 + SSE 回复 + TTS 朗读），退出对话页自动挂断 |
-| 设置页 | `pages/settings/settings` | 模型配置（Runtime/OpenAI 兼容）、AI 音色选择、书籍加工（OCR 层/蒸馏层扫描、单选+多选批量、任务日志可复制） |
+| 首页 | `pages/index/index` | 学科选择（全部书库学科，未注册走通用教学）、课程选择（折叠面板，实时来自蒸馏产物）、授课风格、继续学习、最近会话（显示最近对话时间） |
+| 对话页 | `pages/chat/chat` | 消息流、SSE 流式输出、Markdown + KaTeX 渲染、消息时间戳、按学科的示例提示词、学科/课程回显、消息朗读、音色切换与试听、语音通话入口（与语音页文本实时同步） |
+| 语音通话页 | `pages/voice/voice` | 实时语音对话（识别 → 回复 → 朗读循环）、消息带时间戳、"正在思考"动画提示、手动「打断」按钮（中止思考请求或停止播报）、播报期间不收录麦克风、进入通话自动载入会话已有文本 |
+| 设置页 | `pages/settings/settings` | 模型配置（Runtime/OpenAI 兼容）、AI 音色选择、书籍加工（学科实时反映书库目录；OCR 层扫描全部书籍格式并归类无需OCR；蒸馏层；单选+多选批量；任务日志可复制） |
 | 设置-模型 | `pages/settings/model` | 对话模型配置（runtime 模型 / OpenAI 兼容端点 + 测试连接） |
 | 设置-日志 | `pages/settings/log-history`、`log-detail` | OCR / 蒸馏任务日志（列表 + 详情，可复制整段/单行） |
 

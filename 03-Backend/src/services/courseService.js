@@ -224,14 +224,17 @@ function loadCourseContext(subject, tutor, message, wantAdvance) {
   };
 }
 
+// 学科 id → 书库顶层目录：优先取 subjects/index.json 的 bookDir；
+// 未注册学科（书库实时新增的文件夹）直接把学科名当目录名
 function bookDirOf(subject) {
+  const id = String(subject || '').trim();
+  if (!id) return null;
   try {
     const idx = JSON.parse(fs.readFileSync(path.join(SKILLS_DIR, 'subjects', 'index.json'), 'utf8'));
-    const s = (idx.subjects || []).find((x) => x.id === subject);
-    return s ? s.bookDir : null;
-  } catch (e) {
-    return null;
-  }
+    const s = (idx.subjects || []).find((x) => x.id === id);
+    if (s && s.bookDir) return s.bookDir;
+  } catch (e) { /* 索引缺失时按目录名处理 */ }
+  return id;
 }
 
 // 课程 = 蒸馏产物 distilled/{bookDir}/<一级目录>：数学下是分类目录（多本书），物理下是整本大书

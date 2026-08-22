@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "book": "毛泽东选集 第3卷",
+  "current": "第01章_毛泽东选集（第三卷）/第01课_对日寇的最后一战.md",
+  "total_lessons": 1,
+  "updated": null,
+  "lessons": {
+    "第01章_毛泽东选集（第三卷）/第01课_对日寇的最后一战.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东选集（第三卷）",
+      "lesson": "对日寇的最后一战"
+    }
+  }
+}

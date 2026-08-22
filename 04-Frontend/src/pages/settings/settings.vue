@@ -74,7 +74,7 @@
       </view>
 
       <view class="card" v-if="bookTab === 'ocr'">
-        <view class="refresh-desc">扫描当前学科 raw 目录中的 PDF / djvu，按状态分类：需OCR（纯扫描件，产物镜像到 02-DATA/books/ocr/）、已OCR、无需OCR（有文字层 / djvu，可直接蒸馏）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
+        <view class="refresh-desc">扫描当前学科 raw 目录中的全部书籍文件：PDF/djvu 探查文字层判断是否需OCR；其余格式（epub/mobi/txt 等）无需OCR，直接归入「无需OCR」可去蒸馏层处理。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
         <view class="btn refresh-btn" :class="{ loading: ocrScanning }" @click="doOcrScan">
           {{ ocrScanning ? '扫描中…' : '扫描文件' }}
         </view>
@@ -101,7 +101,7 @@
                 <view class="book-check" :class="{ on: isMulti(b.file) }" @click.stop="toggleMulti(b.file)"></view>
                 <view class="book-name">{{ b.name }}</view>
                 <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
-                <view class="book-size">{{ b.sizeMB }} MB</view>
+                <view class="book-size">{{ sizeText(b) }}</view>
               </view>
             </view>
           </view>
@@ -173,7 +173,7 @@
                 <view class="book-name">{{ b.name }}</view>
                 <view v-if="!b.distilledDone && b.needOcr" class="book-badge todo">需OCR</view>
                 <view v-if="b.distilledDone" class="book-badge done">已蒸馏</view>
-                <view class="book-size">{{ b.sizeMB }} MB</view>
+                <view class="book-size">{{ sizeText(b) }}</view>
               </view>
             </view>
           </view>
@@ -206,7 +206,7 @@
 </template>
 
 <script>
-import { getSettings, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
+import { getSettings, scanBooks, distillBook, getDistillJob, getBookSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -375,7 +375,7 @@ export default {
     },
     async load() {
       try {
-        const [settings, subjects] = await Promise.all([getSettings(), getSubjects()])
+        const [settings, subjects] = await Promise.all([getSettings(), getBookSubjects()])
         this.form = { ...this.form, ...settings }
         this.subjects = subjects
         this.distillSubject = subjects[0] && subjects[0].id
@@ -435,6 +435,7 @@ export default {
       this.doScan()
     },
     async doOcrScan() {
+      this.refreshSubjects()
       this.ocrScanning = true
       this.ocrScanError = ''
       this.ocrBooks = []
@@ -447,7 +448,7 @@ export default {
           this.ocrSelectedFile = this.pendingOcrFile
           this.pendingOcrFile = ''
         }
-        if (!this.ocrBooks.length) this.ocrScanError = '该学科 raw 目录下未找到 pdf/djvu 文件'
+        if (!this.ocrBooks.length) this.ocrScanError = '该学科 raw 目录下未找到书籍文件'
       } catch (e) {
         this.ocrScanError = e.message
       } finally {
@@ -624,7 +625,7 @@ export default {
       if (b.distilledDone) return 'distilled'
       if (b.ocrDone) return 'ocrDone'
       if (b.ocrCachePages > 0) return 'ocrRunning'
-      if (b.textLayer === 'text' || b.textLayer === 'djvu') return 'noOcr'
+      if (b.textLayer === 'text' || b.textLayer === 'djvu' || b.textLayer === 'no-ocr') return 'noOcr'
       return 'needOcr'
     },
     badgeText(b) {
@@ -632,7 +633,7 @@ export default {
       if (st === 'distilled') return b.ocrDone ? '已OCR · 已蒸馏' : '已蒸馏'
       if (st === 'ocrDone') return '已OCR'
       if (st === 'ocrRunning') return 'OCR 中 ' + b.ocrCachePages + ' 页'
-      if (st === 'noOcr') return b.textLayer === 'djvu' ? '可直接蒸馏' : '无需OCR'
+      if (st === 'noOcr') return b.textLayer === 'djvu' || b.textLayer === 'no-ocr' ? '无需OCR' : '可直接蒸馏'
       return '需OCR'
     },
     badgeCls(b) {
@@ -640,12 +641,28 @@ export default {
       if (st === 'noOcr') return 'skip'
       return st === 'needOcr' || st === 'ocrRunning' ? 'todo' : 'done'
     },
+    sizeText(b) {
+      const mb = Number(b.sizeMB) || 0
+      if (mb < 1) return Math.max(1, Math.round(mb * 1024)) + ' KB'
+      return (Math.round(mb * 10) / 10) + ' MB'
+    },
+    async refreshSubjects() {
+      try {
+        const subs = await getBookSubjects()
+        if (!subs.length) return
+        this.subjects = subs
+        if (!subs.some((s) => s.id === this.distillSubject)) this.distillSubject = subs[0].id
+      } catch (e) { /* 静默，load() 已兜底 */ }
+    },
     stateLine(b) {
       const st = this.bookState(b)
       if (st === 'distilled') return '✓ 已蒸馏过，可重新蒸馏以覆盖旧产物'
       if (st === 'ocrDone') return '✓ 已有文字层，可直接蒸馏'
       if (st === 'ocrRunning') return '⏳ OCR 进行中（已识别 ' + b.ocrCachePages + ' 页），可继续或直接蒸馏'
-      if (st === 'noOcr') return '该文件有文字层，无需 OCR，可直接蒸馏'
+      if (st === 'noOcr') {
+        if (b.textLayer === 'no-ocr') return '该格式（' + (b.ext || '').replace('.', '') + '）无需 OCR，可直接蒸馏'
+        return '该文件有文字层，无需 OCR，可直接蒸馏'
+      }
       return '纯扫描件，需要 OCR 生成文字层后再蒸馏'
     },
     primaryBtn(b) {
@@ -739,6 +756,7 @@ export default {
       }
     },
     async doScan() {
+      this.refreshSubjects()
       if (!this.distillSubject) return
       this.scanning = true
       this.scanError = ''

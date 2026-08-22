@@ -53,13 +53,14 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 
 | 接口 | 说明 |
 |---|---|
-| `GET /api/subjects` | 学科列表（含全才） |
-| `GET /api/courses?subject=` | 学科下课程清单（来自蒸馏产物） |
+| `GET /api/subjects` | 学科列表（已注册 + 书库未注册学科合并；未注册走通用教学模式） |
+| `GET /api/books/subjects` | 书库学科清单（实时扫描 raw/ocr/distilled 顶层目录，书籍加工页用） |
+| `GET /api/courses?subject=` | 学科下课程清单（来自蒸馏产物，未注册学科按学科名作书库目录兜底） |
 | `GET /api/styles` | 授课风格列表 |
 | `POST /api/chat/stream` | SSE 流式对话（body 支持 `subject` / `course` / `style` / 消息） |
 | `POST /api/chat` | 非流式对话（同参数，返回 JSON） |
 | `GET /api/sessions/:sessionId` | 会话详情（返回前清洗历史遗留的连续重复消息） |
-| `POST /api/ocr/scan`、`POST /api/ocr/start`、`GET /api/ocr/job/:id` | OCR 扫描 / 启动 / 轮询 |
+| `POST /api/ocr/scan`、`POST /api/ocr/start`、`GET /api/ocr/job/:id` | OCR 扫描（全书籍格式，异步探查不阻塞）/ 启动 / 轮询 |
 | `POST /api/books/scan`、`POST /api/books/distill`、`GET /api/books/distill/:id` | 书籍扫描 / 蒸馏启动 / 轮询 |
 | `POST /api/users/default/...` | 用户状态、历史、进度读写 |
 
