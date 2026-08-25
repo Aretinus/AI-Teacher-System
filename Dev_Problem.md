@@ -4,6 +4,24 @@
 
 ## 问题列表（按时间倒序）
 
+### P33. 悬浮球径向菜单：点击无效、拖动失效、贴边显示异常（事件/样式/层级三连坑）
+- **现象**：①扇区按钮点击无反应；②球拖不动；③拖到右边缘悬停时球被操作按钮挤出屏幕；④拖到顶部按钮跑出屏幕、球被顶端导航栏遮挡
+- **根因**：①uni-app H5 对模板 `@click` 有事件包装，对 `v-html` 注入的原生 SVG 内部元素不可靠；scoped 样式也不会作用于 v-html 内容（`pointer-events:auto` 必须内联）；隐形热区用 `::after` 会绘制在菜单上层拦截点击。②uni 包装后的 `e.currentTarget` 不是真实 DOM 节点，没有 `getBoundingClientRect`。③操作按钮参与 flex 布局，展开时把球挤出屏幕；夹紧边界从视口 y=0 起算，没避让 H5 导航栏（windowTop）
+- **解决**：SVG 扇区改为内联 `onclick="document.dispatchEvent(new CustomEvent('fab-action',{detail:key}))"` + 页面监听自定义事件（完全绕开框架事件包装）；关键交互样式全部内联到生成的 SVG 字符串；热区改 `::before` 绘制在菜单下层；拖动定位改用 `$refs` 取球体真实节点并保持抓取点相对位置；菜单绝对定位不占布局、按 x/y 贴边自动换朝向、顶部夹紧边界加 windowTop 偏移
+- **状态**：已修复（2026-08-21）
+
+### P32. 语音通话"取消不了"、最小化后状态残留
+- **现象**：点「取消通话」像页面刷新且通话重新出现；浏览器返回/手势离开语音页后麦克风仍在收录；退出对话也挂不断
+- **根因**：只有语音页内按钮会调用挂断，浏览器返回/切 Tab 不触发；历史栈为空时 `navigateBack` 失败表现为页面重载，重载又触发 onLoad 重新 start() 把通话拉起来；对话页是 tabBar 页面，切 Tab 不会触发其 onUnload 兜底挂断
+- **解决**：「取消通话」navigateBack 失败兜底 reLaunch 回首页；语音页 onUnload 时非"主动离开"（浏览器返回等）自动挂断；「最小化」置 leaving 标记保持通话；通话中对话页输入禁用防冲突
+- **状态**：已修复（2026-08-21）
+
+### P31. start-dev.bat 被 LF 换行 + UTF-8 中文注释损坏（cmd 碎片化报错）
+- **现象**：运行一键脚本报一堆碎片化错误（'/d' 不是内部或外部命令、'D_DIR'、'acher' 等），步骤跳乱、多窗口弹出，还误创建了名为 `2-min` 的文件
+- **根因**：编辑工具把批处理写成了 LF 换行 + UTF-8 中文注释；cmd 解析 .bat 要求 CRLF，注释需 ANSI 安全——解析错乱导致整行被拦腰截断执行
+- **解决**：脚本重写为纯 ASCII 注释 + 强制 CRLF；`.gitattributes` 固化 `*.bat text eol=crlf` 防复发；本地私密配置抽到 gitignored 的 local-config.bat（DB_PASSWORD），脚本缺失该文件时跳过补写并提示
+- **状态**：已修复（2026-08-21）
+
 ### P30. 未注册学科在网页端"看不见/用不了"（课程不显示、OCR 漏文件、主页学科少）
 - **现象**：书库 raw/ 放入新学科文件夹（Economics/Literature/Philosophy/Taoism/TraditionalChineseMedicine）后——主页学科只有数学；蒸馏了文学的书但主页无该课程；OCR 层数量加起来比蒸馏层少（epub/txt 等被直接跳过）；设置页学科中英文混杂
 - **根因**：多处功能只认 `01-Skills/subjects/index.json` 已注册学科（bookDirOf 查不到即返回空/报错），而书库新增文件夹不会自动注册技能；OCR 扫描只收 pdf/djvu；主页又按"有课程"过滤

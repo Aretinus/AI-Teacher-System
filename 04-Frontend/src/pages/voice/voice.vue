@@ -26,9 +26,10 @@
       </view>
       <view v-for="(m, i) in messages" :key="i" :id="'log-' + i" class="v-log-item" :class="m.role">
         <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }} <text v-if="m.at" class="v-log-time">{{ fmtTime(m.at) }}</text></view>
-        <view class="v-log-text">{{ m.content }}</view>
+        <view v-if="m.role === 'assistant'" class="v-log-text"><md-render :content="m.content" /></view>
+        <view v-else class="v-log-text">{{ m.content }}</view>
       </view>
-      <view v-if="phase === 'thinking'" :id="'log-' + messages.length" class="v-log-item assistant">
+      <view v-if="phase === 'thinking' && !listeningText" :id="'log-' + messages.length" class="v-log-item assistant">
         <view class="v-log-label">AI 老师</view>
         <view class="v-log-text v-log-live v-thinking">正在思考<span class="v-tdot">·</span><span class="v-tdot">·</span><span class="v-tdot">·</span></view>
       </view>
@@ -37,6 +38,7 @@
         <view class="v-log-text v-log-live">{{ listeningText }}<text v-if="phase === 'listening'" class="v-cursor">▌</text></view>
       </view>
       <view v-if="notice" class="v-notice">{{ notice }}</view>
+      <view id="log-bottom" class="v-log-pad"></view>
     </scroll-view>
 
     <view v-if="error" class="v-error">{{ error }}</view>
@@ -45,6 +47,7 @@
 
 <script>
 import { voiceCall } from '@/services/voice-call.js'
+import MdRender from '@/components/md-render.vue'
 
 const PHASE_TEXT = {
   idle: '',
@@ -54,10 +57,12 @@ const PHASE_TEXT = {
 }
 
 export default {
+  components: { MdRender },
   data() {
     return {
       state: voiceCall.state,
       logAnchor: '',
+      leaving: false, // 主动离开（最小化/挂断）：onUnload 不重复挂断；其他方式离开（浏览器返回/手势）自动挂断
     }
   },
   computed: {
@@ -109,26 +114,41 @@ export default {
   },
   onUnload() {
     voiceCall.offEvent(this.onEvent)
+    // 非按钮离开（浏览器返回/手势/切页）：自动挂断，避免通话残留
+    if (!this.leaving) voiceCall.end()
   },
   watch: {
     messages() {
-      this.$nextTick(() => {
-        const last = this.messages.length - 1
-        this.logAnchor = last >= 0 ? 'log-' + last : ''
-      })
+      this.scrollLogBottom()
+    },
+    'state.listeningText'() {
+      this.scrollLogBottom()
     },
   },
   methods: {
     onEvent(s) {
       this.state = s
     },
+    // 滚动到底部占位元素：重置后再赋值，保证连续调用也能触发滚动
+    scrollLogBottom() {
+      this.logAnchor = ''
+      this.$nextTick(() => {
+        this.logAnchor = 'log-bottom'
+      })
+    },
     minimize() {
+      this.leaving = true // 最小化：通话保持，仅返回对话页
       uni.navigateBack()
     },
     hangUp() {
+      this.leaving = true
       voiceCall.end()
       uni.showToast({ title: '语音通话已取消', icon: 'none' })
-      setTimeout(() => uni.navigateBack(), 400)
+      setTimeout(() => {
+        uni.navigateBack({
+          fail: () => uni.reLaunch({ url: '/pages/index/index' }),
+        })
+      }, 400)
     },
     interrupt() {
       voiceCall.interrupt()
@@ -284,6 +304,9 @@ export default {
   font-size: 24rpx;
   padding: 12rpx 0 4rpx;
 }
+.v-log-pad {
+  height: 40rpx;
+}
 .v-log-item {
   margin: 0 20rpx 18rpx;
 }
@@ -317,6 +340,33 @@ export default {
   background: rgba(52, 211, 153, 0.22);
   border: 1rpx solid rgba(52, 211, 153, 0.5);
   color: #d1fae5;
+}
+.v-log-text :deep(.md-body) {
+  font-size: 26rpx;
+  color: #f3f4f6;
+}
+.v-log-item .v-log-text :deep(h1),
+.v-log-item .v-log-text :deep(h2),
+.v-log-item .v-log-text :deep(h3),
+.v-log-item .v-log-text :deep(h4) {
+  color: #ffffff;
+  margin: 14rpx 0 8rpx;
+}
+.v-log-item .v-log-text :deep(code) {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fda4af;
+}
+.v-log-item .v-log-text :deep(blockquote) {
+  background: rgba(255, 255, 255, 0.10);
+  border-left-color: #93c5fd;
+  color: #dbeafe;
+}
+.v-log-item .v-log-text :deep(th) {
+  background: rgba(255, 255, 255, 0.12);
+}
+.v-log-item .v-log-text :deep(th),
+.v-log-item .v-log-text :deep(td) {
+  border-color: rgba(255, 255, 255, 0.28);
 }
 .v-live-flag {
   font-size: 20rpx;

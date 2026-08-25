@@ -28,6 +28,7 @@ let ttsToken = 0
 
 let abortController = null
 let interrupted = false // 用户手动打断：抑制后续错误兜底消息
+let reqToken = 0 // 请求代际：新问题提交后旧请求的回调全部失效
 
 const SILENCE_BASE_MS = 650 // 明确完结（标点/语气词）的基础静音判定
 const SILENCE_PLAIN_MS = 1800 // 无标点长句：给足思考时间
@@ -93,7 +94,7 @@ function splitSentences(text) {
 }
 
 function restartListening(silent) {
-  if (!active || phase !== 'listening') return
+  if (!active || (phase !== 'listening' && phase !== 'thinking')) return
   if (restarting) return
   restarting = true
   clearSilenceTimer()
@@ -165,7 +166,7 @@ function completionLevel(text) {
 function scheduleSilenceCheck() {
   clearSilenceTimer()
   const tick = () => {
-    if (!active || phase !== 'listening') return
+    if (!active || (phase !== 'listening' && phase !== 'thinking')) return
     const silentMs = Date.now() - lastResultAt
     const t = (finalText + interimText).trim()
     const hasTxt = hasContent(t)
@@ -274,10 +275,13 @@ function createRecog() {
     restarting = false
     if (!active) return
     if (stopAutoRestart) return
-    if (phase === 'listening') {
+    if (phase === 'listening' || phase === 'thinking') {
       const t = finalText.trim()
       if (t) {
+        // Chrome 提前断句：立即提交（新问题会顶掉进行中的旧请求）
+        setPhase('thinking')
         sendFinal(t)
+        setTimeout(() => restartListening(), 250)
       } else {
         setTimeout(restartListening, 300)
       }
@@ -289,15 +293,23 @@ function createRecog() {
 
 function finalizeUtterance() {
   clearSilenceTimer()
-  if (!active || phase !== 'listening') return
+  if (!active || (phase !== 'listening' && phase !== 'thinking')) return
   const t = (finalText + interimText).trim()
   if (!hasContent(t)) return
   try { recog.stop() } catch (e) {}
   setPhase('thinking')
   sendFinal(t)
+  // 思考/回答生成期间继续聆听：用户补充或更正时，新问题会顶掉当前请求（只答最新一次）
+  setTimeout(() => restartListening(), 250)
 }
 
 async function sendFinal(text) {
+  const myToken = ++reqToken
+  // 新问题顶掉进行中的旧请求：中止流式回复，只回答最新一次
+  if (abortController) {
+    try { abortController.abort() } catch (e) {}
+    abortController = null
+  }
   interrupted = false
   finalText = ''
   interimText = ''
@@ -309,6 +321,7 @@ async function sendFinal(text) {
     let result = null
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       if (attempt > 1) {
+        if (myToken !== reqToken) return
         uni.showToast({ title: `回复超时，正在重试（${attempt - 1}/3）…`, icon: 'none' })
         setPhase('thinking')
       }
@@ -316,12 +329,14 @@ async function sendFinal(text) {
         { subject, style: 'standard', course: course || undefined, message: text, conversationId: sessionId || undefined },
         {
           onSession: ({ sessionId: sid, subject: resolved }) => {
+            if (myToken !== reqToken) return
             sessionId = sid
             if (!subject && resolved) subject = resolved
             emit()
           },
           onDelta: () => {},
           onDone: (evaluation, full, sid, resolvedSubject, replyContent) => {
+            if (myToken !== reqToken) return
             let content = replyContent || full || ''
             if (!content.trim()) content = '（老师刚才没有回应，请再说一遍，或换个问题～）'
             // 模型偶发把 teaching-response JSON 当回复输出（response 字段为空时后端兜底，
@@ -334,7 +349,7 @@ async function sendFinal(text) {
             playReply(content)
           },
           onError: (msg) => {
-            if (interrupted) return
+            if (myToken !== reqToken || interrupted) return
             lastError = msg
             messages.push({ role: 'assistant', content: '（语音回复失败：' + msg + '）', at: new Date().toISOString() })
             emit()
@@ -343,6 +358,7 @@ async function sendFinal(text) {
         },
         abortController.signal
       )
+      if (myToken !== reqToken) return
       if (!result || !result.timedOut || attempt >= MAX_ATTEMPTS) break
     }
     abortController = null
@@ -356,7 +372,7 @@ async function sendFinal(text) {
     }
   } catch (e) {
     abortController = null
-    if (active && !interrupted) {
+    if (active && !interrupted && myToken === reqToken) {
       lastError = e.message
       messages.push({ role: 'assistant', content: '（语音回复失败：' + e.message + '）', at: new Date().toISOString() })
       emit()
@@ -466,6 +482,8 @@ export const voiceCall = {
   },
   end() {
     active = false
+    interrupted = true
+    reqToken++ // 挂断后所有在途回调失效
     clearSilenceTimer()
     if (recog) {
       try { recog.stop() } catch (e) {}
@@ -489,6 +507,7 @@ export const voiceCall = {
   interrupt() {
     if (!active || (phase !== 'speaking' && phase !== 'thinking')) return false
     interrupted = true
+    reqToken++ // 作废所有在途请求回调
     if (phase === 'speaking') stopTTS()
     stopRecog()
     if (abortController) {

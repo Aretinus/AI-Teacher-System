@@ -5,10 +5,6 @@
         <text class="header-course">{{ headerTitle }}</text>
       </view>
       <view class="header-actions">
-        <view v-if="voiceActive" class="voice-call-tip" @click="openVoice">
-          <text class="voice-call-dot"></text>
-          <text>通话中</text>
-        </view>
         <view class="voice-pick-btn" @click="openVoicePanel">
           <text class="voice-pick-text">{{ currentVoiceName }} ▾</text>
         </view>
@@ -18,6 +14,28 @@
         <view class="voice-btn" @click="openVoice">
           <text class="voice-btn-text">{{ voiceActive ? '进入通话' : '语音通话' }}</text>
         </view>
+      </view>
+    </view>
+
+    <!-- 语音通话悬浮球（最小化时显示，可拖动）：悬停/点击展开「挂断 | 进入」 -->
+    <view
+      v-if="voiceActive"
+      ref="fabRef"
+      class="voice-fab"
+      :class="{ dragging: fabDragging, hovering: fabHover }"
+      :style="fabStyle"
+      @touchstart="fabDown"
+      @mousedown="fabDown"
+      @mouseenter="fabHover = true"
+      @mouseleave="fabHover = false"
+      @click="fabClick"
+    >
+      <view v-show="fabHover" class="fab-menu">
+        <view class="fab-menu-svg" v-html="fabMenuSvg"></view>
+      </view>
+      <view ref="fabBallRef" class="fab-ball" :class="callPhase">
+        <text class="fab-icon">🎙️</text>
+        <text class="fab-label">{{ fabLabel }}</text>
       </view>
     </view>
 
@@ -67,6 +85,7 @@
       </view>
 
       <view v-if="errorMsg" class="error-banner">{{ errorMsg }}</view>
+      <view id="msg-bottom" class="scroll-pad"></view>
     </scroll-view>
 
     <view v-if="pendingFiles.length" class="pending-bar">
@@ -179,6 +198,10 @@ export default {
       historyPanel: false,
       sessionHistory: [],
       voiceActive: false,
+      callPhase: '',
+      fabHover: false,
+      fabDragging: false,
+      fabPos: { x: null, y: null }, // null 时使用默认右下角定位
       voicePanel: false,
       ttsVoices: [],
       ttsVoice: uni.getStorageSync('ttsVoice') || 'xiaoxiao',
@@ -216,9 +239,67 @@ export default {
       const s = this.subjects.find((x) => x.id === this.selectedSubject)
       return s && s.name ? `我想入门${s.name}，应该从哪里学起？` : '帮我制定一个学习计划'
     },
+    fabLabel() {
+      const map = { listening: '聆听中', thinking: '思考中', speaking: '回答中' }
+      return map[this.callPhase] || '通话中'
+    },
+    fabStyle() {
+      const p = this.fabPos
+      if (p.x == null) return ''
+      return `left:${p.x}px;top:${p.y}px;right:auto;bottom:auto;`
+    },
+    // 悬浮球径向菜单：扇区沿圆边分布；未来加新功能只需在列表里追加 { key, label, color }
+    fabMenuArc() {
+      let start = -150
+      let end = -30
+      const p = this.fabPos
+      if (p.x != null && typeof window !== 'undefined') {
+        if (p.x > window.innerWidth - 190) {
+          start = -195 // 贴右边缘：朝左展开
+          end = -105
+        } else if (p.x < 250) {
+          start = -75 // 贴左边缘：朝右展开
+          end = 15
+        }
+      }
+      if (p.y != null && p.y < 150) return [-end, -start] // 贴上边缘：翻转到下方
+      return [start, end]
+    },
+    fabMenuSvg() {
+      const items = [
+        { key: 'hangup', label: '挂断', color: '#ef4444' },
+        { key: 'enter', label: '进入', color: '#4f8cff' },
+        // 未来扩展：往这里追加即可，自动均分圆弧
+      ]
+      const cx = 85
+      const cy = 85
+      const r1 = 30
+      const r2 = 76
+      const [start, end] = this.fabMenuArc
+      const n = items.length
+      const seg = (end - start) / n
+      const gap = 3
+      let html = `<svg viewBox="0 0 170 170" width="170" height="170">`
+      items.forEach((a, i) => {
+        const a0 = start + i * seg + gap / 2
+        const a1 = start + (i + 1) * seg - gap / 2
+        const mid = ((a0 + a1) / 2) * Math.PI / 180
+        const lx = cx + Math.cos(mid) * (r1 + r2) / 2
+        const ly = cy + Math.sin(mid) * (r1 + r2) / 2
+        html += `<g data-key="${a.key}" onclick="document.dispatchEvent(new CustomEvent('fab-action',{detail:'${a.key}'}))" style="cursor:pointer">
+          <path d="${this.sectorPath(cx, cy, r1, r2, a0, a1)}" fill="${a.color}" style="pointer-events:auto"/>
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="#ffffff" font-size="13" font-weight="600" style="pointer-events:none">${a.label}</text>
+        </g>`
+      })
+      html += `</svg>`
+      return html
+    },
   },
 onLoad(options) {
       voiceCall.onEvent(this.onVoiceEvent)
+      // 悬浮球 SVG 扇区通过内联 onclick 派发自定义事件，此处统一接收（绕开 uni 事件包装）
+      this._fabActionListener = (ev) => this.onFabAction(ev.detail)
+      document.addEventListener('fab-action', this._fabActionListener)
       this.loadSubjects().then(() => {
         this.selectedSubject = options.subject || ''
         this.selectedStyle = options.style || 'standard'
@@ -232,6 +313,7 @@ onLoad(options) {
   onShow() {
     const vs = voiceCall.state
     this.voiceActive = vs.active
+    this.callPhase = vs.phase || ''
     // 通话中或刚结束：语音产生的用户/回复消息同步回对话页。
     // sessionId 与本页会话一致，或本页尚无会话（新对话页直接语音通话）时，接管语音会话并重载
     if (vs.sessionId && vs.messages.length > this.messages.length && (!this.conversationId || vs.sessionId === this.conversationId)) {
@@ -244,6 +326,11 @@ onLoad(options) {
   },
   onUnload() {
     voiceCall.offEvent(this.onVoiceEvent)
+    if (this._fabActionListener) document.removeEventListener('fab-action', this._fabActionListener)
+    window.removeEventListener('mousemove', this.fabMove)
+    window.removeEventListener('mouseup', this.fabUp)
+    window.removeEventListener('touchmove', this.fabMove)
+    window.removeEventListener('touchend', this.fabUp)
     this.streaming = false
     this.stopTTS()
     this.stopPreview()
@@ -351,6 +438,100 @@ onLoad(options) {
       uni.navigateTo({
         url: `/pages/voice/voice?subject=${this.selectedSubject || ''}&course=${encodeURIComponent(this.selectedCourse || '')}&conversationId=${this.conversationId || ''}`,
       })
+    },
+    fabHangup() {
+      voiceCall.end()
+      this.fabHover = false
+      uni.showToast({ title: '语音通话已挂断', icon: 'none' })
+    },
+    // ---------- 悬浮球拖动 ----------
+    fabBallEl() {
+      let el = this.$refs.fabBallRef
+      if (el && el.$el) el = el.$el
+      return el && el.getBoundingClientRect ? el : null
+    },
+    fabDown(e) {
+      // 只测球体本身（不含展开的操作按钮），并保持抓取点相对位置，指针在哪球就跟到哪
+      const el = this.fabBallEl()
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const t = (e && e.touches && e.touches[0]) || e
+      if (!t || typeof t.clientX !== 'number') return
+      if (e.type === 'mousedown' && e.preventDefault) e.preventDefault() // 防止拖动时选中文字
+      if (this._winTop == null) {
+        try { this._winTop = uni.getSystemInfoSync().windowTop || 0 } catch (err) { this._winTop = 0 }
+      }
+      this._drag = {
+        w: r.width,
+        h: r.height,
+        grabDX: t.clientX - r.left,
+        grabDY: t.clientY - r.top,
+        startClientX: t.clientX,
+        startClientY: t.clientY,
+        moved: false,
+      }
+      this.fabDragging = true
+      window.addEventListener('mousemove', this.fabMove)
+      window.addEventListener('mouseup', this.fabUp)
+      window.addEventListener('touchmove', this.fabMove, { passive: false })
+      window.addEventListener('touchend', this.fabUp)
+    },
+    fabMove(e) {
+      if (!this._drag) return
+      const t = (e && e.touches && e.touches[0]) || e
+      if (!t || typeof t.clientX !== 'number') return
+      const dx = t.clientX - this._drag.startClientX
+      const dy = t.clientY - this._drag.startClientY
+      if (!this._drag.moved && Math.hypot(dx, dy) > 5) {
+        this._drag.moved = true
+        this.fabHover = false
+      }
+      const { w, h, grabDX, grabDY } = this._drag
+      let x = t.clientX - grabDX
+      let y = t.clientY - grabDY
+      const winTop = this._winTop || 0
+      x = Math.max(8, Math.min(window.innerWidth - w - 8, x))
+      y = Math.max(winTop + 4, Math.min(window.innerHeight - h - 8, y)) // 顶部避让 H5 导航栏
+      this.fabPos = { x, y }
+      if (e.type === 'touchmove' && e.cancelable) e.preventDefault()
+    },
+    fabUp() {
+      const moved = !!(this._drag && this._drag.moved)
+      this._drag = null
+      this.fabDragging = false
+      window.removeEventListener('mousemove', this.fabMove)
+      window.removeEventListener('mouseup', this.fabUp)
+      window.removeEventListener('touchmove', this.fabMove)
+      window.removeEventListener('touchend', this.fabUp)
+      // 拖动结束抑制紧接着的 click，避免误触发展开/收起
+      this._suppressFabClick = moved
+    },
+    fabClick() {
+      if (this._suppressFabClick) {
+        this._suppressFabClick = false
+        return
+      }
+      this.fabHover = !this.fabHover
+    },
+    onFabAction(key) {
+      if (!key) return
+      this.fabHover = false
+      if (key === 'hangup') this.fabHangup()
+      else if (key === 'enter') this.openVoice()
+    },
+    polar(cx, cy, r, deg) {
+      const rad = (deg * Math.PI) / 180
+      return [cx + Math.cos(rad) * r, cy + Math.sin(rad) * r]
+    },
+    // 环形扇区路径：外弧 a0→a1 + 内弧 a1→a0
+    sectorPath(cx, cy, r1, r2, a0, a1) {
+      const p1 = this.polar(cx, cy, r2, a0)
+      const p2 = this.polar(cx, cy, r2, a1)
+      const p3 = this.polar(cx, cy, r1, a1)
+      const p4 = this.polar(cx, cy, r1, a0)
+      const f = (v) => v.toFixed(1)
+      const large = Math.abs(a1 - a0) > 180 ? 1 : 0
+      return `M${f(p1[0])} ${f(p1[1])} A${r2} ${r2} 0 ${large} 1 ${f(p2[0])} ${f(p2[1])} L${f(p3[0])} ${f(p3[1])} A${r1} ${r1} 0 ${large} 0 ${f(p4[0])} ${f(p4[1])} Z`
     },
     oneLine(s) {
       if (!s) return ''
@@ -575,14 +756,18 @@ onLoad(options) {
       }
     },
     scrollToBottom() {
-      const last = this.messages[this.messages.length - 1]
-      this.scrollInto = last ? `msg-${last.id}` : ''
+      // 锚定到底部占位元素：重置后再赋值，保证连续调用也能触发滚动
+      this.scrollInto = ''
+      this.$nextTick(() => {
+        this.scrollInto = 'msg-bottom'
+      })
     },
     // 语音通话期间：以语音页消息为准实时同步到对话页
     onVoiceEvent(s) {
       if (!s) return
       this.voiceActive = !!s.active
-      if (!s.active) return
+      this.callPhase = s.active ? (s.phase || '') : ''
+      if (!s.active) { this.fabHover = false; return }
       this.messages = (s.messages || []).map((m, i) => ({ id: 'v' + i, role: m.role, content: m.content, at: m.at }))
       if (s.sessionId && s.sessionId !== this.conversationId) this.conversationId = s.sessionId
       this.$nextTick(() => this.scrollToBottom())
@@ -800,30 +985,74 @@ onLoad(options) {
   color: #ffffff;
   font-weight: 600;
 }
-.voice-call-tip {
+/* ---------- 语音通话悬浮球 ---------- */.voice-fab {
+  position: fixed;
+  right: 22rpx;
+  bottom: 170rpx;
+  z-index: 1500; /* 高于头部导航与面板，避免拖到顶端被遮挡 */
   display: flex;
   align-items: center;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1rpx solid rgba(16, 185, 129, 0.5);
-  border-radius: 26rpx;
-  padding: 8rpx 20rpx;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.voice-call-tip text {
-  font-size: 23rpx;
-  color: #059669;
+.voice-fab.dragging {
+  opacity: 0.85;
+}
+/* 菜单展开时的隐形热区（::before 绘制在菜单下层，不挡按钮点击）：光标移向扇区途中不丢失 hover */
+.voice-fab.hovering::before {
+  content: '';
+  position: absolute;
+  inset: -96rpx;
+}
+.fab-ball {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.45);
+  animation: fabPulse 1.6s infinite;
+  cursor: pointer;
+}
+.fab-ball.thinking {
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  box-shadow: 0 8rpx 24rpx rgba(56, 189, 248, 0.45);
+}
+.fab-ball.speaking {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  box-shadow: 0 8rpx 24rpx rgba(245, 158, 11, 0.5);
+}
+.fab-icon {
+  font-size: 34rpx;
+  line-height: 1;
+}
+.fab-label {
+  font-size: 17rpx;
+  color: #ffffff;
+  margin-top: 4rpx;
   font-weight: 600;
 }
-.voice-call-dot {
-  width: 14rpx;
-  height: 14rpx;
-  border-radius: 50%;
-  background: #10b981;
-  margin-right: 10rpx;
-  animation: vcBlink 1.2s infinite;
+@keyframes fabPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
 }
-@keyframes vcBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+.fab-menu {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 170px;
+  height: 170px;
+  margin: -85px 0 0 -85px;
+  pointer-events: none;
+}
+.fab-menu-svg svg {
+  pointer-events: none;
+}
+.fab-menu path {
+  pointer-events: auto;
 }
 .panel-mask {
   position: fixed;
@@ -1048,6 +1277,9 @@ onLoad(options) {
 .copy-btn:active {
   color: #4f8cff;
   border-color: #4f8cff;
+}
+.scroll-pad {
+  height: 40rpx;
 }
 .streaming {
   display: inline-flex;
