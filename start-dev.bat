@@ -11,7 +11,7 @@ set LOG_DIR=%~dp0logs
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
 rem ---------- 0. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
-rem DB password is read from local-config.bat (gitignored):  set DB_PASSWORD=你的数据库密码
+rem DB password lives in local-config.bat (gitignored): create it with one line "set DB_PASSWORD=yourpassword"
 set "DB_PASSWORD="
 if exist "%~dp0local-config.bat" call "%~dp0local-config.bat"
 if defined DB_PASSWORD (
