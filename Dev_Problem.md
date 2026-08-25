@@ -1,4 +1,4 @@
-﻿# AI Teacher System — 开发问题记录
+# AI Teacher System — 开发问题记录
 
 > 本文件记录开发过程中遇到的技术问题、根因与解决方案，避免重复踩坑。
 
@@ -147,7 +147,7 @@
 ### P6. runtime 约 2 分钟后整机假死（连接超时）
 - **现象**：8080 端口 LISTENING 但握手超时；后端 `/api/health`（依赖 runtime）连坐超时；日志 `Invalid unicode scalar value`
 - **根因**：agentskills-runtime 启动即连 PostgreSQL，`bin\.env` 缺少 `DATABASE_URL` 等配置 → ORM 初始化失败 → 定时器任务循环崩溃 → 事件循环阻塞
-- **解决**：在 `03-Backend\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin\.env` 追加 `DATABASE_URL=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo`、`orm_connectionUrl`、`opengauss_orm_connectionUrl`；start-dev.bat 内含幂等补写逻辑。修复后 5 分钟 10/10 健康
+- **解决**：在 `03-Backend\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin\.env` 追加 `DATABASE_URL=postgresql://postgres:<DB_PASSWORD>@127.0.0.1:5432/uctoo`、`orm_connectionUrl`、`opengauss_orm_connectionUrl`；start-dev.bat 内含幂等补写逻辑。修复后 5 分钟 10/10 健康
 - **状态**：已修复（2026-08-14）
 
 ### P5. 模型"继续学"讲错课（E2E 发现）

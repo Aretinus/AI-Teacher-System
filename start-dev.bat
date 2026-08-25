@@ -11,7 +11,14 @@ set LOG_DIR=%~dp0logs
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
 rem ---------- 0. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
-powershell -NoProfile -Command "$f='%RUNTIME_ENV%';$t=[IO.File]::ReadAllText($f);if($t -notmatch 'DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}"
+rem DB password is read from local-config.bat (gitignored):  set DB_PASSWORD=你的数据库密码
+set "DB_PASSWORD="
+if exist "%~dp0local-config.bat" call "%~dp0local-config.bat"
+if defined DB_PASSWORD (
+  powershell -NoProfile -Command "$f='%RUNTIME_ENV%';$t=[IO.File]::ReadAllText($f);if($t -notmatch 'DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}"
+) else (
+  echo [warn] local-config.bat not found - skip runtime .env DB patch ^(create it with: set DB_PASSWORD=yourpassword^)
+)
 
 rem ---------- 1. Kill stale processes + clean vite cache ----------
 echo [1/4] cleaning stale processes...
