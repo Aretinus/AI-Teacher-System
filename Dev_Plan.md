@@ -124,7 +124,13 @@
 | math | Finite Element Method Lecture Notes（A. A. Salih） | `Math/09-计算数学/数值PDE与有限元/`（5 章 31 课） | calculus-tutor（微积分教师） |
 
 > 旧蒸馏课程（费恩曼物理学讲义、朗道、量子力学发展史、渐近分析、数学物理方法）已随清理从仓库删除；后续可用新公式管道重蒸。
-### 双机同步合并（2026-08-29 未提交）
+### 双机同步合并（2026-08-29 已提交，推送至 origin/branch-4060）
+
+> 分支说明：branch-4060 = 本机（RTX 4060）的开发线，基于 9792f9c（含全部本地功能与双机合并成果）。
+> 另一台机器（MX150）同步方式：git fetch 后 Your branch is up to date with 'origin/branch-4060'.（或自行 merge 到其工作分支）；
+> 机器差异不需要分叉代码——GPU 相关能力已配置化：本地 TTS 引擎在设置页切换（低配用 Edge 云端）、
+> 公式蒸馏的 P2T/MinerU 策略在 06-Tools/formula-extraction、环境依赖（Python/DLL/模型）按
+> 《05-Docs/环境搭建与运行时配置.md》重建，私密配置放 local-config.bat（gitignored）。
 与另一台机器的开发（github.com/Aretinus/AI-Teacher-System，P29-P33-GH）完成双向对齐，本机采纳：
 - **OCR 探查异步化**：spawnSync → execFile 异步 Promise，大书探查不再冻结后端（P32 本地）
 - **未注册学科全链路兜底**：bookDirOf 回退目录名（蒸馏/OCR/课程三处）、`GET /api/books/subjects`、`/api/subjects` 合并书库学科（registered:false，主页"通用教学"）、路由 `manual-generic` 通用教学模式、设置页「＋添加学科」（P33 本地）
