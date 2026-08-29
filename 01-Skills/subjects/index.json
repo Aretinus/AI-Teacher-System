@@ -2,6 +2,33 @@
   "version": "1.0",
   "subjects": [
     {
+      "id": "economics",
+      "name": "经济学",
+      "bookDir": "Economics",
+      "skills": [
+        "economics-tutor"
+      ],
+      "defaultSkill": "economics-tutor"
+    },
+    {
+      "id": "literature",
+      "name": "文学",
+      "bookDir": "Literature",
+      "skills": [
+        "literature-tutor"
+      ],
+      "defaultSkill": "literature-tutor"
+    },
+    {
+      "id": "philosophy",
+      "name": "哲学",
+      "bookDir": "Philosophy",
+      "skills": [
+        "philosophy-tutor"
+      ],
+      "defaultSkill": "philosophy-tutor"
+    },
+    {
       "id": "math",
       "name": "数学",
       "bookDir": "Math",
@@ -9,15 +36,6 @@
         "calculus-tutor"
       ],
       "defaultSkill": "calculus-tutor"
-    },
-    {
-      "id": "physics",
-      "name": "理论物理",
-      "bookDir": "Physic",
-      "skills": [
-        "feynman-mechanics"
-      ],
-      "defaultSkill": "feynman-mechanics"
     }
   ]
 }

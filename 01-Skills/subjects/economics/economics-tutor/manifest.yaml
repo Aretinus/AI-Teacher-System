@@ -1,0 +1,20 @@
+id: economics-tutor
+name: 经济学教师
+subject: economics
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  courseDir: ../../../../02-DATA/books/distilled/Economics/生活中的经济学_茅于轼
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises/economics
+  references: ../../../../02-DATA/materials/reference/economics
+capabilities:
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+topics:
+  - microeconomics
+  - macroeconomics
+  - economics-intuition

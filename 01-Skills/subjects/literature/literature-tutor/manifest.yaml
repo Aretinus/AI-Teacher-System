@@ -1,0 +1,20 @@
+id: literature-tutor
+name: 文学教师
+subject: literature
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  courseDir: ../../../../02-DATA/books/distilled/literature/The Altruist in Politics 政坛上的利他主义者
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises/literature
+  references: ../../../../02-DATA/materials/reference/literature
+capabilities:
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+topics:
+  - fiction
+  - novel-analysis
+  - literary-reading

@@ -8,6 +8,9 @@ const DISTILLED_ROOT = path.join(DATA_DIR, 'Books', 'distilled');
 const BASE_KEYWORDS = {
   math: ['导数', '积分', '极限', '函数', '微分', '微积分', '切线', '斜率', '求导', '不定积分', '定积分', '偏导', '级数', '矩阵', '向量空间', '线性代数', '代数', '方程', '拓扑', '概率', '统计', '证明', '定理', '数学', '行列式', '特征值', '收敛', '数列', '映射', '群论', 'derivative', 'integral', 'calculus', 'function', 'matrix', 'algebra', 'topology', 'probability', 'linear', 'theorem'],
   physics: ['力学', '力', '运动', '牛顿', '引力', '加速度', '动量', '能量守恒', '转动', '卫星', '轨道', '物理', 'feynman', '费曼', '费恩曼', '相对论', '狭义相对论', '广义相对论', '洛伦兹', '量子', '波函数', '薛定谔', '海森堡', '不确定性原理', '电磁', '电场', '磁场', '光学', '折射', '干涉', '衍射', '偏振', '热力学', '熵', '谐振', '引力波', '光子', 'force', 'motion', 'mechanics', 'gravity', 'momentum', 'velocity', 'quantum', 'relativity', 'physics', 'field', 'lorentz', 'schrodinger', 'entropy'],
+  economics: ['经济学', '供需', '供给', '需求', '价格', '市场', '垄断', '竞争', '成本', '利润', '效用', '通胀', '通货膨胀', '货币', '利率', 'GDP', '经济', '宏观', '微观', '弹性', '边际', '稀缺', '国富论', '亚当·斯密', '凯恩斯', 'economics', 'economy', 'market', 'supply', 'demand', 'inflation', 'price', 'trade'],
+  literature: ['文学', '小说', '散文', '诗歌', '戏剧', '作者', '人物', '情节', '主题', '名著', '阅读', '精读', '写作', 'literature', 'novel', 'fiction', 'poetry', 'drama', 'reading', 'essay'],
+  philosophy: ['哲学', '存在', '认识论', '伦理学', '道德', '正义', '自由意志', '形而上学', '逻辑', '论证', '柏拉图', '亚里士多德', '康德', '尼采', '苏格拉底', '笛卡尔', 'philosophy', 'ethics', 'logic', 'argument', 'existence', 'knowledge', 'plato', 'aristotle', 'kant', 'nietzsche'],
 };
 
 // 信号权重：课程名命中 > 章标题命中 > 课名命中 > 学科基础词

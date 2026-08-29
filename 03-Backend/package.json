@@ -18,5 +18,8 @@
   "dependencies": {
     "@opencangjie/skills": "^1.0.2",
     "express": "^4.21.2"
+  },
+  "allowScripts": {
+    "@opencangjie/skills@1.0.2": true
   }
 }

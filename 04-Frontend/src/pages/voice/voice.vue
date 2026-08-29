@@ -6,6 +6,7 @@
         <text>{{ statusText }}</text>
       </view>
       <view class="v-actions">
+        <view v-if="phase === 'speaking' || phase === 'thinking'" class="v-btn v-btn-warn" @click="interrupt">打断</view>
         <view class="v-btn" @click="minimize">最小化</view>
         <view class="v-btn v-btn-danger" @click="hangUp">取消通话</view>
       </view>
@@ -19,20 +20,29 @@
       <view class="v-phase">{{ phaseText }}</view>
     </view>
 
-    <scroll-view scroll-y class="v-log" :scroll-into-view="logAnchor">
+    <view class="v-body">
+      <question-bar :questions="userMsgs" :active-key="activeQKey" dark @jump="jumpToLog" />
+      <scroll-view scroll-y class="v-log" :scroll-into-view="logAnchor">
       <view v-if="!messages.length && !listeningText" class="v-log-empty">
         <text>我在听，请开始说话，说完停顿一下即可</text>
       </view>
       <view v-for="(m, i) in messages" :key="i" :id="'log-' + i" class="v-log-item" :class="m.role">
-        <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }}</view>
-        <view class="v-log-text">{{ m.content }}</view>
+        <view class="v-log-label">{{ m.role === 'user' ? '你' : 'AI 老师' }} <text v-if="m.at" class="v-log-time">{{ fmtTime(m.at) }}</text></view>
+        <view v-if="m.role === 'assistant'" class="v-log-text"><md-render :content="m.content" /></view>
+        <view v-else class="v-log-text">{{ m.content }}</view>
+      </view>
+      <view v-if="phase === 'thinking' && !listeningText" :id="'log-' + messages.length" class="v-log-item assistant">
+        <view class="v-log-label">AI 老师</view>
+        <view class="v-log-text v-log-live v-thinking">正在思考<span class="v-tdot">·</span><span class="v-tdot">·</span><span class="v-tdot">·</span></view>
       </view>
       <view v-if="listeningText" :id="'log-' + messages.length" class="v-log-item user">
         <view class="v-log-label">你 <text v-if="phaseLabel" class="v-live-flag">{{ phaseLabel }}</text></view>
         <view class="v-log-text v-log-live">{{ listeningText }}<text v-if="phase === 'listening'" class="v-cursor">▌</text></view>
       </view>
       <view v-if="notice" class="v-notice">{{ notice }}</view>
+      <view id="log-bottom" class="v-log-pad"></view>
     </scroll-view>
+    </view>
 
     <view v-if="error" class="v-error">{{ error }}</view>
   </view>
@@ -40,6 +50,8 @@
 
 <script>
 import { voiceCall } from '@/services/voice-call.js'
+import QuestionBar from '@/components/question-bar.vue'
+import MdRender from '@/components/md-render.vue'
 
 const PHASE_TEXT = {
   idle: '',
@@ -49,10 +61,13 @@ const PHASE_TEXT = {
 }
 
 export default {
+  components: { QuestionBar, MdRender },
   data() {
     return {
       state: voiceCall.state,
       logAnchor: '',
+      activeQKey: '',
+      leaving: false, // 主动离开（最小化/挂断）：onUnload 不重复挂断；其他方式离开（浏览器返回/手势）自动挂断
     }
   },
   computed: {
@@ -68,9 +83,6 @@ export default {
     listeningText() {
       return this.state.listeningText
     },
-    phase() {
-      return this.state.phase
-    },
     phaseLabel() {
       const p = this.state.phase
       if (p === 'listening') return '聆听中'
@@ -83,6 +95,22 @@ export default {
     },
     phaseText() {
       return PHASE_TEXT[this.state.phase] || ''
+    },
+    userMsgs() {
+      const all = this.state.messages || []
+      return all
+        .map((m, i) => ({ m, i }))
+        .filter((x) => x.m.role === 'user' && x.m.content)
+        .map((x) => {
+          let reply = ''
+          for (let j = x.i + 1; j < all.length; j++) {
+            if (all[j].role === 'assistant' && all[j].content) {
+              reply = String(all[j].content).replace(/\s+/g, ' ').trim().slice(0, 120)
+              break
+            }
+          }
+          return { key: 'log-' + x.i, text: String(x.m.content).replace(/\s+/g, ' ').slice(0, 120), reply }
+        })
     },
     statusText() {
       if (this.state.phase === 'idle') return '通话已结束'
@@ -107,26 +135,64 @@ export default {
   },
   onUnload() {
     voiceCall.offEvent(this.onEvent)
+    // 非按钮离开（浏览器返回/手势/切页）：自动挂断，避免通话残留
+    if (!this.leaving) voiceCall.end()
   },
   watch: {
     messages() {
-      this.$nextTick(() => {
-        const last = this.messages.length - 1
-        this.logAnchor = last >= 0 ? 'log-' + last : ''
-      })
+      this.scrollToBottom()
+    },
+    phase() {
+      this.$nextTick(this.scrollToBottom)
+    },
+    'state.listeningText'() {
+      this.scrollToBottom()
     },
   },
   methods: {
+    scrollToBottom() {
+      // 锚定到底部占位元素：重置后再赋值，保证连续调用也能触发滚动
+      this.logAnchor = ''
+      this.$nextTick(() => {
+        this.logAnchor = 'log-bottom'
+      })
+    },
+    jumpToLog(key) {
+      this.activeQKey = key
+      this.logAnchor = ''
+      this.$nextTick(() => { this.logAnchor = key })
+    },
     onEvent(s) {
       this.state = s
     },
+    interrupt() {
+      voiceCall.interrupt()
+    },
     minimize() {
+      this.leaving = true // 最小化：通话保持，仅返回对话页
       uni.navigateBack()
     },
     hangUp() {
+      this.leaving = true
       voiceCall.end()
       uni.showToast({ title: '语音通话已取消', icon: 'none' })
-      setTimeout(() => uni.navigateBack(), 400)
+      setTimeout(() => {
+        // 历史栈为空时 navigateBack 失败会表现为页面重载，重载又触发 onLoad 重新拉起通话
+        uni.navigateBack({
+          fail: () => uni.reLaunch({ url: '/pages/index/index' }),
+        })
+      }, 400)
+    },
+    fmtTime(iso) {
+      if (!iso) return ''
+      const d = new Date(iso)
+      if (isNaN(d.getTime())) return String(iso)
+      const pad = (n) => String(n).padStart(2, '0')
+      const hm = pad(d.getHours()) + ':' + pad(d.getMinutes())
+      const now = new Date()
+      if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) return hm
+      const md = pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      return (d.getFullYear() === now.getFullYear() ? '' : d.getFullYear() + '-') + md + ' ' + hm
     },
   },
 }
@@ -189,6 +255,10 @@ export default {
   background: rgba(239, 68, 68, 0.35);
   border-color: rgba(239, 68, 68, 0.6);
 }
+.v-btn-warn {
+  background: rgba(245, 158, 11, 0.4);
+  border-color: rgba(245, 158, 11, 0.75);
+}
 .v-avatar-wrap {
   flex-shrink: 0;
   display: flex;
@@ -237,11 +307,18 @@ export default {
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 4rpx;
 }
-.v-log {
+.v-body {
   flex: 1;
   min-height: 0;
-  width: calc(100% - 60rpx);
-  margin: 20rpx auto 0;
+  display: flex;
+  gap: 16rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+}
+.v-log {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 24rpx;
   padding: 10rpx 0;
@@ -273,6 +350,14 @@ export default {
   color: rgba(255, 255, 255, 0.55);
   margin-bottom: 6rpx;
 }
+.v-log-time {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 8rpx;
+}
+.v-log-pad {
+  height: 40rpx;
+}
 .v-log-text {
   display: inline-block;
   max-width: 85%;
@@ -292,6 +377,26 @@ export default {
   background: rgba(52, 211, 153, 0.22);
   border: 1rpx solid rgba(52, 211, 153, 0.5);
   color: #d1fae5;
+}
+.v-thinking {
+  color: #bfdbfe;
+  background: rgba(79, 140, 255, 0.18);
+  border: 1rpx solid rgba(79, 140, 255, 0.4);
+}
+.v-tdot {
+  display: inline-block;
+  margin-left: 6rpx;
+  animation: tdance 1.2s infinite;
+}
+.v-tdot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.v-tdot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes tdance {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-4rpx); }
 }
 .v-live-flag {
   font-size: 20rpx;

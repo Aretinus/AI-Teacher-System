@@ -1,0 +1,20 @@
+id: philosophy-tutor
+name: 哲学教师
+subject: philosophy
+entry: SKILL.md
+knowledgePath: knowledge
+data:
+  courseDir: ../../../../02-DATA/books/distilled/Philosophy/共产主义/毛泽东/毛选/毛泽东选集 第3卷
+  books: []
+  exercises: ../../../../02-DATA/materials/exercises/philosophy
+  references: ../../../../02-DATA/materials/reference/philosophy
+capabilities:
+  - diagnose
+  - explain
+  - hint
+  - question
+  - evaluate
+topics:
+  - philosophy-basics
+  - logic-argument
+  - ethics

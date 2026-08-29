@@ -8,10 +8,31 @@ set FRONTEND_DIR=%~dp004-Frontend
 set RUNTIME_DIR=%BACKEND_DIR%\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin
 set RUNTIME_ENV=%RUNTIME_DIR%\.env
 set LOG_DIR=%~dp0logs
+set DLL_BACKUP=%~dp006-Tools\runtime-dlls
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
-rem ---------- 0. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
-powershell -NoProfile -Command "$f='%RUNTIME_ENV%';$t=[IO.File]::ReadAllText($f);if($t -notmatch 'DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:uctoo123@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}"
+rem ---------- 0a. Restore GCC runtime DLLs if lost (node_modules reinstall wipes them) ----------
+for %%d in (libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libssp-0.dll) do (
+  if not exist "%RUNTIME_DIR%\%%d" (
+    if exist "%DLL_BACKUP%\%%d" (
+      copy /y "%DLL_BACKUP%\%%d" "%RUNTIME_DIR%\%%d" >nul
+      echo [restore] %%d -^> runtime bin
+    ) else (
+      echo [WARN] missing %%d and no backup at %DLL_BACKUP% - runtime may fail to start
+    )
+  )
+)
+
+rem ---------- 0b. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
+rem DB password lives in local-config.bat (gitignored): create it with one line "set DB_PASSWORD=yourpassword"
+set "DB_PASSWORD="
+if exist "%~dp0local-config.bat" call "%~dp0local-config.bat"
+if not defined DB_PASSWORD (
+  echo [WARN] local-config.bat missing or DB_PASSWORD not set - skip writing DATABASE_URL
+)
+if defined DB_PASSWORD (
+  powershell -NoProfile -Command "$f='%RUNTIME_ENV%';if(Test-Path $f){$t=[IO.File]::ReadAllText($f);if($t -notmatch '(?m)^DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}}"
+)
 
 rem ---------- 1. Kill stale processes + clean vite cache ----------
 echo [1/4] cleaning stale processes...
@@ -22,15 +43,15 @@ taskkill /F /IM agentskills-runtime.exe >nul 2>&1
 timeout /t 2 /nobreak >nul
 if exist "%FRONTEND_DIR%\node_modules\.vite" rmdir /s /q "%FRONTEND_DIR%\node_modules\.vite"
 
-rem ---------- 2. Start services (fully hidden via PowerShell, logs to files) ----------
+rem ---------- 2. Start services (hidden windows, stdout/stderr to separate log files) ----------
 echo [2/4] starting runtime...
-powershell -NoProfile -Command "Start-Process -FilePath 'cmd.exe' -ArgumentList '/c cd /d %RUNTIME_DIR% && agentskills-runtime.exe > "%LOG_DIR%\runtime.log" 2>&1' -WindowStyle Hidden"
+powershell -NoProfile -Command "Start-Process -FilePath '%RUNTIME_DIR%\agentskills-runtime.exe' -WorkingDirectory '%RUNTIME_DIR%' -WindowStyle Hidden -RedirectStandardOutput '%LOG_DIR%\runtime.log' -RedirectStandardError '%LOG_DIR%\runtime-err.log'"
 
 echo [3/4] starting backend...
-powershell -NoProfile -Command "Start-Process -FilePath 'cmd.exe' -ArgumentList '/c cd /d %BACKEND_DIR% && node src/index.js > "%LOG_DIR%\backend.log" 2>&1' -WindowStyle Hidden"
+powershell -NoProfile -Command "Start-Process -FilePath 'node' -ArgumentList 'src/index.js' -WorkingDirectory '%BACKEND_DIR%' -WindowStyle Hidden -RedirectStandardOutput '%LOG_DIR%\backend.log' -RedirectStandardError '%LOG_DIR%\backend-err.log'"
 
 echo [4/4] starting frontend...
-powershell -NoProfile -Command "Start-Process -FilePath 'cmd.exe' -ArgumentList '/c cd /d %FRONTEND_DIR% && npm run dev:h5 > "%LOG_DIR%\vite.log" 2>&1' -WindowStyle Hidden"
+powershell -NoProfile -Command "Start-Process -FilePath 'npm.cmd' -ArgumentList 'run','dev:h5' -WorkingDirectory '%FRONTEND_DIR%' -WindowStyle Hidden -RedirectStandardOutput '%LOG_DIR%\vite.log' -RedirectStandardError '%LOG_DIR%\vite-err.log'"
 
 echo.
 echo Waiting for services (runtime/backend max 60s, frontend max 120s)...
@@ -40,7 +61,7 @@ powershell -NoProfile -Command "$deadline=(Get-Date).AddSeconds(120);$ok=$false;
 
 echo.
 echo All services are running in the background.
-echo Logs: logs\backend.log / logs\vite.log / logs\runtime.log
+echo Logs: logs\backend.log / logs\vite.log / logs\runtime.log (+ *.err.log)
 echo This window will close automatically.
 timeout /t 5 /nobreak >nul
 exit

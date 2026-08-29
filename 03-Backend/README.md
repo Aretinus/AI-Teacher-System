@@ -41,7 +41,7 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 引擎策略（`tts-config.json`，`engine: auto | local | edge`）：
 
 - `local`：固定走本地 Qwen3-TTS（`06-Tools/tts/tts-server.py`，端口 8765，超时 180s）
-- `edge`：固定走微软 Edge 在线 TTS（`06-Tools/ocr-toolkit/venv` 内 edge-tts，约 2.5s，走本机代理 10808，rate +8% / pitch +4Hz）
+- `edge`：固定走微软 Edge 在线 TTS（`06-Tools/tts/venv` 内 edge-tts，约 2.5s，直连微软无需代理，rate +8% / pitch +4Hz）
 - `auto`（默认）：先本地、失败回落 Edge。本地服务未启动时等效 Edge
 
 健壮性：
@@ -53,21 +53,24 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 
 | 接口 | 说明 |
 |---|---|
-| `GET /api/subjects` | 学科列表（含全才） |
+| `GET /api/subjects` | 学科列表：已注册学科（含课程数）+ 书库实时扫描的未注册学科（`registered:false`，走通用教学） |
+| `GET /api/books/subjects` | 书库学科清单（已注册 + raw/ocr/distilled 顶层目录实时扫描，含中文映射），书籍加工页用 |
 | `GET /api/courses?subject=` | 学科下课程清单（来自蒸馏产物） |
 | `GET /api/styles` | 授课风格列表 |
 | `POST /api/chat/stream` | SSE 流式对话（body 支持 `subject` / `course` / `style` / 消息） |
 | `POST /api/chat` | 非流式对话（同参数，返回 JSON） |
 | `GET /api/sessions/:sessionId` | 会话详情（返回前清洗历史遗留的连续重复消息） |
-| `POST /api/ocr/scan`、`POST /api/ocr/start`、`GET /api/ocr/job/:id` | OCR 扫描 / 启动 / 轮询 |
+| `POST /api/ocr/scan`、`POST /api/ocr/start`、`GET /api/ocr/job/:id` | OCR 扫描（文字层探查异步执行，不阻塞其他接口）/ 启动 / 轮询 |
 | `POST /api/books/scan`、`POST /api/books/distill`、`GET /api/books/distill/:id` | 书籍扫描 / 蒸馏启动 / 轮询 |
 | `POST /api/users/default/...` | 用户状态、历史、进度读写 |
+
+> 未注册学科兜底：书库放入新文件夹即自动出现在学科列表（`registered:false`），蒸馏/OCR 按目录名访问，对话走 `manual-generic` 通用教学模式（无技能/课程上下文，按学科名教学）。
 
 ## 依赖的外部部件
 
 - 模型运行时：默认 agentskills-runtime（端口 8080，`06-Tools/agentskills-runtime-src/`），OpenAI 兼容接口任意
-- OCR：`06-Tools/ocr-toolkit/`（RapidOCR + DjVuLibre 工具，含 venv）
-- 蒸馏：`01-Skills/vendor/book-learning-tutor/`（venv_slim 解释器 + djvulibre）
+- OCR：`06-Tools/ocr-toolkit/`（RapidOCR + DjVuLibre 工具，venv 基于 `06-Tools/python-3.12` 重建）
+- 蒸馏：`01-Skills/vendor/book-learning-tutor/`（venv_slim 基于 `06-Tools/python-3.12` 重建 + djvulibre）
 - 本地 TTS：`06-Tools/tts/`（Qwen3-TTS 服务，可选，默认走 Edge）
 
-> 改代码后需重启进程生效；任务（OCR/蒸馏）以内存 job 形式异步运行，重启即丢失。
+> 本项目所有 Python 统一由 `06-Tools/python-3.12` 派生（各 venv 均用其创建），公式书蒸馏的 pix2text 需装入 `06-Tools/python-3.12`（`python.exe -m pip install pix2text`，未装时蒸馏会给出安装指引）。改代码后需重启进程生效；任务（OCR/蒸馏）以内存 job 形式异步运行，重启即丢失。

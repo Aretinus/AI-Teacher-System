@@ -15,17 +15,17 @@ const OCR_DIR = path.join(BOOKS_DIR, 'ocr');
 const OCR_STATUS = path.join(RAW_DIR, '_ocr_status.json');
 const SUBJECTS_INDEX = path.join(SKILLS_DIR, 'subjects', 'index.json');
 
-// 学科 id → 书库顶层目录（raw/ocr 镜像），取自 subjects/index.json 的 bookDir
+// 学科 id → 书库顶层目录（raw/ocr 镜像）：优先取 subjects/index.json 的 bookDir；
+// 未注册学科（书库实时新增的文件夹）直接把学科名当目录名
 function bookDirOf(subject) {
   const id = String(subject || '').trim();
   if (!id) return null;
   try {
     const idx = JSON.parse(fs.readFileSync(SUBJECTS_INDEX, 'utf8'));
     const s = (idx.subjects || []).find((x) => x.id === id);
-    return (s && s.bookDir) || null;
-  } catch (e) {
-    return null;
-  }
+    if (s && s.bookDir) return s.bookDir;
+  } catch (e) { /* 索引缺失时按目录名处理 */ }
+  return id;
 }
 
 const OCR_EXTS = ['.pdf', '.djvu'];
@@ -76,27 +76,34 @@ function saveStatus(status) {
 }
 
 function probeTextLayers(files) {
-  if (!files.length) return {};
+  if (!files.length) return Promise.resolve({});
   const py = fs.existsSync(VENV_PY) ? VENV_PY : 'python';
-  const { spawnSync } = require('child_process');
-  const r = spawnSync(py, [PROBE_PY], {
-    input: files.map((f) => f.file).join('\n') + '\n',
-    encoding: 'utf8',
-    timeout: 120000,
-    windowsHide: true,
-    env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' },
+  const { execFile } = require('child_process');
+  // 异步探查：不阻塞事件循环，探查期间其他接口正常响应（大书多时同步版曾冻结后端 2 分钟）
+  return new Promise((resolve) => {
+    const child = execFile(py, [PROBE_PY], {
+      timeout: 120000,
+      windowsHide: true,
+      maxBuffer: 10 * 1024 * 1024,
+      env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' },
+    }, (err, stdout) => {
+      const out = {};
+      if (!err && stdout) {
+        for (const line of String(stdout).split('\n')) {
+          const t = line.trim();
+          if (!t) continue;
+          try {
+            const d = JSON.parse(t);
+            out[d.path] = d;
+          } catch (e) { /* skip */ }
+        }
+      }
+      resolve(out);
+    });
+    child.stdin.on('error', () => { /* 探查脚本提前退出时忽略 */ });
+    child.stdin.write(files.map((f) => f.file).join('\n') + '\n');
+    child.stdin.end();
   });
-  const out = {};
-  if (r.error || r.status !== 0) return out;
-  for (const line of String(r.stdout || '').split('\n')) {
-    const t = line.trim();
-    if (!t) continue;
-    try {
-      const d = JSON.parse(t);
-      out[d.path] = d;
-    } catch (e) { /* skip */ }
-  }
-  return out;
 }
 
 function ocrProduct(relDir, stem, ext) {
@@ -117,7 +124,7 @@ function cachePages(cacheFile) {
   }
 }
 
-function scanRaw(subject) {
+async function scanRaw(subject) {
   const bookDir = bookDirOf(subject);
   if (!bookDir) return [];
   const root = path.join(RAW_DIR, bookDir);
@@ -139,20 +146,22 @@ function scanRaw(subject) {
         walk(full, relFull);
       } else if (e.isFile()) {
         const ext = path.extname(e.name).toLowerCase();
-        if (!OCR_EXTS.includes(ext)) continue;
+        if (!BOOK_EXTS.includes(ext)) continue;
         const stem = path.basename(e.name, ext);
         const relDir = rel ? path.dirname(relFull).replace(/\\/g, '/') : '';
         const prod = ocrProduct(relDir, stem, ext);
         const done = fs.existsSync(prod.main);
         const srcDir = done ? path.join(OCR_DIR, relDir) : path.dirname(full);
         const di = distilledInfo(srcDir, relDir, stem);
+        const size = fs.statSync(full).size;
         files.push({
           name: e.name,
           file: full,
           relPath: relFull.split(path.sep).join('/'),
           folder: relDir ? relDir.split('/').slice(1).join('/') : '',
           ext,
-          sizeMB: Math.round(fs.statSync(full).size / 1024 / 1024),
+          sizeMB: Number((size / 1024 / 1024).toFixed(1)),
+          sizeKB: Math.max(1, Math.round(size / 1024)),
           ocrDone: done,
           ocrProduct: done ? path.relative(BOOKS_DIR, prod.main).split(path.sep).join('/') : null,
           ocrProductFile: done ? prod.main : null,
@@ -166,14 +175,21 @@ function scanRaw(subject) {
 
   walk(root, bookDir);
   const status = loadStatus();
-  const toProbe = files.filter((f) => !status[f.file] || !status[f.file].kind);
-  const probes = probeTextLayers(toProbe);
+  const ocrCapable = files.filter((f) => OCR_EXTS.includes(f.ext));
+  const toProbe = ocrCapable.filter((f) => !status[f.file] || !status[f.file].kind);
+  const probes = await probeTextLayers(toProbe);
   const merged = { ...status };
   for (const f of toProbe) {
     if (probes[f.file]) merged[f.file] = probes[f.file];
   }
   saveStatus(merged);
   for (const f of files) {
+    if (!OCR_EXTS.includes(f.ext)) {
+      // epub/mobi/txt 等格式本身是文本载体，无需 OCR
+      f.textLayer = 'n/a';
+      f.needOcr = false;
+      continue;
+    }
     const p = merged[f.file];
     const kind = p && p.kind ? p.kind : 'unknown';
     f.textLayer = kind;

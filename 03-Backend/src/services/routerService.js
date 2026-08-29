@@ -11,10 +11,19 @@ function findSubject(id) {
 }
 
 // 学科级关键词打分（课程信号优先，已由 matchCourse 处理）；长词优先，避免子串误判（波函数 vs 函数）
+// 动态学科兜底：新学科（raw 目录驱动出现）无 BASE_KEYWORDS，靠学科名/bookDir 名自动路由
 function detectSubject(message) {
   const text = String(message || '');
+  const subjects = loadSubjects();
+  const dynamic = {};
+  for (const s of subjects) {
+    if (BASE_KEYWORDS[s.id]) continue;
+    const kws = [s.name, s.id, s.bookDir].filter(Boolean);
+    if (kws.length) dynamic[s.id] = kws;
+  }
+  const keywordTable = { ...BASE_KEYWORDS, ...dynamic };
   const scores = {};
-  for (const [subject, kws] of Object.entries(BASE_KEYWORDS)) {
+  for (const [subject, kws] of Object.entries(keywordTable)) {
     const sorted = [...kws].sort((a, b) => b.length - a.length);
     const matched = [];
     let score = 0;
@@ -29,7 +38,7 @@ function detectSubject(message) {
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   const [best, bestScore] = sorted[0];
   const [second, secondScore] = sorted[1];
-  if (bestScore === 0) return { subject: null, mode: 'unknown', candidates: loadSubjects().map((s) => s.id) };
+  if (bestScore === 0) return { subject: null, mode: 'unknown', candidates: subjects.map((s) => s.id) };
   if (bestScore === secondScore) return { subject: null, mode: 'ambiguous', candidates: [best, second] };
   return { subject: best, mode: 'auto', confidence: bestScore / (bestScore + secondScore) };
 }
@@ -48,7 +57,8 @@ function routeAll({ subject, message }) {
   }
   if (subject) {
     const s = findSubject(subject);
-    if (!s) return { route: null, candidates: loadSubjects().map((x) => x.id), reason: 'subject-not-supported' };
+    // 未注册学科（书库实时新增）：通用教学模式，无技能/课程上下文，仅按学科名教学
+    if (!s) return { route: { subject, tutor: null, mode: 'manual-generic', confidence: 1.0 } };
     return { route: { subject: s.id, tutor: s.defaultSkill || s.skills[0], mode: 'manual', confidence: 1.0 } };
   }
   const detected = detectSubject(message);

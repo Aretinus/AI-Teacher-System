@@ -124,3 +124,14 @@
 | math | Finite Element Method Lecture Notes（A. A. Salih） | `Math/09-计算数学/数值PDE与有限元/`（5 章 31 课） | calculus-tutor（微积分教师） |
 
 > 旧蒸馏课程（费恩曼物理学讲义、朗道、量子力学发展史、渐近分析、数学物理方法）已随清理从仓库删除；后续可用新公式管道重蒸。
+### 双机同步合并（2026-08-29 未提交）
+与另一台机器的开发（github.com/Aretinus/AI-Teacher-System，P29-P33-GH）完成双向对齐，本机采纳：
+- **OCR 探查异步化**：spawnSync → execFile 异步 Promise，大书探查不再冻结后端（P32 本地）
+- **未注册学科全链路兜底**：bookDirOf 回退目录名（蒸馏/OCR/课程三处）、`GET /api/books/subjects`、`/api/subjects` 合并书库学科（registered:false，主页"通用教学"）、路由 `manual-generic` 通用教学模式、设置页「＋添加学科」（P33 本地）
+- **语音通话生命周期**：leaving 标记 + onUnload 自动挂断 + navigateBack 失败兜底 reLaunch + 通话中对话页输入禁用（P34 本地）
+- **悬浮球**：对话页可拖动通话悬浮球（径向菜单挂断/进入、贴边换朝向），与本地问题条共存，替代"通话中"chip（P35 本地）
+- **voice-call 防护**：reqToken 请求代际 + interrupted 打断抑制，interrupt 支持思考中/播报中打断（P36 本地；GH 的"思考期继续聆听"未采纳，与本地停顿分段/回声防控状态机冲突）
+- **界面细节**：语音日志时间戳 + Markdown 渲染、思考中条目前置、历史记录相对时间（今天显示时分）、示例提问按学科动态生成 + 通用兜底、设置页学科选择改用书库实时清单
+- **启动脚本**：DB 密码外置 local-config.bat（gitignored）、全 ASCII 注释 + CRLF + `.gitattributes` 固化（P31 本地④）
+
+本机独有（GitHub 尚无，反向同步待办）：问题条（刻度+悬停卡片）、runtime DLL 自愈、语音识别质量优化（停顿分段/final 去重/代际防残留/barge-in）、TTS 引擎切换与语音打断设置、economics/literature/philosophy 注册学科与蒸馏产物、动态学科关键词路由、refreshService 书籍驱动扫描与 books 目录重构。

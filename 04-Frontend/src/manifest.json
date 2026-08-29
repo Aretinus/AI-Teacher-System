@@ -19,6 +19,9 @@
     "usingComponents": true
   },
   "vueVersion": "3",
+  "uniStatistics": {
+    "enable": false
+  },
   "h5": {
     "title": "AI 教师",
     "router": {

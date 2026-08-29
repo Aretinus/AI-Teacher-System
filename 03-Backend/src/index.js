@@ -9,7 +9,7 @@ const { loadSubjects } = require('./services/routerService');
 const { loadState, saveState, loadProfile, loadHistory, saveSessionDetail, loadSessionDetail, deleteSession } = require('./services/dataService');
 const { loadSettings, saveSettings } = require('./services/settingsService');
 const { refresh } = require('./services/refreshService');
-const { scanSubjectBooks, startDistill, getJob } = require('./services/distillService');
+const { scanSubjectBooks, startDistill, getJob, listLibrarySubjects } = require('./services/distillService');
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
 const { listLogs, getLog } = require('./services/logService');
 const { listStyles } = require('./services/stylesService');
@@ -68,8 +68,8 @@ const TTS_VOICE_LABELS = [
   { key: 'yunxia', name: '云霞', label: '男声 · 陕西方言', voice: 'zh-CN-YunxiaNeural' },
   { key: 'yunye', name: '云烨', label: '男声 · 东北方言', voice: 'zh-CN-YunyeNeural' },
 ];
-const EDGE_TTS = path.join(__dirname, '..', '..', '06-Tools', 'ocr-toolkit', 'venv', 'Scripts', 'edge-tts.exe');
-const TTS_PROXY = process.env.TTS_PROXY || 'http://127.0.0.1:10808';
+const EDGE_TTS = path.join(__dirname, '..', '..', '06-Tools', 'tts', 'venv', 'Scripts', 'edge-tts.exe');
+const TTS_PROXY = process.env.TTS_PROXY || '';
 
 // 本地 TTS（Qwen3-TTS）配置，engine: auto=local 优先失败回落 edge / local / edge
 const TTS_CONFIG_PATH = path.join(__dirname, '..', 'tts-config.json');
@@ -105,11 +105,17 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.get('/api/subjects', (req, res) => {
-  const subjects = loadSubjects().map((s) => ({
+  const registered = loadSubjects().map((s) => ({
     ...s,
+    courseCount: listSubjectCourses(s.id).length,
     hasCourses: listSubjectCourses(s.id).length > 0,
   }));
-  res.json({ subjects });
+  // 合并书库实时学科（未注册文件夹）：通用教学模式，无技能/课程
+  const regIds = new Set(registered.map((s) => String(s.id).toLowerCase()));
+  const extra = listLibrarySubjects()
+    .filter((s) => !regIds.has(String(s.id).toLowerCase()))
+    .map((s) => ({ id: s.id, name: s.name, bookDir: s.bookDir, skills: [], defaultSkill: '', registered: false, courseCount: 0, hasCourses: false }));
+  res.json({ subjects: [...registered, ...extra] });
 });
 
 app.get('/api/styles', (req, res) => {
@@ -231,6 +237,11 @@ app.get('/api/books/courses', (req, res) => {
   res.json({ courses: listCourses() });
 });
 
+// 书库学科清单（已注册 + 书库目录实时扫描），供书籍加工页选择学科
+app.get('/api/books/subjects', (req, res) => {
+  res.json({ subjects: listLibrarySubjects() });
+});
+
 // 课程 = 蒸馏产物 distilled/{bookDir}/<一级目录>（数学=分类目录，物理=整本大书）
 app.get('/api/courses', (req, res) => {
   const subject = req.query.subject;
@@ -238,9 +249,10 @@ app.get('/api/courses', (req, res) => {
   res.json({ courses: listSubjectCourses(subject) });
 });
 
-app.post('/api/ocr/scan', (req, res) => {
+app.post('/api/ocr/scan', async (req, res) => {
   try {
-    res.json({ books: scanRaw((req.body || {}).subject || '') });
+    const books = await scanRaw((req.body || {}).subject || '');
+    res.json({ books });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
@@ -357,14 +369,15 @@ app.post('/api/tts', async (req, res) => {
   const text = String(req.body.text || '').trim().slice(0, 3000);
   if (!text) return res.status(400).json({ error: 'text 必填' });
   const voice = req.body.voice || 'xiaoxiao';
-  if (TTS_ENGINE === 'local' || TTS_ENGINE === 'auto') {
+  const engine = String(req.body.engine || '').toLowerCase() || TTS_ENGINE;
+  if (engine === 'local' || engine === 'auto') {
     try {
       const buf = await localTts(text, voice);
       res.set({ 'Content-Type': 'audio/wav', 'Content-Length': buf.length });
       return res.send(buf);
     } catch (e) {
       console.warn('[tts] local 失败，回落 edge：', e.message);
-      if (TTS_ENGINE === 'local') return res.status(502).json({ error: '本地 TTS 不可用：' + e.message });
+      if (engine === 'local') return res.status(502).json({ error: '本地 TTS 不可用：' + e.message });
     }
   }
   edgeTts(text, TTS_VOICES[voice] || TTS_VOICES.xiaoxiao, res);

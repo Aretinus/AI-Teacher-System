@@ -23,7 +23,8 @@ logs/
 # ===== 本地配置（可能含 API Key，不上传）=====
 02-DATA/settings.json
 
-# ===== Python 虚拟环境 =====
+# ===== Python 虚拟环境（含本机完整 Python 3.12，约 1.9G，不入库）=====
+06-Tools/python-3.12/
 01-Skills/vendor/venv_slim/
 
 # ===== 第三方运行时工具（含嵌套 git 仓库与二进制）=====
@@ -40,8 +41,10 @@ logs/
 06-Tools/formula-extraction/work/
 06-Tools/formula-extraction/__pycache__/
 
+# ===== 本机私密配置（不入库）=====
+06-Tools/jwt_token.txt
+local-config.bat
+
 # ===== 系统文件 =====
 .DS_Store
 Thumbs.db
-# ===== �������� =====
-06-Tools/jwt_token.txt

@@ -145,7 +145,7 @@
 - `ocr.py` 的 `mineru` 后端钩子保留（离线精修/整书处理备用）；本方案以独立管道脚本为主路径。
   （注：P2T 单页约 100 秒，不符合 `ocr_document` 同步调用契约，不接入 ocr.py；公式书统一走本管道。）
 - `book_formats.py` 的 `_pdf_sections` 仍处理无公式普通书（速度优先）；公式书（Math/Physic 学科标记）走本管道。
-- 运行环境说明：`pipeline.py` 由 `teach.py` 的 venv_slim 解释器运行，但 `run_pipeline.py` 必须用**系统 Python**（pix2text 只装在系统环境），`_system_python()` 用 `shutil.which("python")` 定位。
+- 运行环境说明（2026-08-20 更新）：`pipeline.py` 由 `teach.py` 的 venv_slim 解释器运行；`run_pipeline.py` 由 `_system_python()` 启动，现已改为**优先返回项目统一 Python `06-Tools/python-3.12/python.exe`**（pix2text 已装入该项目 Python，清华镜像 `pip install pix2text`），不再依赖旧机器系统 Python；未装 pix2text 时管道打印安装指引后中止（`_check_pix2text()`）。
 - 产物生命周期：`work/<书名>/`（P2T 页 md、suspicious.json、refined/book.md）→ `参考/<书名>/`（切章）→ `书库/<书名>/`（课程）→ `distilled/`（最终）。成功蒸馏后过程产物清理策略见决策记录 12。
 
 ## 八、参考链接

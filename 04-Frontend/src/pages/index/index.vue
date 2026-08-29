@@ -20,7 +20,7 @@
           @click="pickSubject(s.id)"
         >
           <view class="subject-name">{{ s.name }}</view>
-          <view class="subject-skill">{{ (s.defaultSkill || s.skills[0]) || '' }}</view>
+          <view class="subject-skill">{{ s.registered === false ? '通用教学' : (s.courseCount ? `${s.courseCount} 门课程可学` : '书库就绪，待加工成课程') }}</view>
         </view>
       </view>
     </view>
@@ -107,7 +107,7 @@
         <view class="history-head">
           <text class="history-subject">{{ subjectName(s.subject) }}</text>
           <view class="history-right">
-            <text class="history-date">{{ s.date }}</text>
+            <text class="history-date">{{ fmtTime(s.lastAt || s.date) }}</text>
             <text class="history-del" @click.stop="removeSession(s)">删除</text>
           </view>
         </view>
@@ -143,7 +143,7 @@ export default {
   },
   computed: {
     availableSubjects() {
-      return (this.subjects || []).filter((s) => s.hasCourses)
+      return this.subjects || []
     },
     sessionsOfSubject() {
       return (this.history.sessions || []).filter((s) => s.subject === this.selectedSubject)
@@ -221,7 +221,18 @@ export default {
     subjectName(id) {
       if (!id) return '综合问答'
       const s = this.subjects.find((x) => x.id === id)
-      return s ? s.name : '未选择'
+      return s ? s.name : (id || '未选择')
+    },
+    fmtTime(iso) {
+      if (!iso) return ''
+      const d = new Date(iso)
+      if (isNaN(d.getTime())) return String(iso)
+      const pad = (n) => String(n).padStart(2, '0')
+      const hm = pad(d.getHours()) + ':' + pad(d.getMinutes())
+      const now = new Date()
+      if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()) return hm
+      const md = pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      return (d.getFullYear() === now.getFullYear() ? '' : d.getFullYear() + '-') + md + ' ' + hm
     },
     oneLine(s) {
       if (!s) return ''

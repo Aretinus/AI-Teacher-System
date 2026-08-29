@@ -1,0 +1,409 @@
+{
+  "version": 1,
+  "book": "生活中的经济学_茅于轼",
+  "current": "第01章_出版者的话/第01课_出版者的话.md",
+  "total_lessons": 50,
+  "updated": null,
+  "lessons": {
+    "第01章_出版者的话/第01课_出版者的话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "出版者的话",
+      "lesson": "出版者的话"
+    },
+    "第02章_总前言/第01课_总前言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "总前言",
+      "lesson": "总前言"
+    },
+    "第03章_前言/第01课_前言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "前言",
+      "lesson": "前言"
+    },
+    "第04章_微观经济学/第01课_微观经济学.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "微观经济学",
+      "lesson": "微观经济学"
+    },
+    "第05章_1．喜欢搬家的美国人/第01课_1．喜欢搬家的美国人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1．喜欢搬家的美国人",
+      "lesson": "1．喜欢搬家的美国人"
+    },
+    "第06章_2．赌博在美国/第01课_2．赌博在美国.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "2．赌博在美国",
+      "lesson": "2．赌博在美国"
+    },
+    "第07章_3．从邮政的垄断与民航的竞争/第01课_3．从邮政的垄断与民航的竞争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "3．从邮政的垄断与民航的竞争",
+      "lesson": "3．从邮政的垄断与民航的竞争"
+    },
+    "第08章_4．节约时间创造财富/第01课_4．节约时间创造财富.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "4．节约时间创造财富",
+      "lesson": "4．节约时间创造财富"
+    },
+    "第09章_5．垃圾中的边际效用/第01课_5．垃圾中的边际效用.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "5．垃圾中的边际效用",
+      "lesson": "5．垃圾中的边际效用"
+    },
+    "第10章_6．公用事业的收费原则/第01课_6．公用事业的收费原则.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "6．公用事业的收费原则",
+      "lesson": "6．公用事业的收费原则"
+    },
+    "第11章_7．美国人如何看待“按劳分配”/第01课_7．美国人如何看待“按劳分配”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "7．美国人如何看待“按劳分配”",
+      "lesson": "7．美国人如何看待“按劳分配”"
+    },
+    "第12章_8．漫议超级市场/第01课_8．漫议超级市场.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "8．漫议超级市场",
+      "lesson": "8．漫议超级市场"
+    },
+    "第13章_9．再谈超级市场/第01课_9．再谈超级市场.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "9．再谈超级市场",
+      "lesson": "9．再谈超级市场"
+    },
+    "第14章_10．美国的进口货/第01课_10．美国的进口货.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "10．美国的进口货",
+      "lesson": "10．美国的进口货"
+    },
+    "第15章_11．喜欢旅游的美国人/第01课_11．喜欢旅游的美国人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "11．喜欢旅游的美国人",
+      "lesson": "11．喜欢旅游的美国人"
+    },
+    "第16章_12．有关“行”的经济学/第01课_12．有关“行”的经济学.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "12．有关“行”的经济学",
+      "lesson": "12．有关“行”的经济学"
+    },
+    "第17章_13．多生产未必多享受/第01课_13．多生产未必多享受.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "13．多生产未必多享受",
+      "lesson": "13．多生产未必多享受"
+    },
+    "第18章_14．环境保护的经济学/第01课_14．环境保护的经济学.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "14．环境保护的经济学",
+      "lesson": "14．环境保护的经济学"
+    },
+    "第19章_15．政府为百姓服务/第01课_15．政府为百姓服务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "15．政府为百姓服务",
+      "lesson": "15．政府为百姓服务"
+    },
+    "第20章_16．节约能源（上）/第01课_16．节约能源（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "16．节约能源（上）",
+      "lesson": "16．节约能源（上）"
+    },
+    "第21章_17．节约能源（下）/第01课_17．节约能源（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "17．节约能源（下）",
+      "lesson": "17．节约能源（下）"
+    },
+    "第22章_18．没有替代便没有经济学/第01课_18．没有替代便没有经济学.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "18．没有替代便没有经济学",
+      "lesson": "18．没有替代便没有经济学"
+    },
+    "第23章_宏观经济学/第01课_宏观经济学.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "宏观经济学",
+      "lesson": "宏观经济学"
+    },
+    "第24章_19．让银行为您服务/第01课_19．让银行为您服务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "19．让银行为您服务",
+      "lesson": "19．让银行为您服务"
+    },
+    "第25章_20．个体经济规律和总量经济规律/第01课_20．个体经济规律和总量经济规律.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "20．个体经济规律和总量经济规律",
+      "lesson": "20．个体经济规律和总量经济规律"
+    },
+    "第26章_21．美国人如何存钱（上）/第01课_21．美国人如何存钱（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "21．美国人如何存钱（上）",
+      "lesson": "21．美国人如何存钱（上）"
+    },
+    "第27章_22．美国人如何存钱（下）/第01课_22．美国人如何存钱（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "22．美国人如何存钱（下）",
+      "lesson": "22．美国人如何存钱（下）"
+    },
+    "第28章_23．美国人一年生产多少财富？（上）/第01课_23．美国人一年生产多少财富？（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "23．美国人一年生产多少财富？（上）",
+      "lesson": "23．美国人一年生产多少财富？（上）"
+    },
+    "第29章_24．美国人一年生产多少财富？（下）/第01课_24．美国人一年生产多少财富？（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "24．美国人一年生产多少财富？（下）",
+      "lesson": "24．美国人一年生产多少财富？（下）"
+    },
+    "第30章_25．美国经济为什么会衰退？/第01课_25．美国经济为什么会衰退？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "25．美国经济为什么会衰退？",
+      "lesson": "25．美国经济为什么会衰退？"
+    },
+    "第31章_26．美国如何对付经济衰退/第01课_26．美国如何对付经济衰退.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "26．美国如何对付经济衰退",
+      "lesson": "26．美国如何对付经济衰退"
+    },
+    "第32章_27．美国的通货膨胀（上）/第01课_27．美国的通货膨胀（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "27．美国的通货膨胀（上）",
+      "lesson": "27．美国的通货膨胀（上）"
+    },
+    "第33章_28．美国的通货膨胀（中）/第01课_28．美国的通货膨胀（中）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "28．美国的通货膨胀（中）",
+      "lesson": "28．美国的通货膨胀（中）"
+    },
+    "第34章_29．英国的通货膨胀（下）/第01课_29．英国的通货膨胀（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "29．英国的通货膨胀（下）",
+      "lesson": "29．英国的通货膨胀（下）"
+    },
+    "第35章_30．现在如何与将来做交易/第01课_30．现在如何与将来做交易.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "30．现在如何与将来做交易",
+      "lesson": "30．现在如何与将来做交易"
+    },
+    "第36章_经济体制/第01课_经济体制.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "经济体制",
+      "lesson": "经济体制"
+    },
+    "第37章_31．经济活动中的是非观（上）/第01课_31．经济活动中的是非观（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "31．经济活动中的是非观（上）",
+      "lesson": "31．经济活动中的是非观（上）"
+    },
+    "第38章_32．经济活动中的是非观（下）/第01课_32．经济活动中的是非观（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "32．经济活动中的是非观（下）",
+      "lesson": "32．经济活动中的是非观（下）"
+    },
+    "第39章_33．个人和社会的致富之道/第01课_33．个人和社会的致富之道.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "33．个人和社会的致富之道",
+      "lesson": "33．个人和社会的致富之道"
+    },
+    "第40章_34．一个人人都买，人人都卖的社会/第01课_34．一个人人都买，人人都卖的社会.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "34．一个人人都买，人人都卖的社会",
+      "lesson": "34．一个人人都买，人人都卖的社会"
+    },
+    "第41章_35．最大多数人的最大幸福/第01课_35．最大多数人的最大幸福.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "35．最大多数人的最大幸福",
+      "lesson": "35．最大多数人的最大幸福"
+    },
+    "第42章_36．所有权漫议（上）/第01课_36．所有权漫议（上）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "36．所有权漫议（上）",
+      "lesson": "36．所有权漫议（上）"
+    },
+    "第43章_37．所有权漫议（下）/第01课_37．所有权漫议（下）.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "37．所有权漫议（下）",
+      "lesson": "37．所有权漫议（下）"
+    },
+    "第44章_38．从交通规则到经济效益/第01课_38．从交通规则到经济效益.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "38．从交通规则到经济效益",
+      "lesson": "38．从交通规则到经济效益"
+    },
+    "第45章_39．美国的色情市场——一切交易都有利于买卖双方吗？/第01课_39．美国的色情市场——一切交易都有利于买卖双方吗？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "39．美国的色情市场——一切交易都有利于买卖双方吗？",
+      "lesson": "39．美国的色情市场——一切交易都有利于买卖双方吗？"
+    },
+    "第46章_40．“金钱万能”的经济学意义/第01课_40．“金钱万能”的经济学意义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "40．“金钱万能”的经济学意义",
+      "lesson": "40．“金钱万能”的经济学意义"
+    },
+    "第47章_41．交易费用/第01课_41．交易费用.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "41．交易费用",
+      "lesson": "41．交易费用"
+    },
+    "第48章_42．再谈交易费用/第01课_42．再谈交易费用.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "42．再谈交易费用",
+      "lesson": "42．再谈交易费用"
+    },
+    "第49章_43．市场经济的基础：优势交换/第01课_43．市场经济的基础：优势交换.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "43．市场经济的基础：优势交换",
+      "lesson": "43．市场经济的基础：优势交换"
+    },
+    "第50章_44．囚犯难题和市场规则/第01课_44．囚犯难题和市场规则.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "44．囚犯难题和市场规则",
+      "lesson": "44．囚犯难题和市场规则"
+    }
+  }
+}

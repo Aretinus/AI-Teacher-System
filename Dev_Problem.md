@@ -4,6 +4,66 @@
 
 ## 问题列表（按时间倒序）
 
+### P38. 问题条 scroll-view 在 keep-alive 页面重进时报 scrollTop null；语音识别"无任何事件"确认为网络依赖
+- **现象**：①从语音页返回对话页，控制台刷 `Cannot set properties of null (setting 'scrollTop')`（QuestionBar 的 ScrollView activated 钩子）；②语音通话识别完全无响应——`recog.start()` 每 6 秒循环重启，但没有任何识别事件，也**没有 error 事件**（连 no-speech 都没有）。
+- **根因**：①uni-h5 的 scroll-view 在 `v-if` 包裹 + keep-alive 重挂载时内部节点为 null，activated 钩子恢复 scrollTop 崩溃（已知框架问题）；②Chrome 的 Web Speech 依赖 Google 在线服务（强制走 10808 代理），代理/网络断时识别管道整个哑掉，且伴随 Chrome 内部 `reportAllChanges ... startTime undefined` 报错——表现极具迷惑性（start 成功、无错误、纯静默），实为网络。
+- **解决**：①question-bar 用普通 view + CSS overflow 滚动替代 scroll-view（顺带隐藏滚动条）；②语音类故障先查代理（`curl -x http://127.0.0.1:10808 https://www.google.com`），再查标签页争抢（Chrome 同一时刻只允许一个标签页占用麦克风识别，两个 5173 标签页会互相干扰）。
+- **经验**：排查前端改动是否引入问题时，先核对浏览器实际加载代码的 console 行号与磁盘文件是否一致（P37），再分段排除——本次 voice-call.js 改动均不在识别结果路径上，行号吻合 + 结果路径未动即为清白。
+- **状态**：已解决（2026-08-29，确认为网络问题，代理恢复后识别正常）。
+
+### P37. 经验：hash 路由跳转不会重新加载 JS 模块，验证前端改动必须强制刷新
+- **现象**：改完 chat.vue 后在浏览器 `goto('...#/pages/chat/chat?...')` 验证，新组件（question-bar）生效了，但同一文件里新加的计算属性（回答预览）不生效，一度误判代码写错。
+- **根因**：SPA 内仅 hash 变化的导航不会重载文档；浏览器沿用的还是先前会话里缓存的旧模块（chat.vue 旧版仍在内存中），而 question-bar.vue 是首次加载所以是新的——"一半新一半旧"极易误导排查。
+- **经验**：验证前端改动一律先 `tab.reload()` / 强制刷新整页；vite HMR 只对已打开页面的后续改动生效，不保证跨会话缓存一致性。
+- **状态**：已确认（2026-08-29）。
+
+### P36. 语音通话请求代际与打断抑制（reqToken / interrupted）
+- **现象**：用户在 AI 思考/重试期间挂断或打断后，迟到的流式回调仍会把「语音回复失败/超时」错误消息插进会话，甚至把 TTS 拉起来播报；用户连说两句话时，旧请求的回复可能盖住新请求的结果。
+- **根因**：sendFinal 的回调（onSession/onDone/onError）没有任何代际校验，也不感知手动打断；旧请求 abort 后异步回调仍会执行。
+- **解决**：模块级 `reqToken` 代际令牌——sendFinal 每次自增并持有快照，所有回调入口先校验 `myToken === reqToken`；提交新问题前 abort 旧请求；`interrupted` 标记在 end()/interrupt() 置位，错误兜底全部跳过。end()/interrupt() 均 `reqToken++` 作废在途回调。interrupt() 同时升级为支持"思考中打断"（abort 请求）与"播报中打断"（停 TTS），打断后提示"已打断，正在聆听…"。
+- **甄别结论**：GitHub 版同时让"思考期继续聆听"（用户可补充更正，新问题顶掉旧请求）；本地已有停顿分段/回声防控的精细状态机，两套聆听门控冲突，本轮**不采纳**该行为变更，仅采纳防护逻辑（后续如需可在 P26-28 状态机上叠加）。
+- **状态**：已修复（2026-08-29）。
+
+### P35. 语音通话悬浮球并入对话页（与问题条共存）
+- **现象**：本地对话页只有页头"通话中"文字入口，点击即跳转通话页，无挂断/状态提示；GitHub 版有可拖动悬浮球（P33-GH）但没有问题条，两者基于不同基线各自演化。
+- **解决**：合并共存——悬浮球负责通话控制（拖动 + 径向菜单「挂断/进入」，贴边换朝向、避让 H5 导航栏），问题条负责内容导航；移除页头"通话中"chip。悬浮球状态（聆听/思考/播报变色）从本地 `syncFromVoice` 镜像通道读取 `s.phase`。SVG 扇区交互沿用 GH 的 `document` 自定义事件方案（绕开 uni 对 v-html 内容的事件包装，见 P33-GH）。
+- **状态**：已合并（2026-08-29）。
+
+### P34. 语音通话"取消不了"、最小化后状态残留
+- **现象**：点「取消通话」像页面刷新且通话重新出现；浏览器返回/手势离开语音页后麦克风仍在收录；退出对话也挂不断。
+- **根因**：只有语音页内按钮会调用挂断，浏览器返回/切 Tab 不触发；历史栈为空时 `navigateBack` 失败表现为页面重载，重载又触发 onLoad 重新 start() 把通话拉起来。
+- **解决**：`leaving` 标记区分主动/被动离开——「最小化」置位保持通话；「取消通话」置位挂断且 navigateBack 失败兜底 `reLaunch` 回首页；语音页 onUnload 非主动离开自动挂断；对话页 onUnload 也兜底挂断；通话中对话页输入框提交被拦截并提示。
+- **状态**：已修复（2026-08-29，自 GitHub P32 同步）。
+
+### P33. 未注册学科"看不见/用不了"（书库新增文件夹不生效）
+- **现象**：书库 raw/ 放入新学科文件夹后，主页学科列表不显示、蒸馏/OCR 找不到目录、路由直接拒绝。
+- **根因**：多处功能只认 `subjects/index.json` 已注册学科——bookDirOf 查不到返回空、`/api/subjects` 只回注册学科、routeAll 对未知学科返回 subject-not-supported。
+- **解决**：三处 `bookDirOf` 未注册时回退"学科名即目录名"；distillService 新增 `listLibrarySubjects()`（注册学科 + raw/ocr/distilled 三层顶层目录实时扫描，含中文映射表）；后端新增 `GET /api/books/subjects`（书籍加工页用）、`/api/subjects` 合并未注册学科（`registered:false`，主页显示"通用教学"）；routerService 对未指定技能的学科返回 `manual-generic` 通用教学模式（无技能/课程上下文，按学科名教学，promptBuilder 对缺失 SKILL.md 本就优雅降级）；设置页书籍加工改用书库学科清单并提供「＋添加」。
+- **状态**：已修复（2026-08-29，自 GitHub P30 同步；与本地动态关键词路由共存）。
+
+### P32. OCR 文字层探查同步阻塞后端（全站接口挂起）
+- **现象**：对书籍多的学科点「扫描文件」后，后端最长停摆 2 分钟，期间所有请求挂起，前端表现为数据全部消失。
+- **根因**：ocrService 用 `spawnSync` 运行探查脚本，Node 事件循环被冻结。
+- **解决**：改 `execFile` 异步 Promise（文件列表经 stdin 传入，探查脚本提前退出时忽略 stdin EPIPE）；`/api/ocr/scan` 变 async；实测探查期间其他接口正常响应（扫描接口 61ms 即返回）。
+- **状态**：已修复（2026-08-29，自 GitHub P29 同步）。
+
+### P31. 一键启动脚本失效：runtime 8080 起不来（GCC 运行时 DLL 随 node_modules 重装丢失）
+- **现象**：`start-dev.bat` 跑完后 backend/frontend 正常，runtime.log 为空、8080 不监听；手动运行 `agentskills-runtime.exe` 报 `error while loading shared libraries: ?`（加载器不报缺失 DLL 名）。
+- **根因**：runtime（仓颉/MinGW 编译）依赖 4 个手动补入的 GCC 运行时 DLL（libgcc_s_seh-1 / libstdc++-6 / libwinpthread-1 / libssp-0，见《环境搭建与运行时配置.md》第 8 节）；`npm install` 重装 node_modules 后这些 DLL 被清空（不在 npm 包内），runtime 加载即崩。`libcangjie-runtime.dll` 导入表确认需要 libssp-0.dll。
+- **修复**：① 4 个 DLL 重新补入 bin/（来源：MSYS2 gcc-libs 16.2 无 libssp，改用 JuliaBinaryWrappers CompilerSupportLibraries v0.5.4 x86_64-w64-mingw32，经 ghfast.top 加速下载）；② 备份至 `06-Tools/runtime-dlls/`，start-dev.bat 启动前检测缺失自动恢复；③ 顺带修 start-dev.bat 两处隐患：`.env` 检查改为 `(?m)^DATABASE_URL=`（原 `-notmatch 'DATABASE_URL='` 被 .env 自带的 `# DATABASE_URL=` 注释示例行误匹配，DB 配置从未写入）；三个服务改用 `Start-Process -FilePath/-WorkingDirectory/-RedirectStandardOutput` 单引号参数（原嵌套双引号在路径含空格或重定向处易碎），stdout/stderr 分文件（*.err.log）；④ 双机合并补充（2026-08-29）：DB 密码外置到 gitignored 的 `local-config.bat`（`set DB_PASSWORD=...`），脚本全部注释改 ASCII 并强制 CRLF、`.gitattributes` 固化 `*.bat text eol=crlf`——bat 里中文注释/LF 换行会弄崩 cmd 解析（同 GitHub 版 P31 教训）。
+- **状态**：已修复（2026-08-29，全链路 health 验证通过）。
+
+### P30. P2T(pix2text) 安装 + 动态学科路由 + 假"添加学科"移除（2026-08-20）
+- **现象**：pix2text 原只装在旧机器系统 Python（C:\Users\Randall\AppData\Local\Programs\Python\Python39），新机器无系统 Python → 公式书蒸馏链路断。
+- **修复**：CPU 版 torch 装到 06-Tools/python-3.12，再 pip install -i 清华镜像 pix2text（1.1.6，模型首次运行经 HF_ENDPOINT=https://hf-mirror.com 自动下载）；pipeline.py `_check_pix2text()` 改为子进程探测项目 Python（venv_slim 无 pix2text），`_system_python()` 优先返回项目 Python。
+- **顺带修复**：① subjects/index.json 中 economics 的 name 曾为乱码（refresh 重写后恢复"经济学"）；② 前端 settings.vue 的"＋添加学科"是假的（只 push 本地数组），已移除；③ routerService.detectSubject 增加动态学科信号（新学科按 name/id/bookDir 自动参与路由，实测"音乐"→"music"）。
+- **状态**：已解决。
+
+### P29. 全项目 Python 统一到 06-Tools/python-3.12（2026-08-20）
+- **现象**：本机所有 Python venv 均从旧机器（Randall）迁移，pyvenv.cfg 指向旧机 Python，本机无该系统 Python → TTS(edge-tts)/OCR/蒸馏全部失效。
+- **修复**：per-user 静默安装 Python 3.12.10 至 06-Tools/python-3.12（未写注册表/PATH）；tts/venv、ocr-toolkit/venv、venv_slim 全部用其重建；edge-tts 直连微软（无需 10808 代理）；pipeline.py `_system_python()` 改为优先返回 06-Tools/python-3.12（公式书蒸馏的 pix2text 需装入项目 Python，缺失时打印安装指引）。
+- **状态**：已解决。
+
 ### P28. H5 scroll-view 的 padding 失效导致容器贴边不对称
 - **现象**：语音通话页文本区域容器左侧距屏幕约 1cm、右侧完全贴进屏幕边缘，左右不对称
 - **根因**：uni-app H5 的 scroll-view 内 padding 计算不可靠（margin 生效但 padding 未按预期参与宽度），右侧内容贴边
@@ -63,15 +123,24 @@
 - **解决**：暂接受（硬件受限只能用 P2T）；后续可加"词内非字母比例 / 词典校验"类规则
 - **状态**：已知限制（2026-08-19）
 
+### P18. 蒸馏引擎 GBK 管道输出崩溃
+- **现象**：spawn teach.py 时 stdout 为管道，Python 默认 GBK 编码，遇到 ▶ 等字符 UnicodeEncodeError 崩溃
+- **解决**：spawn env 加 PYTHONUTF8=1 + PYTHONIOENCODING=utf-8
+- **状态**：已解决（后由 P25 的 stdout reconfigure 完善）
+
 ### P17. 一键更新误报"courseDir 不存在"为失效
 - **现象**：math/calculus-tutor 无课程书籍（仅问答模式），refresh 校验 courseDir 报 invalid
 - **解决**：courseDir 缺失降级为 info 级提示（noCourse："未配置课程书籍（仅问答模式）"），仅缺 SKILL.md 才算失效
 - **状态**：已修复（2026-08-14）
 
-### P13. 删除会话报 failed to fetch
-- **现象**：点击删除会话，前端报 Failed to fetch
-- **根因**：浏览器对 DELETE 请求先发 OPTIONS 预检，后端 CORS `Access-Control-Allow-Methods` 只含 `GET, POST, PUT, OPTIONS`，不含 DELETE → 预检被拒
-- **解决**：Allow-Methods 追加 `DELETE`
+### P16. 同会话连续对话在历史中产生重复记录
+- **现象**：一次删除 48→46（同一 sessionId 出现两条记录，persistAfterChat 无条件 unshift）
+- **解决**：appendHistory 先过滤掉同 sessionId 旧记录再插入（新进度记录移到最前）
+- **状态**：已修复（2026-08-14）
+
+### P15. 概览页点击会话记录只弹详情小窗
+- **现象**：点击会话记录弹出 showModal 详情，无法进入对话
+- **解决**：改为直接 `uni.navigateTo` 进入对话页（带 subject + sessionId）
 - **状态**：已修复（2026-08-14）
 
 ### P14. 概览页会话记录显示错位（数学问题出现在物理会话）
@@ -80,14 +149,10 @@
 - **解决**：会话详情开始记录 subject；进入会话时（loadSession）以详情 subject 校准 selectedSubject；restoreLatest 按当前学科过滤
 - **状态**：已修复（2026-08-14）
 
-### P15. 概览页点击会话记录只弹详情小窗
-- **现象**：点击会话记录弹出 showModal 详情，无法进入对话
-- **解决**：改为直接 `uni.navigateTo` 进入对话页（带 subject + sessionId）
-- **状态**：已修复（2026-08-14）
-
-### P16. 同会话连续对话在历史中产生重复记录
-- **现象**：一次删除 48→46（同一 sessionId 出现两条记录，persistAfterChat 无条件 unshift）
-- **解决**：appendHistory 先过滤掉同 sessionId 旧记录再插入（新进度记录移到最前）
+### P13. 删除会话报 failed to fetch
+- **现象**：点击删除会话，前端报 Failed to fetch
+- **根因**：浏览器对 DELETE 请求先发 OPTIONS 预检，后端 CORS `Access-Control-Allow-Methods` 只含 `GET, POST, PUT, OPTIONS`，不含 DELETE → 预检被拒
+- **解决**：Allow-Methods 追加 `DELETE`
 - **状态**：已修复（2026-08-14）
 
 ### P12. 学科切换后会话"串台"出现在别的学科最近记录
@@ -172,12 +237,4 @@
 4. 会话内启动的服务会被 opencode 会话回收，验收请用 `start-dev.bat`
 5. PostgreSQL 服务名 `postgresql-x64-17`，库：postgres / uctoo（无 nuanshou）
 6. 知识点旧数据无 subject 字段时，前端按"全学科显示"兼容（迁移后已无此数据）
-### P18. 蒸馏引擎 GBK 管道输出崩溃
-- **现象**：spawn teach.py 时 stdout 为管道，Python 默认 GBK 编码，遇到 ▶ 等字符 UnicodeEncodeError 崩溃
-- **方案**：spawn env 加 PYTHONUTF8=1 + PYTHONIOENCODING=utf-8`r
-- **状态**：已解决
-
-### P19. PDF 提取文本含孤立代理项（surrogates not allowed）
-- **现象**：PyMuPDF 提取的文本含孤立代理项，UTF-8 写入 _sections.json 报错
-- **方案**：book_formats._clean_book_text 末尾统一 encode('utf-8', errors='replace') 清洗
-- **状态**：已解决
+7. PDF 提取文本含孤立代理项（surrogates not allowed）时，`book_formats._clean_book_text` 末尾统一 `encode('utf-8', errors='replace')` 清洗

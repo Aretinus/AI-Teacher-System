@@ -29,6 +29,11 @@ export function getSubjects() {
   return apiGet('/api/subjects').then((d) => d.subjects || [])
 }
 
+// 书库学科清单（已注册 + 书库目录实时扫描），书籍加工页用
+export function getBookSubjects() {
+  return apiGet('/api/books/subjects').then((d) => d.subjects || [])
+}
+
 export function getStyles() {
   return apiGet('/api/styles').then((d) => d.styles || [])
 }

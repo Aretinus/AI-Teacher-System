@@ -47,6 +47,36 @@
           <view class="model-btn">选择 ›</view>
         </view>
       </view>
+      <view class="card" @click="pickEngine">
+        <view class="model-row">
+          <view class="model-info">
+            <view class="model-line">
+              <text class="model-label">语音引擎</text>
+              <text class="model-value">{{ currentEngineName }}</text>
+            </view>
+            <view class="model-line">
+              <text class="model-label">说明</text>
+              <text class="model-value">Edge 云端合成快；Qwen 本地单次要几十秒</text>
+            </view>
+          </view>
+          <view class="model-btn">切换 ›</view>
+        </view>
+      </view>
+      <view class="card" @click="pickBargeIn">
+        <view class="model-row">
+          <view class="model-info">
+            <view class="model-line">
+              <text class="model-label">语音打断</text>
+              <text class="model-value">{{ bargeInName }}</text>
+            </view>
+            <view class="model-line">
+              <text class="model-label">说明</text>
+              <text class="model-value">播报时说话直接打断；外放会收录回声，仅建议戴耳机开启</text>
+            </view>
+          </view>
+          <view class="model-btn">切换 ›</view>
+        </view>
+      </view>
     </view>
 
     <view class="section">
@@ -74,7 +104,7 @@
       </view>
 
       <view class="card" v-if="bookTab === 'ocr'">
-        <view class="refresh-desc">扫描当前学科 raw 目录中的 PDF / djvu，按状态分类：需OCR（纯扫描件，产物镜像到 02-DATA/books/ocr/）、已OCR、无需OCR（有文字层 / djvu，可直接蒸馏）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
+        <view class="refresh-desc">扫描当前学科 raw 目录中的全部书籍格式（pdf/epub/djvu/mobi/azw/docx/txt/cbz），按状态分类：需OCR（纯扫描件，产物镜像到 02-DATA/books/ocr/）、已OCR、无需OCR（有文字层或 epub/txt 等文本格式，可直接蒸馏）。类型标注保存在 raw/_ocr_status.json，只探查新加入的文件。</view>
         <view class="btn refresh-btn" :class="{ loading: ocrScanning }" @click="doOcrScan">
           {{ ocrScanning ? '扫描中…' : '扫描文件' }}
         </view>
@@ -101,7 +131,7 @@
                 <view class="book-check" :class="{ on: isMulti(b.file) }" @click.stop="toggleMulti(b.file)"></view>
                 <view class="book-name">{{ b.name }}</view>
                 <view class="book-badge" :class="badgeCls(b)">{{ badgeText(b) }}</view>
-                <view class="book-size">{{ b.sizeMB }} MB</view>
+                <view class="book-size">{{ fmtSize(b) }}</view>
               </view>
             </view>
           </view>
@@ -173,7 +203,7 @@
                 <view class="book-name">{{ b.name }}</view>
                 <view v-if="!b.distilledDone && b.needOcr" class="book-badge todo">需OCR</view>
                 <view v-if="b.distilledDone" class="book-badge done">已蒸馏</view>
-                <view class="book-size">{{ b.sizeMB }} MB</view>
+                <view class="book-size">{{ fmtSize(b) }}</view>
               </view>
             </view>
           </view>
@@ -206,8 +236,9 @@
 </template>
 
 <script>
-import { getSettings, scanBooks, distillBook, getDistillJob, getSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
+import { getSettings, scanBooks, distillBook, getDistillJob, getBookSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
+import { API_BASE } from '@/config'
 
 export default {
   components: { TabBar },
@@ -245,9 +276,17 @@ export default {
       debugMode: uni.getStorageSync('debugMode') === '1',
       ttsVoices: [],
       ttsVoice: uni.getStorageSync('ttsVoice') || 'xiaoxiao',
+      ttsEngine: uni.getStorageSync('ttsEngine') || 'edge',
+      voiceBargeIn: uni.getStorageSync('voiceBargeIn') || 'off',
+      previewAudio: null,
     }
   },
   computed: {
+    canAddSubject() {
+      const name = (this.distillSubject || '').trim()
+      if (!name) return false
+      return !this.subjects.some((s) => s.id === name || s.name === name)
+    },
     currentVoiceName() {
       const v = this.ttsVoices.find((x) => x.key === this.ttsVoice)
       return v ? v.name : (this.ttsVoice || '晓晓')
@@ -255,6 +294,12 @@ export default {
     currentVoiceDesc() {
       const v = this.ttsVoices.find((x) => x.key === this.ttsVoice)
       return v ? v.label : '女声 · 温柔甜美'
+    },
+    currentEngineName() {
+      return this.ttsEngine === 'local' ? 'Qwen 本地（音质好 · 较慢）' : 'Edge 云端（快速）'
+    },
+    bargeInName() {
+      return this.voiceBargeIn === 'on' ? '已开启（请戴耳机）' : '关闭（默认 · 防回声）'
     },
     providerIndex() {
       const i = this.providers.findIndex((p) => p.id === this.form.provider)
@@ -270,11 +315,6 @@ export default {
       const profiles = this.form.profiles || []
       const active = profiles.find((p) => p.id === this.form.activeProfileId) || profiles[0]
       return active ? active.name : '模型运行时'
-    },
-    canAddSubject() {
-      const name = (this.distillSubject || '').trim()
-      if (!name) return false
-      return !this.subjects.some((s) => s.id === name || s.name === name)
     },
     selectedOcrBook() {
       return this.ocrBooks.find((b) => b.file === this.ocrSelectedFile) || null
@@ -325,10 +365,21 @@ export default {
   },
   onShow() {
     this.ttsVoice = uni.getStorageSync('ttsVoice') || 'xiaoxiao'
+    this.ttsEngine = uni.getStorageSync('ttsEngine') || 'edge'
     this.refreshSettings()
+  },
+  onHide() {
+    if (this.previewAudio) {
+      try { this.previewAudio.pause() } catch (e) {}
+      this.previewAudio = null
+    }
   },
   onUnload() {
     if (this.pollTimer) clearTimeout(this.pollTimer)
+    if (this.previewAudio) {
+      try { this.previewAudio.pause() } catch (e) {}
+      this.previewAudio = null
+    }
   },
   methods: {
     setDebug(v) {
@@ -364,8 +415,63 @@ export default {
           this.ttsVoice = v.key
           uni.setStorageSync('ttsVoice', v.key)
           uni.showToast({ title: '音色已切换：' + v.name, icon: 'none' })
+          this.previewVoice(v)
         },
       })
+    },
+    pickEngine() {
+      const names = ['Edge 云端（快速）', 'Qwen 本地（音质好 · 较慢）']
+      uni.showActionSheet({
+        itemList: names,
+        success: (r) => {
+          const engine = r.tapIndex === 1 ? 'local' : 'edge'
+          this.ttsEngine = engine
+          uni.setStorageSync('ttsEngine', engine)
+          uni.showToast({ title: engine === 'local' ? '已切换 Qwen 本地引擎（合成较慢）' : '已切换 Edge 云端引擎（快速）', icon: 'none' })
+        },
+      })
+    },
+    pickBargeIn() {
+      const names = ['关闭（默认 · 外放防回声）', '开启（播报时说话即打断 · 请戴耳机）']
+      uni.showActionSheet({
+        itemList: names,
+        success: (r) => {
+          const val = r.tapIndex === 1 ? 'on' : 'off'
+          this.voiceBargeIn = val
+          uni.setStorageSync('voiceBargeIn', val)
+          uni.showToast({ title: val === 'on' ? '语音打断已开启（请戴耳机使用）' : '语音打断已关闭', icon: 'none' })
+        },
+      })
+    },
+    fmtSize(b) {
+      if (!b) return ''
+      if (b.sizeMB >= 1) return b.sizeMB + ' MB'
+      const kb = b.sizeKB || Math.max(1, Math.round(b.sizeMB * 1024))
+      return kb + ' KB'
+    },
+    async previewVoice(v) {
+      try {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 180000)
+        const r = await fetch(API_BASE + '/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({ text: '你好，我是你的 AI 教师。这是「' + v.name + '」音色的试听，你觉得怎么样？', voice: v.key, engine: this.ttsEngine }),
+        })
+        clearTimeout(timer)
+        if (!r.ok) throw new Error('HTTP ' + r.status)
+        const blob = await r.blob()
+        const url = URL.createObjectURL(blob)
+        if (this.previewAudio) { try { this.previewAudio.pause() } catch (e) {} }
+        const a = new Audio(url)
+        this.previewAudio = a
+        a.onended = () => { URL.revokeObjectURL(url); if (this.previewAudio === a) this.previewAudio = null }
+        a.onerror = () => { URL.revokeObjectURL(url); if (this.previewAudio === a) this.previewAudio = null }
+        a.play().catch(() => { URL.revokeObjectURL(url) })
+      } catch (e) {
+        uni.showToast({ title: '试听失败：' + e.message, icon: 'none' })
+      }
     },
     async refreshSettings() {
       try {
@@ -375,7 +481,7 @@ export default {
     },
     async load() {
       try {
-        const [settings, subjects] = await Promise.all([getSettings(), getSubjects()])
+        const [settings, subjects] = await Promise.all([getSettings(), getBookSubjects()])
         this.form = { ...this.form, ...settings }
         this.subjects = subjects
         this.distillSubject = subjects[0] && subjects[0].id
@@ -385,12 +491,6 @@ export default {
     },
     goModel() {
       uni.navigateTo({ url: '/pages/settings/model' })
-    },
-    async addDistillSubject() {
-      const name = (this.distillSubject || '').trim()
-      if (!name) return
-      this.subjects.push({ id: name, name, skills: [], defaultSkill: '' })
-      uni.showToast({ title: `已添加学科：${name}`, icon: 'none' })
     },
     switchTab(tab) {
       this.bookTab = tab
@@ -404,6 +504,13 @@ export default {
       if (id === this.distillSubject) return
       this.distillSubject = id
       this.rescan()
+    },
+    // 未注册学科可直接添加：后端对未注册学科按书库目录名兜底（蒸馏/OCR/通用教学均可走通）
+    addDistillSubject() {
+      const name = (this.distillSubject || '').trim()
+      if (!name) return
+      this.subjects.push({ id: name, name, skills: [], defaultSkill: '' })
+      uni.showToast({ title: `已添加学科：${name}`, icon: 'none' })
     },
     rescan() {
       if (!this.distillSubject) return
@@ -447,7 +554,7 @@ export default {
           this.ocrSelectedFile = this.pendingOcrFile
           this.pendingOcrFile = ''
         }
-        if (!this.ocrBooks.length) this.ocrScanError = '该学科 raw 目录下未找到 pdf/djvu 文件'
+        if (!this.ocrBooks.length) this.ocrScanError = '该学科 raw 目录下未找到书籍文件'
       } catch (e) {
         this.ocrScanError = e.message
       } finally {
@@ -1109,6 +1216,11 @@ export default {
   color: #4b5563;
   font-size: 24rpx;
   border: 2rpx solid #e5e7eb;
+}
+.subject-chip.add-chip {
+  border-style: dashed;
+  color: #4f46e5;
+  background: #eef2ff;
 }
 .subject-chip.active {
   background: #e0e7ff;

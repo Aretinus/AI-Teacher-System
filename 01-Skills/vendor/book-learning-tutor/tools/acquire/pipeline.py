@@ -692,9 +692,31 @@ FEX_DIR = _PROJ_ROOT / "06-Tools" / "formula-extraction"
 _FORMULA_MATH_SYMS = "δ∂∇∫∑αβγλμωπεθφψστ∞±−×≈≤≥≠∈√→"
 
 
+# 项目统一 Python：优先 06-Tools/python-3.12（本项目所有 Python 均由此派生），兜底系统 python
 def _system_python():
     import shutil
+    proj_py = _PROJ_ROOT / "06-Tools" / "python-3.12" / "python.exe"
+    if proj_py.exists():
+        return str(proj_py)
     return shutil.which("python") or sys.executable
+
+
+def _check_pix2text():
+    """公式书蒸馏依赖 pix2text（装在项目 Python）：用项目 Python 子进程探测，缺失时给安装指引。"""
+    proj_py = _system_python()
+    try:
+        import subprocess
+        r = subprocess.run([proj_py, "-c", "import pix2text"], capture_output=True, text=True)
+        if r.returncode == 0:
+            return True
+    except Exception:
+        pass
+    print(
+        "[公式管道] 缺少 pix2text。请先安装：\n"
+        f'  {proj_py} -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pix2text\n'
+        "安装后重试蒸馏。"
+    )
+    return False
 
 
 def _is_formula_book(path, subject=None):
@@ -931,6 +953,8 @@ def _distill_formula_book(path, name):
     """
     import subprocess
     import shutil
+    if not _check_pix2text():
+        raise SystemExit("[公式管道] pix2text 未安装，公式书蒸馏不可用")
     print(f"[公式管道] 检测到公式书《{name}》，走 P2T 初蒸 + MinerU 云端精修（本地+云端）")
     work = FEX_DIR / "work" / _safe(name)
     rp = FEX_DIR / "run_pipeline.py"

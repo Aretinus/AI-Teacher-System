@@ -173,6 +173,7 @@ async function persistAfterChat({ userId, sessionId, routeInfo, userMessage, raw
   const summary = {
     sessionId,
     date: new Date().toISOString().slice(0, 10),
+    lastAt: new Date().toISOString(),
     subject: routeInfo.subject,
     knowledgePoint: parsed?.knowledgePoint || null,
     summary: replyContent.slice(0, 120),
