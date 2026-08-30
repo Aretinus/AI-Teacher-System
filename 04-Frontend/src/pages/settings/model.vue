@@ -45,7 +45,7 @@
       <view class="card">
         <view class="form-row">
           <text class="label">名称</text>
-          <input v-model="form.name" class="form-input" placeholder="如：DeepSeek 官方 / 本地运行时" />
+          <input v-model="form.name" class="form-input" placeholder="如：Agnes / DeepSeek 官方" />
         </view>
         <view class="form-row">
           <text class="label">提供商</text>

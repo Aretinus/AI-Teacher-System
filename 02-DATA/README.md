@@ -15,7 +15,7 @@
 | `users/` | 用户学习记录（状态、知识点掌握度） | 否 |
 | `sessions/` | 会话明细 | 否 |
 | `materials/` / `shared/` | 教学材料 / 共享知识资产 | 是 |
-| `settings.json` | 本地配置（API Key，可能含敏感信息） | 否 |
+| `settings.json` | 本地配置：模型 API Key（设置页维护）+ `dbPassword`（数据库密码，start-dev.bat 读取） | 否 |
 
 ## 关键链路
 

@@ -68,7 +68,7 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 
 ## 依赖的外部部件
 
-- 模型运行时：默认 agentskills-runtime（端口 8080，`06-Tools/agentskills-runtime-src/`），OpenAI 兼容接口任意
+- 对话模型：OpenAI 兼容 API，在设置页配置（默认 Agnes `https://api.agnes-ai.cn/v1` + `agnes-2.5-flash`），后端直连；agentskills-runtime（端口 8080）仅提供技能/框架能力，不参与对话模型调用
 - OCR：`06-Tools/ocr-toolkit/`（RapidOCR + DjVuLibre 工具，venv 基于 `06-Tools/python-3.12` 重建）
 - 蒸馏：`01-Skills/vendor/book-learning-tutor/`（venv_slim 基于 `06-Tools/python-3.12` 重建 + djvulibre）
 - 本地 TTS：`06-Tools/tts/`（Qwen3-TTS 服务，可选，默认走 Edge）

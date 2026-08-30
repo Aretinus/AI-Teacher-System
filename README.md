@@ -3,7 +3,7 @@
 > 打造具有个人风格的 AI 教师，以费曼式讲解方法教授不同学科。
 > 从经典教材自动「蒸馏」出结构化课程（章 → 课 → 练习），Web UI 提供对话式教学与学习进度跟踪。
 
-- 后端：Node.js + Express（端口 3000） ｜ 前端：uni-app + Vue 3 + Vite（端口 5173） ｜ 模型：agentskills-runtime（端口 8080，转发到云端 agnes 模型 API）
+- 后端：Node.js + Express（端口 3000） ｜ 前端：uni-app + Vue 3 + Vite（端口 5173） ｜ 模型：设置页配置的 OpenAI 兼容 API（默认 Agnes，直连） ｜ runtime：agentskills-runtime（端口 8080，技能/框架能力）
 - 书籍加工：OCR 识别（RapidOCR）→ 蒸馏（全本地）→ 结构化课程 → 绑定技能教学，全程可控、不联网、不污染源数据
 
 ## 目录导航
@@ -15,7 +15,7 @@
 | [`03-Backend/`](03-Backend/README.md) | 后端服务 | 对话编排、学科/课程路由、书籍加工 API、SSE 流式对话、TTS 合成 |
 | [`04-Frontend/`](04-Frontend/README.md) | 前端 H5 | 主页 / 对话 / 语音通话 / 设置（模型、音色、书籍加工、日志） |
 | [`05-Docs/`](05-Docs/README.md) | 文档归档 | 需求、环境搭建、接口约定、开发记录 |
-| [`06-Tools/`](06-Tools/README.md) | 本地工具链 | OCR 工具、公式书蒸馏管道、本地 TTS、模型运行时源码（参考） |
+| [`06-Tools/`](06-Tools/README.md) | 本地工具链 | OCR 工具、公式书蒸馏管道、本地 TTS、运行时数据库脚本与 DLL 备份 |
 
 ## 快速开始
 

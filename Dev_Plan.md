@@ -5,9 +5,9 @@
 ## 项目概述
 
 按费曼教学法打造的 AI 教师系统。前后端分离：
-- 前端：uni-app (Vue2) H5，vite 构建，端口 5173
+- 前端：uni-app (Vue 3) H5，vite 构建，端口 5173
 - 后端：Express，端口 3000（对话编排、路由、课程、会话/状态持久化）
-- 运行时：agentskills-runtime（本地模型 agnes-2.0-flash），端口 8080
+- 模型：设置页配置的 OpenAI 兼容 API（默认 Agnes agnes-2.5-flash，直连）；agentskills-runtime（端口 8080，技能/框架能力）
 - 数据：PostgreSQL（uctoo 库）+ 本地 JSON（02-DATA/users）
 
 ## 项目约束
