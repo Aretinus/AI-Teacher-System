@@ -92,7 +92,7 @@ export default {
 .title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-2);
 }
 .head-btns {
   display: flex;
@@ -104,7 +104,7 @@ export default {
   border: 2rpx solid #cfe0ff;
   border-radius: 12rpx;
   padding: 6rpx 20rpx;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .copy-btn:active {
   background: #e0e9ff;
@@ -120,7 +120,7 @@ export default {
 }
 .log-line {
   font-size: 25rpx;
-  color: #374151;
+  color: var(--text-2);
   line-height: 1.7;
   font-family: Consolas, monospace;
   word-break: break-all;
@@ -129,7 +129,7 @@ export default {
 }
 .empty {
   text-align: center;
-  color: #9ca3af;
+  color: var(--text-3);
   font-size: 26rpx;
   padding: 60rpx 0;
 }

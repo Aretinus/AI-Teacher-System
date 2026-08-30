@@ -31,6 +31,24 @@
     </view>
 
     <view class="section">
+      <view class="section-title">外观</view>
+      <view class="card">
+        <view class="model-row">
+          <view class="model-info">
+            <view class="model-line">
+              <text class="model-label">主题</text>
+              <text class="model-value">{{ appTheme === 'dark' ? '深色' : '浅色' }}</text>
+            </view>
+          </view>
+          <view class="theme-opts">
+            <view class="theme-opt" :class="{ active: appTheme === 'light' }" @click="pickTheme('light')">浅色</view>
+            <view class="theme-opt" :class="{ active: appTheme === 'dark' }" @click="pickTheme('dark')">深色</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
       <view class="section-title">语音</view>
       <view class="card" @click="pickVoice">
         <view class="model-row">
@@ -237,6 +255,7 @@
 
 <script>
 import { getSettings, scanBooks, distillBook, getDistillJob, getBookSubjects, scanOcrBooks, startOcr, getOcrJob, getTtsVoices } from '@/api'
+import { currentTheme, setTheme } from '@/utils/theme'
 import TabBar from '@/components/tab-bar.vue'
 import { API_BASE } from '@/config'
 
@@ -258,6 +277,7 @@ export default {
       distilling: false,
       distillLog: [],
       distillSubject: '',
+      appTheme: currentTheme(),
       distillSrc: 'raw',
       distillSection: 'undistilled',
       bookTab: 'ocr',
@@ -499,6 +519,10 @@ export default {
     subjectName(id) {
       const s = this.subjects.find((x) => x.id === id)
       return s ? s.name : (id || '未选择')
+    },
+    pickTheme(t) {
+      this.appTheme = t
+      setTheme(t)
     },
     selectSubject(id) {
       if (id === this.distillSubject) return
@@ -940,11 +964,11 @@ export default {
 .section-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-2);
   margin-bottom: 18rpx;
 }
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20rpx;
   padding: 24rpx 28rpx;
 }
@@ -983,11 +1007,11 @@ export default {
 .model-label {
   width: 160rpx;
   flex-shrink: 0;
-  color: #9ca3af;
+  color: var(--text-3);
   font-size: 26rpx;
 }
 .model-value {
-  color: #1f2937;
+  color: var(--text-1);
   font-size: 27rpx;
   word-break: break-all;
 }
@@ -999,7 +1023,7 @@ export default {
   border: 2rpx solid #cfe0ff;
   border-radius: 12rpx;
   padding: 8rpx 24rpx;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .model-btn:active {
   background: #e0e9ff;
@@ -1012,26 +1036,26 @@ export default {
 .label {
   width: 180rpx;
   flex-shrink: 0;
-  color: #6b7280;
+  color: var(--text-3);
   font-size: 28rpx;
 }
 .value {
-  color: #1f2937;
+  color: var(--text-1);
   font-size: 28rpx;
 }
 .picker {
   flex: 1;
 }
 .picker-value {
-  background: #f3f4f6;
+  background: var(--bg-subtle);
   border-radius: 12rpx;
   padding: 14rpx 22rpx;
   font-size: 28rpx;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .form-input {
   flex: 1;
-  background: #f3f4f6;
+  background: var(--bg-subtle);
   border-radius: 12rpx;
   padding: 14rpx 22rpx;
   font-size: 28rpx;
@@ -1054,8 +1078,8 @@ export default {
   color: #ffffff;
 }
 .btn:not(.primary) {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg-subtle);
+  color: var(--text-2);
 }
 .btn.loading {
   opacity: 0.6;
@@ -1076,7 +1100,7 @@ export default {
 .batch-count {
   flex: 1;
   font-size: 26rpx;
-  color: #4b5563;
+  color: var(--text-2);
 }
 .test-result {
   margin-top: 20rpx;
@@ -1105,8 +1129,8 @@ export default {
   text-align: center;
   padding: 18rpx 0;
   border-radius: 16rpx;
-  background: #e5e7eb;
-  color: #6b7280;
+  background: var(--bg-subtle);
+  color: var(--text-3);
   font-size: 29rpx;
   font-weight: 600;
 }
@@ -1124,10 +1148,10 @@ export default {
   text-align: center;
   padding: 12rpx 0;
   border-radius: 12rpx;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-subtle);
+  color: var(--text-3);
   font-size: 26rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
 }
 .src-tab.active {
   background: #e0e7ff;
@@ -1144,10 +1168,10 @@ export default {
   text-align: center;
   padding: 12rpx 0;
   border-radius: 12rpx;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-subtle);
+  color: var(--text-3);
   font-size: 26rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
 }
 .sec-tab.active {
   background: #e0e7ff;
@@ -1167,19 +1191,19 @@ export default {
 }
 .folder-toggle {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   width: 30rpx;
 }
 .folder-name {
   flex: 1;
   font-size: 26rpx;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-2);
   word-break: break-all;
 }
 .folder-count {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   background: #eef1f5;
   border-radius: 999rpx;
   padding: 2rpx 16rpx;
@@ -1196,8 +1220,8 @@ export default {
   color: #15803d;
 }
 .book-badge.skip {
-  background: #f3f4f6;
-  color: #9ca3af;
+  background: var(--bg-subtle);
+  color: var(--text-3);
 }
 .book-badge.todo {
   background: #fef3c7;
@@ -1205,7 +1229,7 @@ export default {
 }
 .refresh-desc {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-3);
   line-height: 1.6;
   margin-bottom: 20rpx;
 }
@@ -1218,7 +1242,7 @@ export default {
 }
 .refresh-line {
   font-size: 26rpx;
-  color: #374151;
+  color: var(--text-2);
   padding: 4rpx 0;
   line-height: 1.6;
 }
@@ -1226,7 +1250,7 @@ export default {
   color: #b91c1c;
 }
 .refresh-line.dim {
-  color: #9ca3af;
+  color: var(--text-3);
 }
 .subject-chips {
   display: flex;
@@ -1237,15 +1261,32 @@ export default {
 .subject-chip {
   padding: 6rpx 22rpx;
   border-radius: 999rpx;
-  background: #f3f4f6;
-  color: #4b5563;
+  background: var(--bg-subtle);
+  color: var(--text-2);
   font-size: 24rpx;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
+}
+.theme-opts {
+  display: flex;
+  gap: 12rpx;
+}
+.theme-opt {
+  font-size: 24rpx;
+  padding: 6rpx 24rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid var(--border);
+  color: var(--text-3);
+  background: var(--bg-card);
+}
+.theme-opt.active {
+  color: #4f8cff;
+  border-color: #4f8cff;
+  background: var(--bg-accent-soft);
 }
 .subject-chip.add-chip {
   border-style: dashed;
   color: #4f46e5;
-  background: #eef2ff;
+  background: var(--bg-accent-soft);
 }
 .subject-chip.active {
   background: #e0e7ff;
@@ -1259,7 +1300,7 @@ export default {
 .subject-chip.add-chip {
   border-style: dashed;
   color: #4f46e5;
-  background: #eef2ff;
+  background: var(--bg-accent-soft);
 }
 .log-entry {
   display: flex;
@@ -1271,7 +1312,7 @@ export default {
 }
 .log-entry-label {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
 }
 .log-entry-btns {
   display: flex;
@@ -1285,7 +1326,7 @@ export default {
   border: 2rpx solid #cfe0ff;
   border-radius: 12rpx;
   padding: 6rpx 20rpx;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .log-entry-btn:active {
   background: #e0e9ff;
@@ -1309,14 +1350,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 2rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
   border-radius: 12rpx;
   padding: 14rpx 20rpx;
   margin-bottom: 12rpx;
 }
 .book-item.selected {
   border-color: #4f8cff;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .book-item.multi {
   border-color: #34d399;
@@ -1349,13 +1390,13 @@ export default {
 }
 .book-name {
   font-size: 26rpx;
-  color: #374151;
+  color: var(--text-2);
   flex: 1;
   word-break: break-all;
 }
 .book-size {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   margin-left: 16rpx;
 }
 .ocr-detail {
@@ -1367,12 +1408,12 @@ export default {
 }
 .ocr-state-line {
   font-size: 25rpx;
-  color: #374151;
+  color: var(--text-2);
   padding: 4rpx 0;
   line-height: 1.6;
 }
 .ocr-state-line.dim {
-  color: #6b7280;
+  color: var(--text-3);
   word-break: break-all;
 }
 .distill-log {
@@ -1392,7 +1433,7 @@ export default {
 }
 .distill-log-title {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
 }
 .log-btns {
   display: flex;
@@ -1404,14 +1445,14 @@ export default {
   border: 2rpx solid #cfe0ff;
   border-radius: 10rpx;
   padding: 4rpx 16rpx;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .copy-btn:active {
   background: #e0e9ff;
 }
 .distill-line {
   font-size: 24rpx;
-  color: #374151;
+  color: var(--text-2);
   line-height: 1.6;
   font-family: Consolas, monospace;
   word-break: break-all;
@@ -1427,7 +1468,7 @@ export default {
 }
 .tip-line {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-3);
   padding: 8rpx 0;
   line-height: 1.6;
 }

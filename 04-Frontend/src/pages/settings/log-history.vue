@@ -86,7 +86,7 @@ export default {
 .log-book {
   font-size: 29rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-1);
   flex: 1;
   word-break: break-all;
   margin-right: 16rpx;
@@ -113,7 +113,7 @@ export default {
   display: flex;
   justify-content: space-between;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   margin-top: 10rpx;
 }
 .log-item-error {
@@ -124,7 +124,7 @@ export default {
 }
 .empty {
   text-align: center;
-  color: #9ca3af;
+  color: var(--text-3);
   font-size: 27rpx;
   padding: 100rpx 0;
 }

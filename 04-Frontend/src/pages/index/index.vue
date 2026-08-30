@@ -37,34 +37,7 @@
           <view class="style-desc">本学科全知识，不限课程直接提问</view>
         </view>
       </view>
-      <view class="course-panel">
-        <view class="course-panel-head" @click="coursePanelOpen = !coursePanelOpen">
-          <text class="course-panel-title">课程分支{{ courseCount ? `（${courseCount} 门课程）` : '' }}</text>
-          <text class="course-panel-toggle">{{ coursePanelOpen ? '收起 ▲' : '展开 ▼' }}</text>
-        </view>
-        <view v-if="coursePanelOpen" class="course-panel-body">
-          <template v-if="courseRows.length">
-            <view
-              v-for="row in courseRows"
-              :key="row.node.id"
-              class="course-row"
-              :class="{ selected: row.node.type === 'course' && row.node.id === selectedCourse }"
-              :style="{ paddingLeft: 12 + row.depth * 30 + 'rpx' }"
-            >
-              <view class="course-row-main" @click="row.node.type === 'group' ? toggleCourseGroup(row.node) : selectCourseNode(row.node)">
-                <text v-if="row.node.type === 'group'" class="course-toggle">{{ courseExpanded[row.node.id] ? '▾' : '▸' }}</text>
-                <text v-else class="course-dot">·</text>
-                <text class="course-name">{{ row.node.name }}</text>
-                <text class="course-meta">{{ row.node.type === 'group' ? `${row.node.courseCount} 门课 / ${row.node.lessons} 课` : `${row.node.chapters} 章 / ${row.node.lessons} 课` }}</text>
-              </view>
-              <view v-if="row.node.type === 'group'" class="course-row-ops">
-                <view class="course-qa-btn" @click.stop="categoryQA(row.node)">综合问答</view>
-              </view>
-            </view>
-          </template>
-          <view v-else class="style-desc" style="padding:8rpx 12rpx">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
-        </view>
-      </view>
+      <course-tree :tree="courseTree" :selected-id="selectedCourse" @select="onCourseSelect" @qa="categoryQA" />
     </view>
 
     <view class="section">
@@ -131,17 +104,18 @@
 
 <script>
 import { getSubjects, getState, getHistory, deleteSession, getStyles, getCoursesTree } from '@/api'
+import CourseTree from '@/components/course-tree.vue'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
-  components: { TabBar },
+  components: {
+    CourseTree, TabBar },
   data() {
     return {
       subjects: [],
       styles: [],
       courses: [],
       courseTree: [],
-      courseExpanded: {},
       selectedSubject: '',
       subjectTouched: false,
       selectedStyle: 'standard',
@@ -153,21 +127,6 @@ export default {
     }
   },
   computed: {
-    courseRows() {
-      const rows = []
-      const walk = (nodes, depth) => {
-        for (const n of nodes) {
-          rows.push({ node: n, depth })
-          if (n.type === 'group' && this.courseExpanded[n.id] && n.children) walk(n.children, depth + 1)
-        }
-      }
-      walk(this.courseTree, 0)
-      return rows
-    },
-    courseCount() {
-      const count = (nodes) => nodes.reduce((n, x) => n + (x.type === 'course' ? 1 : count(x.children || [])), 0)
-      return count(this.courseTree)
-    },
     availableSubjects() {
       return this.subjects || []
     },
@@ -230,17 +189,11 @@ export default {
         const walk = (nodes) => nodes.forEach((n) => { ids.push(n.id); if (n.children) walk(n.children) })
         walk(this.courseTree)
         if (this.selectedCourse && !ids.includes(this.selectedCourse)) this.selectedCourse = ''
-        // 默认展开第一层分组
-        for (const n of this.courseTree) if (n.type === 'group') this.courseExpanded[n.id] = true
       } catch (e) {
         this.courseTree = []
       }
     },
-    toggleCourseGroup(node) {
-      this.courseExpanded[node.id] = !this.courseExpanded[node.id]
-    },
-    selectCourseNode(node) {
-      if (node.type !== 'course') return
+    onCourseSelect(node) {
       this.selectedCourse = node.id
     },
     // 大类综合问答：course 以 group: 前缀传递，后端综合该分类全部课程回答
@@ -318,12 +271,12 @@ export default {
 .hero-title {
   font-size: 56rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .hero-sub {
   margin-top: 12rpx;
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--text-3);
 }
 .section {
   margin-top: 30rpx;
@@ -331,7 +284,7 @@ export default {
 .section-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-2);
   margin-bottom: 18rpx;
 }
 .history-title {
@@ -343,7 +296,7 @@ export default {
   font-size: 26rpx;
   color: #4f8cff;
   font-weight: 600;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
   border: 1rpx solid #cfe0ff;
   border-radius: 24rpx;
   padding: 4rpx 20rpx;
@@ -375,7 +328,7 @@ export default {
 }
 .subject-card {
   flex: 1;
-  background: #ffffff;
+  background: var(--bg-card);
   border: 3rpx solid #e5e7eb;
   border-radius: 20rpx;
   padding: 28rpx 24rpx;
@@ -383,17 +336,17 @@ export default {
 }
 .subject-card.active {
   border-color: #4f8cff;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .subject-name {
   font-size: 34rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .subject-skill {
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
 }
 .style-grid {
   display: flex;
@@ -403,105 +356,31 @@ export default {
 .style-card {
   flex: 1;
   min-width: 40%;
-  background: #ffffff;
+  background: var(--bg-card);
   border: 3rpx solid #e5e7eb;
   border-radius: 20rpx;
   padding: 22rpx 24rpx;
 }
 .style-card.active {
   border-color: #4f8cff;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .style-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .style-desc {
   margin-top: 6rpx;
   font-size: 23rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   line-height: 1.5;
 }
 .style-card.disabled {
   opacity: 0.55;
 }
-.course-panel {
-  margin-top: 18rpx;
-}
-.course-panel-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18rpx 4rpx;
-}
-.course-panel-title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #4b5563;
-}
-.course-panel-toggle {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-.course-panel-body {
-  margin-top: 4rpx;
-}
-.course-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12rpx 12rpx;
-  border-radius: 14rpx;
-}
-.course-row.selected {
-  background: #eef2ff;
-}
-.course-row-main {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  flex: 1;
-}
-.course-toggle {
-  color: #9ca3af;
-  font-size: 24rpx;
-  margin-right: 8rpx;
-}
-.course-dot {
-  color: #4f8cff;
-  margin-right: 10rpx;
-  font-weight: 700;
-}
-.course-name {
-  font-size: 27rpx;
-  color: #1f2937;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.course-row.selected .course-name {
-  color: #4f46e5;
-  font-weight: 600;
-}
-.course-meta {
-  margin-left: 12rpx;
-  font-size: 22rpx;
-  color: #9ca3af;
-  flex-shrink: 0;
-}
-.course-qa-btn {
-  flex-shrink: 0;
-  margin-left: 12rpx;
-  font-size: 22rpx;
-  color: #4f8cff;
-  border: 1rpx solid #bfdbfe;
-  background: #eff6ff;
-  border-radius: 999rpx;
-  padding: 4rpx 16rpx;
-}
 .card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20rpx;
   padding: 24rpx 28rpx;
 }
@@ -511,11 +390,11 @@ export default {
   padding: 8rpx 0;
 }
 .label {
-  color: #9ca3af;
+  color: var(--text-3);
   font-size: 28rpx;
 }
 .value {
-  color: #1f2937;
+  color: var(--text-1);
   font-size: 28rpx;
 }
 .goal {
@@ -523,7 +402,7 @@ export default {
   text-align: right;
 }
 .history-item {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 20rpx;
   padding: 22rpx 28rpx;
   margin-bottom: 16rpx;
@@ -540,7 +419,7 @@ export default {
 }
 .history-date {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
 }
 .history-right {
   display: flex;
@@ -559,7 +438,7 @@ export default {
 }
 .history-summary {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-3);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-box-orient: vertical;

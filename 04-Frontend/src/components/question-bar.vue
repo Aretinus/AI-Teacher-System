@@ -95,7 +95,7 @@ export default {
   left: 60px;
   z-index: 999;
   max-width: 420px;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 12px;
   border: 1px solid #eceef2;
   box-shadow: 0 10px 32px rgba(17, 24, 39, 0.16);
@@ -106,7 +106,7 @@ export default {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
-  color: #1f2937;
+  color: var(--text-1);
   word-break: break-all;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -117,7 +117,7 @@ export default {
   margin-top: 6px;
   font-size: 12px;
   line-height: 1.55;
-  color: #9ca3af;
+  color: var(--text-3);
   word-break: break-all;
   display: -webkit-box;
   -webkit-box-orient: vertical;

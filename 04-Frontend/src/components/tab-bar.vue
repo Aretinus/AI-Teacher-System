@@ -35,7 +35,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #ffffff;
+  background: var(--bg-card);
   display: flex;
   padding: 18rpx 0 calc(18rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
@@ -47,7 +47,7 @@ export default {
 }
 .tab-label {
   font-size: 32rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   font-weight: 500;
 }
 .tab-item.active .tab-label {

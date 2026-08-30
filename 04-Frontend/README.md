@@ -64,6 +64,8 @@ src/
 - **问题条**：对话页左侧刻度条，每个刻度对应用户一次提问；悬停弹出卡片（问题 + 回答预览），点击跳转到该消息并高亮刻度
 - **通话生命周期**：语音页 `leaving` 标记区分主动/被动离开——「最小化」保持通话，「取消通话」挂断且历史栈为空时兜底 reLaunch 回首页，浏览器返回/手势离开自动挂断（P34）
 - **音色 ≠ 对话逻辑**：声音由 TTS 引擎决定（Edge / 本地 Qwen3-TTS），对话逻辑由对话模型决定（设置 → AI 模型）
+- **主题（外观）**：设置 → 外观 可切 浅色/深色（localStorage.appTheme 持久化，导航栏同步变色）；设计令牌在 `styles/theme.css`（CSS 变量 + `[data-theme="dark"]` 覆盖），新页面请使用 `var(--bg-card)/var(--text-1)` 等令牌而非硬编码色值
+- **组件化**：课程分支面板（`components/course-tree.vue`）、问题条（question-bar）、悬浮球、TabBar、Markdown 渲染（md-render）均为独立组件
 
 ## 流式协议
 

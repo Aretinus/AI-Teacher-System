@@ -231,7 +231,7 @@ export default {
 }
 .current-title {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   margin-bottom: 12rpx;
 }
 .current-line {
@@ -242,12 +242,12 @@ export default {
 }
 .current-line.sub {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-3);
 }
 .current-name {
   font-size: 32rpx;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .current-tag {
   font-size: 22rpx;
@@ -262,7 +262,7 @@ export default {
 .section-title {
   font-size: 30rpx;
   font-weight: 700;
-  color: #374151;
+  color: var(--text-2);
   margin-bottom: 14rpx;
   padding-left: 6rpx;
 }
@@ -292,7 +292,7 @@ export default {
 .profile-name {
   font-size: 29rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .profile-active-tag {
   font-size: 20rpx;
@@ -303,7 +303,7 @@ export default {
 }
 .profile-meta {
   font-size: 24rpx;
-  color: #9ca3af;
+  color: var(--text-3);
   margin-top: 6rpx;
 }
 .profile-ops {
@@ -317,14 +317,14 @@ export default {
   text-align: center;
   border-radius: 12rpx;
   padding: 8rpx 24rpx;
-  border: 2rpx solid #e5e7eb;
-  color: #374151;
+  border: 2rpx solid var(--border);
+  color: var(--text-2);
   background: #f9fafb;
 }
 .op-btn.primary {
   color: #4f8cff;
   border-color: #cfe0ff;
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .op-btn.danger {
   color: #ef4444;
@@ -344,7 +344,7 @@ export default {
   background: #fafcff;
 }
 .add-btn:active {
-  background: #f0f5ff;
+  background: var(--bg-accent-soft);
 }
 .form-row {
   display: flex;
@@ -354,22 +354,22 @@ export default {
 .label {
   width: 180rpx;
   flex-shrink: 0;
-  color: #6b7280;
+  color: var(--text-3);
   font-size: 28rpx;
 }
 .picker {
   flex: 1;
 }
 .picker-value {
-  background: #f3f4f6;
+  background: var(--bg-subtle);
   border-radius: 12rpx;
   padding: 14rpx 22rpx;
   font-size: 28rpx;
-  color: #1f2937;
+  color: var(--text-1);
 }
 .form-input {
   flex: 1;
-  background: #f3f4f6;
+  background: var(--bg-subtle);
   border-radius: 12rpx;
   padding: 14rpx 22rpx;
   font-size: 28rpx;
@@ -392,8 +392,8 @@ export default {
   color: #ffffff;
 }
 .btn:not(.primary) {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg-subtle);
+  color: var(--text-2);
 }
 .btn.loading {
   opacity: 0.6;
@@ -420,7 +420,7 @@ export default {
   flex-direction: column;
   gap: 10rpx;
   border: 2rpx dashed #c7d2fe;
-  background: #eef2ff;
+  background: var(--bg-accent-soft);
 }
 .empty-title {
   font-size: 28rpx;
@@ -429,12 +429,12 @@ export default {
 }
 .empty-desc {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--text-3);
   line-height: 1.6;
 }
 .tip-line {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-3);
   padding: 8rpx 0;
   line-height: 1.6;
 }

@@ -1,0 +1,85 @@
+/* ===== 设计令牌 + 主题（浅色默认 / 深色跟随 data-theme="dark"） ===== */
+:root {
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-subtle: #f3f4f6;
+  --bg-accent-soft: #f0f5ff;
+  --text-1: #1f2937;
+  --text-2: #4b5563;
+  --text-3: #9ca3af;
+  --border: #e5e7eb;
+  --border-soft: #f0f1f4;
+  --accent: #4f8cff;
+  --accent-deep: #4f46e5;
+  --tab-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 深色主题：通用面 + 高频类覆盖（覆盖 scoped 样式，故用 !important） */
+[data-theme="dark"] {
+  --bg-page: #14161c;
+  --bg-card: #1e222b;
+  --bg-subtle: #262b36;
+  --bg-accent-soft: #1b2337;
+  --text-1: #e5e7eb;
+  --text-2: #c3c8d4;
+  --text-3: #8b93a3;
+  --border: #2d3340;
+  --border-soft: #262b36;
+  --tab-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] page,
+[data-theme="dark"] body {
+  background-color: var(--bg-page);
+  color: var(--text-1);
+}
+
+/* 通用面（跨页面公共类的暗色兜底） */
+[data-theme="dark"] .card,
+[data-theme="dark"] .style-card,
+[data-theme="dark"] .subject-card,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .profile-card {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-1) !important;
+}
+
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .course-panel-title,
+[data-theme="dark"] .hero-title,
+[data-theme="dark"] .subject-name,
+[data-theme="dark"] .style-name,
+[data-theme="dark"] .panel-title,
+[data-theme="dark"] .label {
+  color: var(--text-1) !important;
+}
+
+[data-theme="dark"] .style-desc,
+[data-theme="dark"] .label,
+[data-theme="dark"] .subject-skill,
+[data-theme="dark"] .refresh-desc,
+[data-theme="dark"] .tip-line {
+  color: var(--text-3) !important;
+}
+
+[data-theme="dark"] .chat-header,
+[data-theme="dark"] .input-bar {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .input {
+  background: var(--bg-subtle) !important;
+  color: var(--text-1) !important;
+}
+
+[data-theme="dark"] .bubble.assistant {
+  background: var(--bg-subtle) !important;
+  color: var(--text-1) !important;
+}
+
+[data-theme="dark"] .msg-time,
+[data-theme="dark"] .panel-item-date {
+  color: var(--text-3) !important;
+}
