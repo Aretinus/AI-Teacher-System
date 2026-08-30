@@ -124,24 +124,17 @@
 | math | Finite Element Method Lecture Notes（A. A. Salih） | `Math/09-计算数学/数值PDE与有限元/`（5 章 31 课） | calculus-tutor（微积分教师） |
 
 > 旧蒸馏课程（费恩曼物理学讲义、朗道、量子力学发展史、渐近分析、数学物理方法）已随清理从仓库删除；后续可用新公式管道重蒸。
-### 双机同步合并（2026-08-29 已提交，推送至 origin/branch-4060）
+### 双机同步合并 + 语音链路修复（2026-08-29~30，分支 branch-4060）
 
-> 分支说明：branch-4060 = 本机（RTX 4060）的开发线，基于 9792f9c（含全部本地功能与双机合并成果）。
-> 另一台机器（MX150）同步方式：git fetch 后 Your branch is up to date with 'origin/branch-4060'.（或自行 merge 到其工作分支）；
-> 机器差异不需要分叉代码——GPU 相关能力已配置化：本地 TTS 引擎在设置页切换（低配用 Edge 云端）、
-> 公式蒸馏的 P2T/MinerU 策略在 06-Tools/formula-extraction、环境依赖（Python/DLL/模型）按
-> 《05-Docs/环境搭建与运行时配置.md》重建，私密配置放 local-config.bat（gitignored）。
-与另一台机器的开发（github.com/Aretinus/AI-Teacher-System，P29-P33-GH）完成双向对齐，本机采纳：
-- **OCR 探查异步化**：spawnSync → execFile 异步 Promise，大书探查不再冻结后端（P32 本地）
-- **未注册学科全链路兜底**：bookDirOf 回退目录名（蒸馏/OCR/课程三处）、`GET /api/books/subjects`、`/api/subjects` 合并书库学科（registered:false，主页"通用教学"）、路由 `manual-generic` 通用教学模式、设置页「＋添加学科」（P33 本地）
-- **语音通话生命周期**：leaving 标记 + onUnload 自动挂断 + navigateBack 失败兜底 reLaunch + 通话中对话页输入禁用（P34 本地）
-- **悬浮球**：对话页可拖动通话悬浮球（径向菜单挂断/进入、贴边换朝向），与本地问题条共存，替代"通话中"chip（P35 本地）
-- **voice-call 防护**：reqToken 请求代际 + interrupted 打断抑制，interrupt 支持思考中/播报中打断（P36 本地；GH 的"思考期继续聆听"未采纳，与本地停顿分段/回声防控状态机冲突）
-- **界面细节**：语音日志时间戳 + Markdown 渲染、思考中条目前置、历史记录相对时间（今天显示时分）、示例提问按学科动态生成 + 通用兜底、设置页学科选择改用书库实时清单
-- **启动脚本**：DB 密码外置 local-config.bat（gitignored）、全 ASCII 注释 + CRLF + `.gitattributes` 固化（P31 本地④）
+**分支**：branch-4060 = 本机（RTX 4060）开发线，已推送 GitHub。另一台机器（MX150）同步：`git fetch` 后 `git checkout branch-4060`（或自行 merge 到其工作分支）。机器差异不需要分叉代码——GPU 相关能力已配置化：本地 TTS 引擎在设置页切换（低配用 Edge 云端）、蒸馏策略在 06-Tools/formula-extraction、环境依赖按《05-Docs/环境搭建与运行时配置.md》重建、DB 密码在 settings.json 的 dbPassword 字段。
 
-### 语音链路修复轮（2026-08-30，P38-P41 已本地提交）
-- P38 语音识别无事件 = 网络依赖（Chrome 走 Google 需代理）；P39 runtime 404 三层根因（OpenSSL DLL → ORM → AI 路由条件注册）+ externalRequest 非流式解析修复 + 模型配置迁移设置页；P40 默认 Agnes + 空配置引导 + dbPassword 并入 settings.json；P41 beginCall 根级定义修复（语音页进入即"通话已结束"的真凶）；TTS venv 重建后 edge-tts.exe 入口丢失的再生方法（force-reinstall）。
-- 端到端验证：识别 → Agnes 回复 → Edge 播报全链路正常；语音页正确渲染 30 条历史（Markdown 表格含公式均正常）。
+**本阶段交付**（实现与排错细节统一见 Dev_Problem 对应编号，此处只记进度）：
+- 双机同步：采纳另一台机器（GitHub main）的 OCR 探查异步化、未注册学科全链路兜底、语音通话生命周期修复、通话悬浮球、voice-call 防护、界面细节、启动脚本加固（P32-P36）
+- 语音链路修复：识别网络依赖、runtime 404 三层根因、externalRequest 解析、beginCall 修复、edge-tts 入口再生（P38-P41）
+- 模型配置产品化：默认 Agnes 预填 + 空配置引导，配置迁移到设置页标准 OpenAI 兼容格式（P39-P40）
+- 配置集中化：DB 密码并入 settings.json 的 dbPassword 字段（P40）
+- 项目瘦身：清理参考源码 169M、蒸馏遗留 37M、旧日志与缓存（SQL 移至 06-Tools/sql/）
+- 新增学科：economics / literature / philosophy 注册与蒸馏产物
 
-本机独有（GitHub 尚无，反向同步待办）：问题条（刻度+悬停卡片）、runtime DLL 自愈、语音识别质量优化（停顿分段/final 去重/代际防残留/barge-in）、TTS 引擎切换与语音打断设置、economics/literature/philosophy 注册学科与蒸馏产物、动态学科关键词路由、refreshService 书籍驱动扫描与 books 目录重构。
+**反向同步待办**（本机独有，GitHub main 尚无，下次双机对齐时推给对方）：问题条（刻度+悬停卡片）、runtime DLL 自愈、语音识别质量优化（停顿分段/final 去重/代际防残留/barge-in）、TTS 引擎切换与语音打断设置、动态学科关键词路由、refreshService 书籍驱动扫描与 books 目录重构。
+
