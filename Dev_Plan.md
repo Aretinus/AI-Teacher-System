@@ -140,4 +140,8 @@
 - **界面细节**：语音日志时间戳 + Markdown 渲染、思考中条目前置、历史记录相对时间（今天显示时分）、示例提问按学科动态生成 + 通用兜底、设置页学科选择改用书库实时清单
 - **启动脚本**：DB 密码外置 local-config.bat（gitignored）、全 ASCII 注释 + CRLF + `.gitattributes` 固化（P31 本地④）
 
+### 语音链路修复轮（2026-08-30，P38-P41 已本地提交）
+- P38 语音识别无事件 = 网络依赖（Chrome 走 Google 需代理）；P39 runtime 404 三层根因（OpenSSL DLL → ORM → AI 路由条件注册）+ externalRequest 非流式解析修复 + 模型配置迁移设置页；P40 默认 Agnes + 空配置引导 + dbPassword 并入 settings.json；P41 beginCall 根级定义修复（语音页进入即"通话已结束"的真凶）；TTS venv 重建后 edge-tts.exe 入口丢失的再生方法（force-reinstall）。
+- 端到端验证：识别 → Agnes 回复 → Edge 播报全链路正常；语音页正确渲染 30 条历史（Markdown 表格含公式均正常）。
+
 本机独有（GitHub 尚无，反向同步待办）：问题条（刻度+悬停卡片）、runtime DLL 自愈、语音识别质量优化（停顿分段/final 去重/代际防残留/barge-in）、TTS 引擎切换与语音打断设置、economics/literature/philosophy 注册学科与蒸馏产物、动态学科关键词路由、refreshService 书籍驱动扫描与 books 目录重构。

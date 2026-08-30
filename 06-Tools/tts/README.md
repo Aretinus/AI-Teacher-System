@@ -19,6 +19,7 @@ cd 06-Tools\tts
 py -3.12 -m venv venv
 venv\Scripts\pip install -i https://pypi.tuna.tsinghua.edu.cn/simple torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 venv\Scripts\pip install -i https://pypi.tuna.tsinghua.edu.cn/simple qwen-tts modelscope fastapi uvicorn
+venv\Scripts\pip install -i https://pypi.tuna.tsinghua.edu.cn/simple edge-tts
 ```
 
 > 提示：`flash-attn` 未安装（Windows 无预编译包）会打印 SoX 相关警告，可忽略；CPU 推理可用。
@@ -66,6 +67,7 @@ CPU（i5-8250U）下实时性不可用，因此默认策略为 **engine: auto**�
 - 不开本服务 → 后端自动走 Edge（免费在线 TTS，约 2.5s）
 - 开本服务 → 后端先请求本地（超时 180s），失败再回落 Edge
 - **R7000 GPU 机**：装好依赖后启动本服务即自动启用本地音色，代码零改动
+- **坑（P41）**：venv 重建/拷贝后 `Scripts\edge-tts.exe` 入口会丢失（包在但 exe 不在），朗读报 502 ENOENT；用 `venv\Scripts\pip install --force-reinstall --no-deps edge-tts` 再生入口即可
 
 ## 与前端的关系
 
