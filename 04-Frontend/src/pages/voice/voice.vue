@@ -134,17 +134,6 @@ export default {
       this.beginCall(options)
     }).catch(() => this.beginCall(options))
   },
-  beginCall(options) {
-    const res = voiceCall.start({
-      subject: options.subject || '',
-      course: options.course ? decodeURIComponent(options.course) : '',
-      conversationId: options.conversationId || '',
-    })
-    if (!res.ok) {
-      uni.showToast({ title: res.error, icon: 'none' })
-      setTimeout(() => uni.navigateBack(), 600)
-    }
-  },
   onShow() {
     voiceCall.offEvent(this.onEvent)
     this.state = voiceCall.state
@@ -167,6 +156,17 @@ export default {
     },
   },
   methods: {
+    beginCall(options) {
+      const res = voiceCall.start({
+        subject: options.subject || '',
+        course: options.course ? decodeURIComponent(options.course) : '',
+        conversationId: options.conversationId || '',
+      })
+      if (!res.ok) {
+        uni.showToast({ title: res.error, icon: 'none' })
+        setTimeout(() => uni.navigateBack(), 600)
+      }
+    },
     scrollToBottom() {
       // 锚定到底部占位元素：重置后再赋值，保证连续调用也能触发滚动
       this.logAnchor = ''

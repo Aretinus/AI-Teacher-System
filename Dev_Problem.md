@@ -4,6 +4,13 @@
 
 ## 问题列表（按时间倒序）
 
+### P41. 语音通话进入即"通话已结束"且不同步历史：beginCall 误定义在组件根级
+- **现象**：进入语音通话页显示「通话已结束」、日志区空白（不加载会话历史），recog 完全不启动；DevTools 控制台报 `TypeError: this.beginCall is not a function (voice.vue)`。
+- **根因**：语音页新增"AI API 未配置守卫"时，把 `beginCall(options)` 方法定义在了组件**根级**（与 onLoad 平级）而非 `methods` 内——Vue 选项式 API 不把根级函数注册为方法，`getSettings().then(() => this.beginCall(options))` 在 Promise 回调里抛 TypeError，被未处理的 promise rejection 吞掉，`voiceCall.start()` 从未执行，页面停留在模块初始 idle 状态。
+- **解决**：`beginCall` 移入 `methods`。验证：带 conversationId 进入语音页，30 条历史全部渲染（Markdown 表格正常），通话状态「语音通话中/聆听中」。
+- **经验**：①「页面停在初始状态 + Promise 里静默报错」= 方法没挂上，控制台的 unhandled rejection 是唯一线索，排查语音页问题先开 F12；②测试语音页历史同步必须用 **conversationId** 参数（聊天页按钮传的就是它），手工用 sessionId 参数构造的 URL 不会同步历史；③ZCode 内置浏览器无 SpeechRecognition，测语音通话流程需注入 `window.SpeechRecognition` 桩并整页刷新（hash 导航不重建页面实例，window 探针变量也会被刷新清掉——探针要写进代码）。
+- **状态**：已修复（2026-08-30）。
+
 ### P40. 模型配置产品化：默认 Agnes + 空配置引导；local-config.bat 降级为纯数据文件
 - **背景**：模型配置迁移到设置页（P39）后，"全新用户"路径没有兜底——profiles 为空时 `migrate()` 会因 `undefined.id` 崩溃；对话/语音在无 Key 时只会报底层 401；默认配置还是"模型运行时"（该概念已随 P39 弃用）。
 - **解决**：① settingsService 默认配置改为 **Agnes 预填档**（OpenAI 兼容：api.agnes-ai.cn/v1 + agnes-2.5-flash，Key 留空），修复空 profiles 的迁移崩溃；② 模型设置页去掉「模型运行时」提供商选项，空列表显示引导卡片（"尚未配置 AI API，新增配置默认预填 Agnes"），新增表单默认预填 Agnes；③ 对话页发送前、语音页进入前检查配置（openai/anthropic 缺 Key 即拦截），弹窗引导「去设置」；④ 数据库密码不再单独建文件——并入 `02-DATA/settings.json` 顶层 `dbPassword` 字段（gitignored，settingsService 保存时原样保留该私有字段、GET 接口不外泄），start-dev.bat 用 PowerShell 读取。配置集中一处，避免散落。
