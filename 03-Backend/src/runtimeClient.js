@@ -124,21 +124,33 @@ function externalRequest(messages, { model, apiKey, baseUrl, stream }) {
         let err = null;
         res.setEncoding('utf8');
         res.on('data', (chunk) => {
-          for (const line of chunk.split('\n')) {
-            if (!line.startsWith('data:')) continue;
-            const payload = line.slice(5).trim();
-            if (!payload || payload === '[DONE]') continue;
-            try {
-              const evt = JSON.parse(payload);
-              const d = evt.choices && evt.choices[0];
-              if (d && d.delta && d.delta.content) full += d.delta.content;
-              if (evt.error) err = evt.error.message;
-            } catch (e) { /* ignore */ }
-          }
+          full += chunk;
         });
         res.on('end', () => {
           if (err) return reject(new Error(err));
-          resolve({ status: res.statusCode, response: { role: 'assistant', content: full }, type: 'response.completed' });
+          // OpenAI 兼容接口 stream:false 返回标准 JSON；部分兼容端点可能仍回 SSE，两种都兜
+          let content = '';
+          try {
+            const json = JSON.parse(full);
+            if (json.error) return reject(new Error(json.error.message || 'provider error'));
+            const d = json.choices && json.choices[0];
+            content = (d && d.message && d.message.content) || '';
+          } catch (e) {
+            for (const line of full.split('\n')) {
+              if (!line.startsWith('data:')) continue;
+              const payload = line.slice(5).trim();
+              if (!payload || payload === '[DONE]') continue;
+              try {
+                const evt = JSON.parse(payload);
+                const d = evt.choices && evt.choices[0];
+                if (d && d.delta && d.delta.content) content += d.delta.content;
+                if (d && d.message && d.message.content) content += d.message.content;
+                if (evt.error) err = evt.error.message;
+              } catch (e2) { /* ignore */ }
+            }
+          }
+          if (!content && err) return reject(new Error(err));
+          resolve({ status: res.statusCode, response: { role: 'assistant', content }, type: 'response.completed' });
         });
         res.on('error', reject);
       } else {

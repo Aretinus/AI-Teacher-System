@@ -4,6 +4,16 @@
 
 ## 问题列表（按时间倒序）
 
+### P39. 语音链路修复后对话仍失败：runtime 404（OpenSSL DLL 丢失 + 模型配置随 .env 丢失 + externalRequest 非流式解析 bug）
+- **现象**：识别修复后语音回复报「Runtime stream error (404): /api/v1/ai/chat/completions」。
+- **根因（三层叠加，全是 node_modules 重装/配置迁移的连锁反应）**：
+  ① runtime bin 里缺 **libcrypto-3-x64.dll / libssl-3-x64.dll**（OpenSSL 3，ORM 的 PG md5 认证需要）→ 日志报 `CryptoException: Can not load openssl library or function MD5_Init` → ORM 初始化失败；
+  ② runtime 的 `.env` 被 npm 包原始模板覆盖（API Key 全是占位符）→ `ModelManager` 创建 chatModel 失败 → main.cj 按 `if (let Some(chatModel))` 分支**整体跳过 AI 路由注册**（日志 warn "Chat routes skipped"）→ 所有 /api/v1/ai/* 404。关键线索：runtime 自己的日志（bin/logs/）只有 skill/tool 路由注册记录；
+  ③ 即使路由通了还有一层：`externalRequest` 非流式分支按 SSE 的 `data:` 行解析响应，而标准 OpenAI 兼容端点（Agnes）`stream:false` 返回普通 JSON → 解析出空内容 →「（空响应）」。此前从未暴露，因为一直走 runtime 通道，直连分支零使用。
+- **解决**：① 从 PostgreSQL 17 bin 复制 libcrypto/libssl-3-x64.dll 补入 runtime bin 并入 06-Tools/runtime-dlls 备份，start-dev.bat 自动恢复清单扩为 6 个 DLL；② 模型配置不再放 runtime .env——**迁移到设置页（02-DATA/settings.json）标准 OpenAI 兼容格式**（provider:openai + baseUrl + apiKey + modelName，与 DeepSeek profile 同构），后端 `externalRequest` 直连，runtime 退回健康检查等基础职责；③ 修 externalRequest 非流式解析：JSON 优先、SSE 兜底。
+- **经验**：① runtime 的 404 不是路由拼写问题时要看 bin/logs/agentskills-runtime.log 的路由注册段——AI 路由注册是模型配置有效性的**条件分支**，静默跳过；② health 接口不覆盖 AI 路由，「runtime OK」≠「对话可用」，验证必须打一发真实对话；③ node_modules 重装的破坏面 = 手动补的所有 DLL + bin/.env 全部用户配置，重装后按环境文档第 8 节 + local-config.bat 重建。
+- **状态**：已修复（2026-08-30，端到端对话验证通过；Agnes key 为用户在设置页重新填入）。
+
 ### P38. 问题条 scroll-view 在 keep-alive 页面重进时报 scrollTop null；语音识别"无任何事件"确认为网络依赖
 - **现象**：①从语音页返回对话页，控制台刷 `Cannot set properties of null (setting 'scrollTop')`（QuestionBar 的 ScrollView activated 钩子）；②语音通话识别完全无响应——`recog.start()` 每 6 秒循环重启，但没有任何识别事件，也**没有 error 事件**（连 no-speech 都没有）。
 - **根因**：①uni-h5 的 scroll-view 在 `v-if` 包裹 + keep-alive 重挂载时内部节点为 null，activated 钩子恢复 scrollTop 崩溃（已知框架问题）；②Chrome 的 Web Speech 依赖 Google 在线服务（强制走 10808 代理），代理/网络断时识别管道整个哑掉，且伴随 Chrome 内部 `reportAllChanges ... startTime undefined` 报错——表现极具迷惑性（start 成功、无错误、纯静默），实为网络。

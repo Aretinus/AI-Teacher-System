@@ -11,8 +11,11 @@ set LOG_DIR=%~dp0logs
 set DLL_BACKUP=%~dp006-Tools\runtime-dlls
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 
-rem ---------- 0a. Restore GCC runtime DLLs if lost (node_modules reinstall wipes them) ----------
-for %%d in (libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libssp-0.dll) do (
+rem ---------- 0a. Restore runtime DLLs if lost (node_modules reinstall wipes them) ----------
+rem GCC runtime: libgcc/libstdc++/libwinpthread (Git MinGW64) + libssp (CompilerSupportLibraries)
+rem OpenSSL: libcrypto-3-x64/libssl-3-x64 (from PostgreSQL bin) - required for ORM/DB init,
+rem          without them ORM init fails and AI chat routes are never registered (chat 404)
+for %%d in (libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libssp-0.dll libcrypto-3-x64.dll libssl-3-x64.dll) do (
   if not exist "%RUNTIME_DIR%\%%d" (
     if exist "%DLL_BACKUP%\%%d" (
       copy /y "%DLL_BACKUP%\%%d" "%RUNTIME_DIR%\%%d" >nul
@@ -23,15 +26,16 @@ for %%d in (libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libssp-0.dll)
   )
 )
 
-rem ---------- 0b. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
-rem DB password lives in local-config.bat (gitignored): create it with one line "set DB_PASSWORD=yourpassword"
+rem ---------- 0b. Load local private config (gitignored) ----------
+rem local-config.bat line: set DB_PASSWORD=yourpassword
 set "DB_PASSWORD="
 if exist "%~dp0local-config.bat" call "%~dp0local-config.bat"
-if not defined DB_PASSWORD (
-  echo [WARN] local-config.bat missing or DB_PASSWORD not set - skip writing DATABASE_URL
-)
+
+rem ---------- 0c. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
 if defined DB_PASSWORD (
   powershell -NoProfile -Command "$f='%RUNTIME_ENV%';if(Test-Path $f){$t=[IO.File]::ReadAllText($f);if($t -notmatch '(?m)^DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}}"
+) else (
+  echo [WARN] local-config.bat missing or DB_PASSWORD not set - skip writing DATABASE_URL
 )
 
 rem ---------- 1. Kill stale processes + clean vite cache ----------
