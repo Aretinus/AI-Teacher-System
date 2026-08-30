@@ -106,6 +106,7 @@ export default {
   justify-content: space-between;
   padding: 12rpx 12rpx;
   border-radius: 14rpx;
+  transition: background 0.15s ease;
 }
 .ct-row.selected {
   background: var(--bg-accent-soft);

@@ -338,7 +338,11 @@ export default {
 }
 .subject-grid {
   display: flex;
+  flex-wrap: wrap;
   gap: 20rpx;
+}
+.subject-card {
+  min-width: 190rpx;
 }
 .subject-card {
   flex: 1;
@@ -474,4 +478,21 @@ export default {
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.35);
 }
 
+
+/* ===== 响应式（窄屏） ===== */
+@media (max-width: 700px) {
+  .hero {
+    margin: 12rpx 12rpx 0;
+    padding: 30rpx 28rpx;
+  }
+  .hero-title {
+    font-size: 38rpx;
+  }
+  .section {
+    margin-top: 22rpx;
+  }
+  .style-card {
+    min-width: 46%;
+  }
+}
 </style>

@@ -983,6 +983,10 @@ export default {
   border-radius: 20rpx;
   box-shadow: 0 4rpx 16rpx rgba(17, 24, 39, 0.05);
   padding: 24rpx 28rpx;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+.card:hover {
+  box-shadow: 0 6rpx 22rpx rgba(17, 24, 39, 0.09);
 }
 .model-row {
   display: flex;

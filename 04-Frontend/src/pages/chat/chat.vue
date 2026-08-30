@@ -1249,6 +1249,7 @@ onLoad(options) {
   margin-bottom: 18rpx;
   align-items: flex-start;
   user-select: text;
+  animation: msg-in 0.22s ease;
   -webkit-user-select: text;
 }
 .md-body,
@@ -1477,4 +1478,31 @@ onLoad(options) {
   background: rgba(20, 22, 28, 0.86);
 }
 
+
+/* 消息入场动效 */
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== 响应式（窄屏） ===== */
+@media (max-width: 700px) {
+  .chat-header {
+    padding: 12rpx 18rpx;
+  }
+  .bubble {
+    padding: 14rpx 18rpx;
+    font-size: 27rpx;
+  }
+  .input-bar {
+    margin: 10rpx 12rpx calc(10rpx + env(safe-area-inset-bottom));
+    padding: 10rpx 14rpx;
+  }
+}
 </style>
