@@ -391,12 +391,12 @@ app.post('/api/tts', async (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug, voice = false } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
   let prepared;
   try {
-    prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course, debug });
+    prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course, debug, voice });
   } catch (e) {
     // Express 4 不会捕获 async handler 的 rejection，不兜住会直接崩掉整个进程
     console.error('[chat] handleChat failed:', e.message);
@@ -416,12 +416,12 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.post('/api/chat/stream', async (req, res) => {
-  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
+  const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug, voice = false } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
   let prepared;
   try {
-    prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course, debug });
+    prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course, debug, voice });
   } catch (e) {
     console.error('[chat/stream] handleChat failed:', e.message);
     return res.status(500).json({ error: '对话准备失败：' + e.message });

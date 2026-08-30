@@ -76,7 +76,7 @@ function parseTeachingResponse(text) {
   return null;
 }
 
-async function handleChat({ userId, subject, message, conversationId, stream, style, course, debug }) {
+async function handleChat({ userId, subject, message, conversationId, stream, style, course, debug, voice }) {
   const userState = loadState(userId);
   const profile = loadProfile(userId);
   const history = loadHistory(userId);
@@ -120,11 +120,11 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
     courseCtx = loadCourseContext(routeInfo.subject, tutor, message, wantAdvance);
   }
   if (isGroupCourse && courseCtx) {
-    messages = buildGroupMessages({ subject: routeInfo.subject, tutor, userState, history, message, groupCtx: courseCtx, style });
+    messages = buildGroupMessages({ subject: routeInfo.subject, tutor, userState, history, message, groupCtx: courseCtx, style, voiceInput: voice });
   } else if (courseCtx) {
-    messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
+    messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style, voiceInput: voice });
   } else {
-    messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message, style });
+    messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message, style, voiceInput: voice });
   }
   const userMessage = { role: 'user', content: message, at: new Date().toISOString() };
 

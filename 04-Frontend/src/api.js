@@ -133,7 +133,7 @@ export function uploadFile(name, dataBase64) {
  * onDelta(deltaText)、onSession({sessionId, subject})、onDone(evaluation)、onError(msg)
  * 空闲超时（idleTimeoutMs，默认 60000）：超过该时长无任何数据 → abort 并返回 { timedOut: true }（不触发 onError）
  */
-export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER, debug = false, idleTimeoutMs = 60000 }, handlers = {}, signal) {
+export async function streamChat({ subject, style, course, message, conversationId, userId = DEFAULT_USER, debug = false, voice = false, idleTimeoutMs = 60000 }, handlers = {}, signal) {
   const { onSession, onDelta, onDone, onError } = handlers
   const idleCtrl = new AbortController()
   let idleTimer = null
@@ -148,7 +148,7 @@ export async function streamChat({ subject, style, course, message, conversation
   const resp = await fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId, subject, style, course, message, conversationId, debug }),
+    body: JSON.stringify({ userId, subject, style, course, message, conversationId, debug, voice }),
     signal: idleCtrl.signal,
   })
   if (!resp.ok) {

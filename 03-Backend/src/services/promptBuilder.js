@@ -74,7 +74,7 @@ function readKnowledge(skillMd, subject, tutor) {
   return contents.join('\n\n');
 }
 
-function buildSystemPrompt({ subject, tutor, userState, history, message, style }) {
+function buildSystemPrompt({ subject, tutor, userState, history, message, style, voiceInput }) {
   const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
   const engineSkill = readCoreSkill('tutor-engine');
   const evaluatorSkill = readCoreSkill('evaluator');
@@ -112,6 +112,8 @@ function buildSystemPrompt({ subject, tutor, userState, history, message, style 
     '## 本轮输入',
     `学科：${subject}｜教师：${tutor}`,
     `学生消息：${message}`,
+    ...(voiceInput ? ['（本条消息来自语音识别，可能存在同音字或断句错误，例如「狮子」可能是「诗词」。若消息中有明显不通的词，先按同音字推测学生原意并向学生确认，再继续回答。）'] : []),
+
     '',
     '## 输出要求',
     '按 Tutor Engine 协议输出 teaching-response 结构。若学生消息是对追问/练习的回答，先按 Evaluator 协议评估，再输出教学回复。回复正文用 Markdown，公式用 $...$ / $$...$$。',
@@ -122,12 +124,15 @@ function buildSystemPrompt({ subject, tutor, userState, history, message, style 
   ].join('\n');
 }
 
-function buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx, style }) {
+function buildCourseSystemPrompt({ subject, tutor, userState, history, message, courseCtx, style, voiceInput }) {
   const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
   const engineSkill = readCoreSkill('tutor-engine');
   const evaluatorSkill = readCoreSkill('evaluator');
 
-  const recent = (history.sessions || []).slice(0, MAX_CONTEXT_HISTORY)
+  const kpScoped = Object.fromEntries(
+    Object.entries(userState.knowledgePoints || {}).filter(([, v]) => v && v.subject === subject)
+  );
+  const recent = (history.sessions || []).filter((s) => !s.subject || s.subject === subject).slice(0, MAX_CONTEXT_HISTORY)
     .map((s) => `- [${s.date}] ${s.subject}: ${s.summary || ''}`).join('\n') || '（无）';
 
   return [
@@ -165,7 +170,7 @@ function buildCourseSystemPrompt({ subject, tutor, userState, history, message, 
     '（导航仅供定位课程位置，不得作为教学内容。）',
     '',
     '## 用户当前状态',
-    JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: userState.knowledgePoints, recentErrors: userState.recentErrors }, null, 2),
+    JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: kpScoped, recentErrors: userState.recentErrors }, null, 2),
     '',
     '## 近期会话摘要',
     recent,
@@ -173,6 +178,8 @@ function buildCourseSystemPrompt({ subject, tutor, userState, history, message, 
     '## 本轮输入',
     `学科：${subject}｜教师：${tutor}｜课程：${courseCtx.courseName}｜当前课：${courseCtx.currentLesson}`,
     `学生消息：${message}`,
+    ...(voiceInput ? ['（本条消息来自语音识别，可能存在同音字或断句错误，例如「狮子」可能是「诗词」。若消息中有明显不通的词，先按同音字推测学生原意并向学生确认，再开始教学。）'] : []),
+
     '',
     '## 输出要求',
     '按 Tutor Engine 协议输出 teaching-response 结构。回复正文用 Markdown，公式用 $...$ / $$...$$。',
@@ -192,10 +199,13 @@ function buildCourseMessages({ subject, tutor, userState, history, message, cour
 }
 
 // 大类综合问答：综合分类下全部课程回答，不跟随单课进度（plain 文本回复，无 JSON 协议）
-function buildGroupSystemPrompt({ subject, tutor, userState, history, message, groupCtx, style }) {
+function buildGroupSystemPrompt({ subject, tutor, userState, history, message, groupCtx, style, voiceInput }) {
   const engineSkill = readCoreSkill('tutor-engine');
   const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
-  const recent = (history.sessions || []).slice(0, MAX_CONTEXT_HISTORY)
+  const kpScoped = Object.fromEntries(
+    Object.entries(userState.knowledgePoints || {}).filter(([, v]) => v && v.subject === subject)
+  );
+  const recent = (history.sessions || []).filter((s) => !s.subject || s.subject === subject).slice(0, MAX_CONTEXT_HISTORY)
     .map((s) => `- [${s.date}] ${s.subject}: ${s.summary || ''}`).join('\n') || '（无）';
 
   return [
@@ -217,13 +227,15 @@ function buildGroupSystemPrompt({ subject, tutor, userState, history, message, g
     styleBlock(style),
     '',
     '## 用户当前状态',
-    JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: userState.knowledgePoints, recentErrors: userState.recentErrors }, null, 2),
+    JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: kpScoped, recentErrors: userState.recentErrors }, null, 2),
     '',
     '## 近期会话摘要',
     recent,
     '',
     '## 本轮输入',
     `分类：${groupCtx.groupName}｜学生消息：${message}`,
+    ...(voiceInput ? ['（本条消息来自语音识别，可能存在同音字或断句错误，例如「狮子」可能是「诗词」。若消息中有明显不通的词，先按同音字推测学生原意并向学生确认，再开始教学。）'] : []),
+
     '',
     '## 输出要求',
     '用 Markdown 综合该分类下相关课程内容回答学生的问题；引用具体内容时注明出自哪本书/哪一章；回答末尾用一行「建议深入：书名 → 章节」给出可系统学习的进阶指引（若大纲中有对应内容）。直接输出回答正文，不要输出 JSON。',

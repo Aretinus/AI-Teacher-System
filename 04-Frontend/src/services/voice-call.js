@@ -446,7 +446,7 @@ async function sendFinal(text) {
         setPhase('thinking')
       }
       result = await streamChat(
-        { subject, style: 'standard', course: course || undefined, message: text, conversationId: sessionId || undefined },
+        { subject, style: 'standard', course: course || undefined, message: text, conversationId: sessionId || undefined, voice: true },
         {
           onSession: ({ sessionId: sid, subject: resolved }) => {
             if (myToken !== reqToken) return
