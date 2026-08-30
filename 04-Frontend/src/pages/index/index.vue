@@ -268,13 +268,14 @@ export default {
 .hero {
   margin: 20rpx 20rpx 0;
   padding: 40rpx 36rpx;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
   background: linear-gradient(135deg, #4f8cff 0%, #7c3aed 100%);
-  box-shadow: 0 8rpx 24rpx rgba(79, 140, 255, 0.25);
+  box-shadow: var(--shadow-hero);
 }
 .hero-title {
   font-size: 44rpx;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: #ffffff;
 }
 .hero-sub {
@@ -290,6 +291,7 @@ export default {
   align-items: center;
   font-size: 30rpx;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text-1);
   margin-bottom: 18rpx;
 }
@@ -312,7 +314,7 @@ export default {
   font-weight: 600;
   background: var(--bg-accent-soft);
   border: 1rpx solid #cfe0ff;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
   padding: 4rpx 20rpx;
 }
 .new-chat-btn {
@@ -348,14 +350,14 @@ export default {
   flex: 1;
   background: var(--bg-card);
   border: 2rpx solid var(--border);
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 28rpx 24rpx;
   text-align: center;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .subject-card:hover {
   transform: translateY(-2rpx);
-  box-shadow: 0 6rpx 18rpx rgba(17, 24, 39, 0.08);
+  box-shadow: var(--shadow-2);
 }
 .subject-card.active {
   border-color: #4f8cff;
@@ -381,13 +383,13 @@ export default {
   min-width: 40%;
   background: var(--bg-card);
   border: 2rpx solid var(--border);
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 22rpx 24rpx;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .style-card:hover {
   transform: translateY(-2rpx);
-  box-shadow: 0 6rpx 18rpx rgba(17, 24, 39, 0.08);
+  box-shadow: var(--shadow-2);
 }
 .style-card.active {
   border-color: #4f8cff;
@@ -409,7 +411,7 @@ export default {
 }
 .card {
   background: var(--bg-card);
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 24rpx 28rpx;
 }
 .card-row {
@@ -431,7 +433,7 @@ export default {
 }
 .history-item {
   background: var(--bg-card);
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 22rpx 28rpx;
   margin-bottom: 16rpx;
 }
@@ -458,7 +460,7 @@ export default {
   font-size: 24rpx;
   color: #ef4444;
   border: 1rpx solid #fecaca;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 2rpx 16rpx;
 }
 .history-del:active {

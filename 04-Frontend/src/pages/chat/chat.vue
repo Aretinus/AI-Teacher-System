@@ -1293,13 +1293,13 @@ onLoad(options) {
 .bubble.assistant {
   background: var(--bg-card);
   border: 1rpx solid var(--border);
-  border-radius: 4rpx 20rpx 20rpx 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+  border-radius: 4rpx 16rpx 16rpx 16rpx;
+  box-shadow: var(--shadow-1);
 }
 .bubble.user {
   background: linear-gradient(135deg, #4f8cff, #6f5bf5);
   color: #ffffff;
-  border-radius: 20rpx 4rpx 20rpx 20rpx;
+  border-radius: 16rpx 4rpx 16rpx 16rpx;
   align-self: flex-end;
 }
 .user-text {
@@ -1426,8 +1426,8 @@ onLoad(options) {
   padding: 12rpx 18rpx;
   background: var(--bg-card);
   border: 1rpx solid var(--border);
-  border-radius: 32rpx;
-  box-shadow: 0 6rpx 24rpx rgba(17, 24, 39, 0.08);
+  border-radius: 24rpx;
+  box-shadow: var(--shadow-2);
   gap: 14rpx;
 }
 .attach-btn {
@@ -1454,7 +1454,7 @@ onLoad(options) {
 .input {
   flex: 1;
   background: var(--bg-subtle);
-  border-radius: 36rpx;
+  border-radius: 24rpx;
   padding: 12rpx 26rpx;
   font-size: 28rpx;
   min-height: 46rpx;
@@ -1462,7 +1462,7 @@ onLoad(options) {
 .send-btn {
   background: linear-gradient(135deg, #4f8cff, #6f5bf5);
   color: #fff;
-  border-radius: 36rpx;
+  border-radius: 24rpx;
   padding: 12rpx 30rpx;
   font-size: 26rpx;
   font-weight: 600;

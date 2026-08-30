@@ -966,6 +966,7 @@ export default {
   align-items: center;
   font-size: 30rpx;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text-1);
   margin-bottom: 18rpx;
 }
@@ -980,13 +981,13 @@ export default {
 .card {
   background: var(--bg-card);
   border: 1rpx solid var(--border-soft);
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(17, 24, 39, 0.05);
+  border-radius: 16rpx;
+  box-shadow: var(--shadow-1);
   padding: 24rpx 28rpx;
   transition: box-shadow 0.18s ease, transform 0.18s ease;
 }
 .card:hover {
-  box-shadow: 0 6rpx 22rpx rgba(17, 24, 39, 0.09);
+  box-shadow: var(--shadow-2);
 }
 .model-row {
   display: flex;

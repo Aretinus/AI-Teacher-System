@@ -105,7 +105,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 12rpx 12rpx;
-  border-radius: 14rpx;
+  border-radius: 12rpx;
   transition: background 0.15s ease;
 }
 .ct-row.selected {

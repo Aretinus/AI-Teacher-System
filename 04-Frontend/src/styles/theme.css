@@ -1,31 +1,39 @@
 /* ===== 设计令牌 + 主题（浅色默认 / 深色跟随 data-theme="dark"） ===== */
 :root {
-  --bg-page: #f5f6f8;
+  --bg-page: #f7f8fa;
   --bg-card: #ffffff;
-  --bg-subtle: #f3f4f6;
+  --bg-subtle: #f4f5f8;
   --bg-accent-soft: #f0f5ff;
-  --text-1: #1f2937;
-  --text-2: #4b5563;
-  --text-3: #9ca3af;
-  --border: #e5e7eb;
-  --border-soft: #f0f1f4;
+  --text-1: #172033;   /* 深藏青：标题与正文主色，比纯灰黑更有温度 */
+  --text-2: #3f4c63;
+  --text-3: #8a93a6;
+  --border: rgba(23, 32, 51, 0.10);
+  --border-soft: rgba(23, 32, 51, 0.06);
   --accent: #4f8cff;
   --accent-deep: #4f46e5;
-  --tab-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  --tab-shadow: 0 -2px 6px rgba(50, 50, 93, 0.06), 0 -1px 1px rgba(0, 0, 0, 0.03);
+  --shadow-1: 0 2px 5px rgba(50, 50, 93, 0.08), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --shadow-2: 0 13px 27px -5px rgba(50, 50, 93, 0.16), 0 8px 16px -8px rgba(0, 0, 0, 0.10);
+  --shadow-hero: 0 13px 27px -5px rgba(50, 50, 93, 0.22), 0 8px 16px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* 深色主题：通用面 + 高频类覆盖（覆盖 scoped 样式，故用 !important） */
 [data-theme="dark"] {
-  --bg-page: #14161c;
-  --bg-card: #1e222b;
-  --bg-subtle: #262b36;
-  --bg-accent-soft: #1b2337;
-  --text-1: #e5e7eb;
-  --text-2: #c3c8d4;
-  --text-3: #8b93a3;
-  --border: #2d3340;
-  --border-soft: #262b36;
-  --tab-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.4);
+  --bg-page: #101116;                 /* 蓝调近黑画布 */
+  --bg-card: #17191f;                 /* 面板：高一层亮度 */
+  --bg-subtle: #1f222a;               /* 次级填充 */
+  --bg-accent-soft: #1b2135;
+  --text-1: #f2f3f5;                  /* 近白，不刺眼 */
+  --text-2: #c9cdd6;
+  --text-3: #878d99;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 255, 255, 0.05);
+  --accent: #6f8cff;
+  --accent-deep: #7c3aed;
+  --tab-shadow: 0 -2px 6px rgba(0, 0, 0, 0.5);
+  --shadow-1: 0 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-2: 0 10px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-hero: 0 13px 27px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] page,
@@ -43,6 +51,7 @@
   background: var(--bg-card) !important;
   border-color: var(--border) !important;
   color: var(--text-1) !important;
+  box-shadow: var(--shadow-1) !important;
 }
 
 [data-theme="dark"] .section-title,
