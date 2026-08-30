@@ -23,6 +23,11 @@ description: AI 教师系统 Web 前端（uni-app H5）的 UI 设计规范。定
 
 **品牌渐变**：`linear-gradient(135deg, #4f8cff, #7c3aed)`——仅用于品牌元素（Hero 横幅、新建对话主按钮、AI 头像、强调条），不得大面积铺底。
 
+## 0. 外部设计知识（引入）
+
+- **web-design SKILL**（`01-Skills/web-design/`，引自 github.com/xiaopu-ai/web-design，MIT）：两阶段工作流（DESIGN.md 规范先行 → 代码落地），内含 references/（11 个顶级产品设计系统拆解：Linear/Stripe/Apple/Claude 等、交互三档模式库、动效库、风格种子、场景字号、质量清单）与 scripts/（设计令牌爬取脚本）。
+- 本项目的正式设计规范见 `04-Frontend/DESIGN.md`；两者冲突时以 DESIGN.md 为准。
+
 ## 2. 字体层级
 
 | 层级 | 字号 | 字重 | 色令牌 |

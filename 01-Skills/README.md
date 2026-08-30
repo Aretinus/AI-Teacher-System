@@ -10,6 +10,7 @@
 | `core/` | 跨学科通用能力（知识折叠、讲解规范等） |
 | `styles/` | 授课风格定义（Markdown 说明），扫描加载为可选讲法，如 `feynman.md`（费曼：第一性原理）、`standard.md`（默认） |
 | `web-ui-designer/` | Web 前端 UI 设计规范（"清风蓝"设计系统：令牌/字体层级/组件/布局/暗色规则），前端重设计或新增页面时遵循；配套 `04-Frontend/src/styles/theme.css` 设计令牌 |
+| `web-design/` | 外部引入的 Web 设计 SKILL（xiaopu-ai/web-design，MIT）：DESIGN.md 工作流、11 个顶级产品设计系统拆解、交互模式库、风格种子、爬虫脚本 | 否（外部引入，标注来源） |
 | `vendor/book-learning-tutor/` | 书籍蒸馏引擎（teach.py：抽取 → 切章/课 → 生成 `书库/` 课程），Backend `distillService` 调用其 venv_slim 解释器 |
 | `vendor/book-learning-tutor/vendor/djvulibre/` | DjVu 文本层抽取工具（djvutxt + 依赖 DLL，随仓库迁移），`book_formats._djvu_sections` 的降级路径 |
 | `_TEMPLATE/` | 新教师/新技能模板 |
