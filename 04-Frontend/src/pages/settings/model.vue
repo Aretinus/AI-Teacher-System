@@ -16,6 +16,10 @@
 
     <view class="section">
       <view class="section-title">配置列表</view>
+      <view v-if="!profiles.length" class="card empty-tip">
+        <text class="empty-title">尚未配置 AI API</text>
+        <text class="empty-desc">点击下方「＋ 新增配置」，默认已预填 Agnes（专业版模型 agnes-2.5-flash），填入 API Key 保存即可使用；也可以按同样格式添加 DeepSeek 等其他 OpenAI 兼容服务。</text>
+      </view>
       <view v-for="p in profiles" :key="p.id" class="card profile-card" :class="{ active: p.id === activeProfileId }">
         <view class="profile-head">
           <view class="profile-info">
@@ -74,8 +78,7 @@
 
     <view class="card tips-card">
       <view class="tip-line">· 多套配置可并存，点「设为当前」即切换，新对话立即生效</view>
-      <view class="tip-line">· 模型运行时为默认配置；模型名可填其他 id（如 agnes-2.5-flash）直接升级</view>
-      <view class="tip-line">· OpenAI 兼容：任意 /v1/chat/completions 服务（OpenAI / DeepSeek / Qwen 等）</view>
+      <view class="tip-line">· OpenAI 兼容：任意 /v1/chat/completions 服务（Agnes / DeepSeek / OpenAI / Qwen 等）</view>
       <view class="tip-line">· Anthropic 兼容：/v1/messages 服务（Claude，填 API key 即可）</view>
       <view class="tip-line">· API Key 仅保存在本机 02-DATA/settings.json</view>
     </view>
@@ -85,12 +88,12 @@
 <script>
 import { getSettings, saveSettings, testSettings } from '@/api'
 
-const EMPTY = { name: '', provider: 'runtime', baseUrl: '', apiKey: '', modelName: '' }
+const EMPTY = { name: 'Agnes', provider: 'openai', baseUrl: 'https://api.agnes-ai.cn/v1', apiKey: '', modelName: 'agnes-2.5-flash' }
 
 export default {
   data() {
     return {
-      active: { name: '', provider: 'runtime', modelName: '' },
+      active: { name: '', provider: 'openai', modelName: '' },
       activeProfileId: '',
       profiles: [],
       form: { ...EMPTY },
@@ -99,7 +102,6 @@ export default {
       testing: false,
       testResult: null,
       providers: [
-        { id: 'runtime', name: '模型运行时' },
         { id: 'openai', name: 'OpenAI 兼容' },
         { id: 'anthropic', name: 'Anthropic 兼容' },
       ],
@@ -131,7 +133,7 @@ export default {
         this.profiles = settings.profiles || []
         this.activeProfileId = settings.activeProfileId || (this.profiles[0] && this.profiles[0].id) || ''
         const active = this.profiles.find((p) => p.id === this.activeProfileId)
-        this.active = active || { name: '（无）', provider: 'runtime', modelName: '-' }
+        this.active = active || { name: '（无）', provider: 'openai', modelName: '-' }
       } catch (e) {
         uni.showToast({ title: '加载设置失败：' + e.message, icon: 'none' })
       }
@@ -412,6 +414,23 @@ export default {
 }
 .tips-card {
   margin-top: 28rpx;
+}
+.empty-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  border: 2rpx dashed #c7d2fe;
+  background: #eef2ff;
+}
+.empty-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #4338ca;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.6;
 }
 .tip-line {
   font-size: 26rpx;

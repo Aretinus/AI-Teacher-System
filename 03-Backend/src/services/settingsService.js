@@ -4,7 +4,8 @@ const { DATA_DIR, RUNTIME_MODEL } = require('../config');
 
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 
-const DEFAULT_PROFILE = { id: 'runtime', name: '模型运行时', provider: 'runtime', baseUrl: '', apiKey: '', modelName: RUNTIME_MODEL };
+// 默认配置 = Agnes（OpenAI 兼容），apiKey 为空时由前端引导用户去设置页填写
+const DEFAULT_PROFILE = { id: 'agnes', name: 'Agnes', provider: 'openai', baseUrl: 'https://api.agnes-ai.cn/v1', apiKey: '', modelName: 'agnes-2.5-flash' };
 
 function genId(prefix) {
   return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -34,7 +35,7 @@ function normalizeProfiles(list) {
 function migrate(raw) {
   if (raw && Array.isArray(raw.profiles)) {
     return {
-      activeProfileId: raw.activeProfileId || raw.profiles[0].id,
+      activeProfileId: raw.activeProfileId || (raw.profiles[0] && raw.profiles[0].id) || '',
       profiles: normalizeProfiles(raw.profiles),
     };
   }

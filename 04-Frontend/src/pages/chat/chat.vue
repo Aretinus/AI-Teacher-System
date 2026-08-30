@@ -171,7 +171,7 @@
 <script>
 import MdRender from '@/components/md-render.vue'
 import QuestionBar from '@/components/question-bar.vue'
-import { getSubjects, getSession, getHistory, deleteSession, streamChat, uploadFile, getTtsVoices } from '@/api'
+import { getSubjects, getSession, getHistory, deleteSession, streamChat, uploadFile, getTtsVoices, getSettings } from '@/api'
 import { renderMarkdown } from '@/utils/md'
 import { API_BASE } from '@/config'
 import { voiceCall } from '@/services/voice-call.js'
@@ -204,6 +204,7 @@ export default {
       sessionHistory: [],
       voiceActive: false,
       callPhase: '',
+      providerReady: true,
       fabHover: false,
       fabDragging: false,
       fabPos: { x: null, y: null }, // null 时使用默认右下角定位
@@ -332,6 +333,10 @@ onLoad(options) {
           this.loadSession(options.sessionId)
         }
       })
+      // AI API 未配置（无 profile 或 openai/anthropic 缺 Key）时引导用户去设置页新建
+      getSettings().then((s) => {
+        this.providerReady = s.provider === 'runtime' || !!(s.apiKey && String(s.apiKey).trim())
+      }).catch(() => {})
       // 悬浮球 SVG 扇区通过内联 onclick 派发自定义事件，此处统一接收（绕开 uni 事件包装）
       this._fabActionListener = (ev) => this.onFabAction(ev.detail)
       document.addEventListener('fab-action', this._fabActionListener)
@@ -725,6 +730,15 @@ onLoad(options) {
       const text = this.input.trim()
       if (!text && !this.pendingFiles.length) return
       if (!this.selectedSubject) return
+      if (!this.providerReady) {
+        uni.showModal({
+          title: '尚未配置 AI API',
+          content: '还没有可用的模型配置。到「设置 → AI 模型」新增配置即可（默认预填 Agnes，填入 API Key 保存）。',
+          confirmText: '去设置',
+          success: (r) => { if (r.confirm) uni.navigateTo({ url: '/pages/settings/model' }) },
+        })
+        return
+      }
       if (this.voiceActive) {
         uni.showToast({ title: '语音通话进行中，请先在通话页点「取消通话」', icon: 'none' })
         return

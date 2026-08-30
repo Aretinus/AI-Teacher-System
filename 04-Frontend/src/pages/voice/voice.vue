@@ -52,6 +52,7 @@
 import { voiceCall } from '@/services/voice-call.js'
 import QuestionBar from '@/components/question-bar.vue'
 import MdRender from '@/components/md-render.vue'
+import { getSettings } from '@/api'
 
 const PHASE_TEXT = {
   idle: '',
@@ -118,6 +119,22 @@ export default {
     },
   },
   onLoad(options) {
+    // AI API 未配置时不进入通话，引导去设置页新建（默认预填 Agnes）
+    getSettings().then((s) => {
+      const ready = s.provider === 'runtime' || !!(s.apiKey && String(s.apiKey).trim())
+      if (!ready) {
+        uni.showModal({
+          title: '尚未配置 AI API',
+          content: '语音通话需要可用的模型配置。到「设置 → AI 模型」新增配置即可（默认预填 Agnes，填入 API Key 保存）。',
+          showCancel: false,
+          success: () => uni.navigateBack(),
+        })
+        return
+      }
+      this.beginCall(options)
+    }).catch(() => this.beginCall(options))
+  },
+  beginCall(options) {
     const res = voiceCall.start({
       subject: options.subject || '',
       course: options.course ? decodeURIComponent(options.course) : '',
