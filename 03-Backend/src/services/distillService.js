@@ -264,12 +264,17 @@ function countBooksInDir(dir) {
 function finalize(job, bookName) {
   let src = path.join(TMP_COURSE_DIR, bookName);
   if (!fs.existsSync(src) || !fs.statSync(src).isDirectory()) {
-    job.log.push('! 产物目录名与书名不一致，查找最新生成的课程目录…');
+    job.log.push('! 产物目录名与书名不一致，查找本次运行新生成的课程目录…');
     const dirs = fs.existsSync(TMP_COURSE_DIR)
       ? fs.readdirSync(TMP_COURSE_DIR, { withFileTypes: true }).filter((d) => d.isDirectory())
       : [];
-    const latest = dirs.sort((a, b) => fs.statSync(path.join(TMP_COURSE_DIR, b.name)).mtimeMs - fs.statSync(path.join(TMP_COURSE_DIR, a.name)).mtimeMs)[0];
-    if (!latest) throw new Error('未在 书库/ 中找到课程产物目录');
+    // 批量蒸馏安全：只认本次任务开始后新生成的目录，防止抓到上一本书/历史遗留的产物
+    const startedMs = Date.parse(job.startedAt) || 0;
+    const recent = dirs
+      .filter((d) => fs.statSync(path.join(TMP_COURSE_DIR, d.name)).mtimeMs >= startedMs - 5000)
+      .sort((a, b) => fs.statSync(path.join(TMP_COURSE_DIR, b.name)).mtimeMs - fs.statSync(path.join(TMP_COURSE_DIR, a.name)).mtimeMs);
+    const latest = recent[0];
+    if (!latest) throw new Error(`未在 书库/ 中找到《${bookName}》的课程产物目录（书库/<书名> 不存在，且本次运行期间无新生成目录）`);
     src = path.join(TMP_COURSE_DIR, latest.name);
   }
   const destName = path.basename(src);

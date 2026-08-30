@@ -1,0 +1,2097 @@
+{
+  "version": 1,
+  "book": "毛泽东诗词全编鉴赏",
+  "current": "第01章_书名页/第01课_书名页.md",
+  "total_lessons": 261,
+  "updated": null,
+  "lessons": {
+    "第01章_书名页/第01课_书名页.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "书名页",
+      "lesson": "书名页"
+    },
+    "第02章_版权页/第01课_版权页.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "版权页",
+      "lesson": "版权页"
+    },
+    "第03章_毛泽东照片/第01课_毛泽东照片.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东照片",
+      "lesson": "毛泽东照片"
+    },
+    "第04章_毛泽东笔迹/第01课_毛泽东笔迹.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东笔迹",
+      "lesson": "毛泽东笔迹"
+    },
+    "第05章_出版说明/第01课_出版说明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "出版说明",
+      "lesson": "出版说明"
+    },
+    "第06章_目录/第01课_目录.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目录",
+      "lesson": "目录"
+    },
+    "第07章_正编/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "本章导言"
+    },
+    "第07章_正编/第01课_贺新郎.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "贺新郎"
+    },
+    "第07章_正编/第02课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第03课_熔婉约与豪放于一炉.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "熔婉约与豪放于一炉"
+    },
+    "第07章_正编/第04课_沁园春_长沙.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "沁园春 长沙"
+    },
+    "第07章_正编/第05课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第06课_问苍茫大地谁主沉浮.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "问苍茫大地谁主沉浮"
+    },
+    "第07章_正编/第07课_菩萨蛮_黄鹤楼.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "菩萨蛮 黄鹤楼"
+    },
+    "第07章_正编/第08课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第09课_掌上千秋史诗笔绘华章.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "掌上千秋史诗笔绘华章"
+    },
+    "第07章_正编/第10课_西江月_井冈山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "西江月 井冈山"
+    },
+    "第07章_正编/第11课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第12课_诗情画意描战场.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "诗情画意描战场"
+    },
+    "第07章_正编/第13课_清平乐_蒋桂战争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "清平乐 蒋桂战争"
+    },
+    "第07章_正编/第14课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第15课_风云突变红旗跃.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "风云突变红旗跃"
+    },
+    "第07章_正编/第16课_采桑子_重阳.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "采桑子 重阳"
+    },
+    "第07章_正编/第17课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第18课_革命人生的壮美颂歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "革命人生的壮美颂歌"
+    },
+    "第07章_正编/第19课_如梦令_元旦.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "如梦令 元旦"
+    },
+    "第07章_正编/第20课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第21课_意象的奇妙组合.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "意象的奇妙组合"
+    },
+    "第07章_正编/第22课_减字木兰花_广昌路上.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "减字木兰花 广昌路上"
+    },
+    "第07章_正编/第23课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第24课_白雪·红旗·过大关.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "白雪·红旗·过大关"
+    },
+    "第07章_正编/第25课_蝶恋花_从汀州向长沙.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "蝶恋花 从汀州向长沙"
+    },
+    "第07章_正编/第26课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第27课_狂飙颂.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "狂飙颂"
+    },
+    "第07章_正编/第28课_渔家傲_反第一次大“围剿”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "渔家傲 反第一次大“围剿”"
+    },
+    "第07章_正编/第29课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第30课_大气磅礴的战歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "大气磅礴的战歌"
+    },
+    "第07章_正编/第31课_渔家傲_反第二次大“围剿”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "渔家傲 反第二次大“围剿”"
+    },
+    "第07章_正编/第32课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第33课_辉煌的诗史壮丽的史诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "辉煌的诗史壮丽的史诗"
+    },
+    "第07章_正编/第34课_菩萨蛮_大柏地.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "菩萨蛮 大柏地"
+    },
+    "第07章_正编/第35课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第36课_无产阶级革命家笔下的战场画面.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "无产阶级革命家笔下的战场画面"
+    },
+    "第07章_正编/第37课_清平乐_会昌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "清平乐 会昌"
+    },
+    "第07章_正编/第38课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第39课_为中国的革命气节而骄傲.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "为中国的革命气节而骄傲"
+    },
+    "第07章_正编/第40课_十六字令三首.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "十六字令三首"
+    },
+    "第07章_正编/第41课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第42课_独具“化美为媚”的美学魅力.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "独具“化美为媚”的美学魅力"
+    },
+    "第07章_正编/第43课_忆秦娥_娄山关.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "忆秦娥 娄山关"
+    },
+    "第07章_正编/第44课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第45课_沉郁中的壮思.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "沉郁中的壮思"
+    },
+    "第07章_正编/第46课_七律_长征.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 长征"
+    },
+    "第07章_正编/第47课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第48课_挑战者之歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "挑战者之歌"
+    },
+    "第07章_正编/第49课_念奴娇_昆仑.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "念奴娇 昆仑"
+    },
+    "第07章_正编/第50课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第51课_“昆仑”——自然的人化.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "“昆仑”——自然的人化"
+    },
+    "第07章_正编/第52课_清平乐_六盘山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "清平乐 六盘山"
+    },
+    "第07章_正编/第53课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第54课_再长征的号角.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "再长征的号角"
+    },
+    "第07章_正编/第55课_沁园春雪.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "沁园春雪"
+    },
+    "第07章_正编/第56课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第57课_雄视千古.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "雄视千古"
+    },
+    "第07章_正编/第58课_七律_人民解放军占领南京.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 人民解放军占领南京"
+    },
+    "第07章_正编/第59课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第60课_“人间正道是沧桑”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "“人间正道是沧桑”"
+    },
+    "第07章_正编/第61课_七律_和柳亚子先生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 和柳亚子先生"
+    },
+    "第07章_正编/第62课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第63课_意深语畅，跌宕生姿.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "意深语畅，跌宕生姿"
+    },
+    "第07章_正编/第64课_浣溪沙_和柳亚子先生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "浣溪沙 和柳亚子先生"
+    },
+    "第07章_正编/第65课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第66课_开国纪盛话新旧.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "开国纪盛话新旧"
+    },
+    "第07章_正编/第67课_浪淘沙_北戴河.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "浪淘沙 北戴河"
+    },
+    "第07章_正编/第68课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第69课_观海则意溢于海.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "观海则意溢于海"
+    },
+    "第07章_正编/第70课_水调歌头_游泳.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "水调歌头 游泳"
+    },
+    "第07章_正编/第71课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第72课_宏伟建设的畅想曲.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "宏伟建设的畅想曲"
+    },
+    "第07章_正编/第73课_蝶恋花_答李淑一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "蝶恋花 答李淑一"
+    },
+    "第07章_正编/第74课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第75课_植根深厚而超迈古今.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "植根深厚而超迈古今"
+    },
+    "第07章_正编/第76课_七律二首_送瘟神.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律二首 送瘟神"
+    },
+    "第07章_正编/第77课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第78课_社会主义建设时期的“送神曲”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "社会主义建设时期的“送神曲”"
+    },
+    "第07章_正编/第79课_七律_到韶山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 到韶山"
+    },
+    "第07章_正编/第80课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第81课_故乡行中华情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "故乡行中华情"
+    },
+    "第07章_正编/第82课_七律_登庐山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 登庐山"
+    },
+    "第07章_正编/第83课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第84课_时代巨人的襟怀历史潮流的赞歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "时代巨人的襟怀历史潮流的赞歌"
+    },
+    "第07章_正编/第85课_七绝_为女民兵题照.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七绝 为女民兵题照"
+    },
+    "第07章_正编/第86课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第87课_畅晓见蕴藉坦陈更雄豪.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "畅晓见蕴藉坦陈更雄豪"
+    },
+    "第07章_正编/第88课_七律_答友人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 答友人"
+    },
+    "第07章_正编/第89课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第90课_情意洞幽赋寥廓.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "情意洞幽赋寥廓"
+    },
+    "第07章_正编/第91课_七绝_为李进同志题所摄庐山仙人洞照.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七绝 为李进同志题所摄庐山仙人洞照"
+    },
+    "第07章_正编/第92课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第93课_奇松云海托真情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "奇松云海托真情"
+    },
+    "第07章_正编/第94课_七律_和郭沫若同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 和郭沫若同志"
+    },
+    "第07章_正编/第95课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第96课_“打鬼”颂“金猴”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "“打鬼”颂“金猴”"
+    },
+    "第07章_正编/第97课_卜算子_咏梅.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "卜算子 咏梅"
+    },
+    "第07章_正编/第98课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第99课_风流标格首开奇响.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "风流标格首开奇响"
+    },
+    "第07章_正编/第100课_七律_冬云.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 冬云"
+    },
+    "第07章_正编/第101课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第102课_雄奇豪迈气贯长虹.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "雄奇豪迈气贯长虹"
+    },
+    "第07章_正编/第103课_满江红_和郭沫若同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "满江红 和郭沫若同志"
+    },
+    "第07章_正编/第104课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第105课_气吞八荒光耀千古.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "气吞八荒光耀千古"
+    },
+    "第07章_正编/第106课_七律_吊罗荣桓同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "七律 吊罗荣桓同志"
+    },
+    "第07章_正编/第107课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第108课_亦哭亦诉悼战友.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "亦哭亦诉悼战友"
+    },
+    "第07章_正编/第109课_贺新郎_读史.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "贺新郎 读史"
+    },
+    "第07章_正编/第110课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第111课_藻耀而高翔文笔之鸣凤.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "藻耀而高翔文笔之鸣凤"
+    },
+    "第07章_正编/第112课_水调歌头_重上井冈山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "水调歌头 重上井冈山"
+    },
+    "第07章_正编/第113课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第114课_双关的思想内涵隐秀的艺术标本.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "双关的思想内涵隐秀的艺术标本"
+    },
+    "第07章_正编/第115课_念奴娇_鸟儿问答.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "念奴娇 鸟儿问答"
+    },
+    "第07章_正编/第116课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "【考辨】"
+    },
+    "第07章_正编/第117课_生动形象寓意深刻.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "正编",
+      "lesson": "生动形象寓意深刻"
+    },
+    "第08章_副编/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "本章导言"
+    },
+    "第08章_副编/第01课_五古.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "五古"
+    },
+    "第08章_副编/第02课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第03课_赞美好友怀念故人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "赞美好友怀念故人"
+    },
+    "第08章_副编/第04课_七古_送纵宇一郎东行.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七古 送纵宇一郎东行"
+    },
+    "第08章_副编/第05课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第06课_视宇宙如稊米展鹏翼而击浪.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "视宇宙如稊米展鹏翼而击浪"
+    },
+    "第08章_副编/第07课_虞美人_枕上.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "虞美人 枕上"
+    },
+    "第08章_副编/第08课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第09课_无情未必真豪杰多情亦是大丈夫.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "无情未必真豪杰多情亦是大丈夫"
+    },
+    "第08章_副编/第10课_西江月_秋收起义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "西江月 秋收起义"
+    },
+    "第08章_副编/第11课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第12课_千秋暴动第一诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "千秋暴动第一诗"
+    },
+    "第08章_副编/第13课_六言诗_给彭德怀同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "六言诗 给彭德怀同志"
+    },
+    "第08章_副编/第14课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第15课_油然发自肺腑的爱将歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "油然发自肺腑的爱将歌"
+    },
+    "第08章_副编/第16课_临江仙_给丁玲同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "临江仙 给丁玲同志"
+    },
+    "第08章_副编/第17课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第18课_友情·党情·国情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "友情·党情·国情"
+    },
+    "第08章_副编/第19课_五律_挽戴安澜将军.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "五律 挽戴安澜将军"
+    },
+    "第08章_副编/第20课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第21课_英雄的颂歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "英雄的颂歌"
+    },
+    "第08章_副编/第22课_五律_张冠道中.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "五律 张冠道中"
+    },
+    "第08章_副编/第23课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第24课_陕北艰苦转战的真实写照.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "陕北艰苦转战的真实写照"
+    },
+    "第08章_副编/第25课_五律_喜闻捷报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "五律 喜闻捷报"
+    },
+    "第08章_副编/第26课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第27课_且行“秦塞”漫吟哦.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "且行“秦塞”漫吟哦"
+    },
+    "第08章_副编/第28课_浣溪沙_和柳亚子先生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "浣溪沙 和柳亚子先生"
+    },
+    "第08章_副编/第29课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第30课_无个人之乐而有众人与共之喜.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "无个人之乐而有众人与共之喜"
+    },
+    "第08章_副编/第31课_七律_和周世钊同志.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七律 和周世钊同志"
+    },
+    "第08章_副编/第32课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第33课_赫曦春望寄情高.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "赫曦春望寄情高"
+    },
+    "第08章_副编/第34课_五律_看山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "五律 看山"
+    },
+    "第08章_副编/第35课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第36课_一篇富于形象的佳作.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "一篇富于形象的佳作"
+    },
+    "第08章_副编/第37课_七绝_莫干山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 莫干山"
+    },
+    "第08章_副编/第38课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第39课_游兴高昂情满于山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "游兴高昂情满于山"
+    },
+    "第08章_副编/第40课_七绝_五云山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 五云山"
+    },
+    "第08章_副编/第41课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第42课_情人眼里出西施.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "情人眼里出西施"
+    },
+    "第08章_副编/第43课_七绝_观潮.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 观潮"
+    },
+    "第08章_副编/第44课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第45课_弄潮者的自我升华.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "弄潮者的自我升华"
+    },
+    "第08章_副编/第46课_七绝_刘■.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 刘■"
+    },
+    "第08章_副编/第47课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第48课_呼唤新的时代精神的咏史诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "呼唤新的时代精神的咏史诗"
+    },
+    "第08章_副编/第49课_七绝_屈原.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 屈原"
+    },
+    "第08章_副编/第50课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第51课_千秋一阕英雄悲歌.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "千秋一阕英雄悲歌"
+    },
+    "第08章_副编/第52课_七绝二首_纪念鲁迅八十寿辰.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝二首 纪念鲁迅八十寿辰"
+    },
+    "第08章_副编/第53课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第54课_“但见奔星劲有声”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "“但见奔星劲有声”"
+    },
+    "第08章_副编/第55课_杂言诗_八连颂.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "杂言诗 八连颂"
+    },
+    "第08章_副编/第56课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第57课_八连精神的热情礼赞.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "八连精神的热情礼赞"
+    },
+    "第08章_副编/第58课_念奴娇_井冈山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "念奴娇 井冈山"
+    },
+    "第08章_副编/第59课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第60课_望云不尽井冈情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "望云不尽井冈情"
+    },
+    "第08章_副编/第61课_七律_洪都.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七律 洪都"
+    },
+    "第08章_副编/第62课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第63课_雄图发英断大略驾群才——《七律·洪都》赏析吴开有.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "雄图发英断大略驾群才——《七律·洪都》赏析吴开有"
+    },
+    "第08章_副编/第64课_七律_有所思.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七律 有所思"
+    },
+    "第08章_副编/第65课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第66课_所思的是故国和人民.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "所思的是故国和人民"
+    },
+    "第08章_副编/第67课_七绝_贾谊.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七绝 贾谊"
+    },
+    "第08章_副编/第68课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第69课_赞美与同情交织的诗人情怀.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "赞美与同情交织的诗人情怀"
+    },
+    "第08章_副编/第70课_七律_咏贾谊.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "七律 咏贾谊"
+    },
+    "第08章_副编/第71课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "【考辨】"
+    },
+    "第08章_副编/第72课_千古同惜长沙傅.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "副编",
+      "lesson": "千古同惜长沙傅"
+    },
+    "第09章_附录/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "本章导言"
+    },
+    "第09章_附录/第01课_四言诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "四言诗"
+    },
+    "第09章_附录/第02课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第03课_秋雨韶山洒泪多.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "秋雨韶山洒泪多"
+    },
+    "第09章_附录/第04课_归国谣_今宵月.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "归国谣 今宵月"
+    },
+    "第09章_附录/第05课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第06课_《归国谣》考证.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "《归国谣》考证"
+    },
+    "第09章_附录/第07课_戴月离乡山冲行青山清溪不了情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "戴月离乡山冲行青山清溪不了情"
+    },
+    "第09章_附录/第08课_四言诗_祭黄陵文.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "四言诗 祭黄陵文"
+    },
+    "第09章_附录/第09课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第10课_坦诚真挚可昭日月.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "坦诚真挚可昭日月"
+    },
+    "第09章_附录/第11课_七律_重庆谈判.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 重庆谈判"
+    },
+    "第09章_附录/第12课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第13课_《七律·重庆谈判》考证.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "《七律·重庆谈判》考证"
+    },
+    "第09章_附录/第14课_无非一念救苍生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "无非一念救苍生"
+    },
+    "第09章_附录/第15课_七绝_仿陆游诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七绝 仿陆游诗"
+    },
+    "第09章_附录/第16课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第17课_巧仿古诗铸新词“一诗三体”赋心声.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "巧仿古诗铸新词“一诗三体”赋心声"
+    },
+    "第09章_附录/第18课_七律_读报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 读报"
+    },
+    "第09章_附录/第19课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第20课_戏谑反讽粗犷坦直.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "戏谑反讽粗犷坦直"
+    },
+    "第09章_附录/第21课_七律_读报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 读报"
+    },
+    "第09章_附录/第22课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第23课_人类先进思想的不灭火焰.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "人类先进思想的不灭火焰"
+    },
+    "第09章_附录/第24课_七律_读报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 读报"
+    },
+    "第09章_附录/第25课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第26课_“既反列斯又反华”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "“既反列斯又反华”"
+    },
+    "第09章_附录/第27课_七律_改鲁迅诗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 改鲁迅诗"
+    },
+    "第09章_附录/第28课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第29课_改旧出新感怀幽深.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "改旧出新感怀幽深"
+    },
+    "第09章_附录/第30课_七律_读报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 读报"
+    },
+    "第09章_附录/第31课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第32课_青空黑海入篇章.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "青空黑海入篇章"
+    },
+    "第09章_附录/第33课_七律_读《封建论》呈郭老.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "七律 读《封建论》呈郭老"
+    },
+    "第09章_附录/第34课_【考辨】.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "【考辨】"
+    },
+    "第09章_附录/第35课_爽直的批评诚恳的规劝.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "附录",
+      "lesson": "爽直的批评诚恳的规劝"
+    },
+    "第10章_毛泽东诗论/第00课_本章导言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "本章导言"
+    },
+    "第10章_毛泽东诗论/第01课_致臧克家等.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致臧克家等"
+    },
+    "第10章_毛泽东诗论/第02课_致李淑一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致李淑一"
+    },
+    "第10章_毛泽东诗论/第03课_读范仲淹两首词的批语.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "读范仲淹两首词的批语"
+    },
+    "第10章_毛泽东诗论/第04课_致胡乔木.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致胡乔木"
+    },
+    "第10章_毛泽东诗论/第05课_《七律二首·送瘟神》后记.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "《七律二首·送瘟神》后记"
+    },
+    "第10章_毛泽东诗论/第06课_致周世钊.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致周世钊"
+    },
+    "第10章_毛泽东诗论/第07课_在《毛主席诗词十九首》上的批语.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "在《毛主席诗词十九首》上的批语"
+    },
+    "第10章_毛泽东诗论/第08课_一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "一"
+    },
+    "第10章_毛泽东诗论/第09课_二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "二"
+    },
+    "第10章_毛泽东诗论/第10课_三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "三"
+    },
+    "第10章_毛泽东诗论/第11课_四.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "四"
+    },
+    "第10章_毛泽东诗论/第12课_五.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "五"
+    },
+    "第10章_毛泽东诗论/第13课_六.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "六"
+    },
+    "第10章_毛泽东诗论/第14课_七.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "七"
+    },
+    "第10章_毛泽东诗论/第15课_八.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "八"
+    },
+    "第10章_毛泽东诗论/第16课_九.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "九"
+    },
+    "第10章_毛泽东诗论/第17课_十.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "十"
+    },
+    "第10章_毛泽东诗论/第18课_十一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "十一"
+    },
+    "第10章_毛泽东诗论/第19课_十二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "十二"
+    },
+    "第10章_毛泽东诗论/第20课_十三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "十三"
+    },
+    "第10章_毛泽东诗论/第21课_致胡乔木.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致胡乔木"
+    },
+    "第10章_毛泽东诗论/第22课_致胡乔木.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致胡乔木"
+    },
+    "第10章_毛泽东诗论/第23课_《词六首》引言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "《词六首》引言"
+    },
+    "第10章_毛泽东诗论/第24课_《忆秦娥·娄山关》的写作背景.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "《忆秦娥·娄山关》的写作背景"
+    },
+    "第10章_毛泽东诗论/第25课_对《毛主席诗词》中若干词句的解释.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "对《毛主席诗词》中若干词句的解释"
+    },
+    "第10章_毛泽东诗论/第26课_致陈毅.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "致陈毅"
+    },
+    "第10章_毛泽东诗论/第27课_西行.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东诗论",
+      "lesson": "西行"
+    }
+  }
+}

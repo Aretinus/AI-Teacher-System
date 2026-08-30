@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "book": "《毛主席语录》",
+  "current": "第01章_题词/第01课_题词.md",
+  "total_lessons": 37,
+  "updated": null,
+  "lessons": {
+    "第01章_题词/第01课_题词.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "题词",
+      "lesson": "题词"
+    },
+    "第02章_再版前言/第01课_再版前言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "再版前言",
+      "lesson": "再版前言"
+    },
+    "第03章_目录/第01课_目录.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目录",
+      "lesson": "目录"
+    },
+    "第04章_1.共产党/第01课_1.共产党.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "1.共产党",
+      "lesson": "1.共产党"
+    },
+    "第05章_2.阶级和阶级斗争/第01课_2.阶级和阶级斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "2.阶级和阶级斗争",
+      "lesson": "2.阶级和阶级斗争"
+    },
+    "第06章_3.社会主义和共产主义/第01课_3.社会主义和共产主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "3.社会主义和共产主义",
+      "lesson": "3.社会主义和共产主义"
+    },
+    "第07章_4.正确处理人民内部矛盾/第01课_4.正确处理人民内部矛盾.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "4.正确处理人民内部矛盾",
+      "lesson": "4.正确处理人民内部矛盾"
+    },
+    "第08章_5.战争与和平/第01课_5.战争与和平.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "5.战争与和平",
+      "lesson": "5.战争与和平"
+    },
+    "第09章_6.帝国主义和一切反动派都是纸老虎/第01课_6.帝国主义和一切反动派都是纸老虎.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "6.帝国主义和一切反动派都是纸老虎",
+      "lesson": "6.帝国主义和一切反动派都是纸老虎"
+    },
+    "第10章_7.敢于斗争，敢于胜利/第01课_7.敢于斗争，敢于胜利.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "7.敢于斗争，敢于胜利",
+      "lesson": "7.敢于斗争，敢于胜利"
+    },
+    "第11章_8.人民战争/第01课_8.人民战争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "8.人民战争",
+      "lesson": "8.人民战争"
+    },
+    "第12章_9.人民军队/第01课_9.人民军队.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "9.人民军队",
+      "lesson": "9.人民军队"
+    },
+    "第13章_10.党委领导/第01课_10.党委领导.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "10.党委领导",
+      "lesson": "10.党委领导"
+    },
+    "第14章_11.群众路线/第01课_11.群众路线.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "11.群众路线",
+      "lesson": "11.群众路线"
+    },
+    "第15章_12.政治工作/第01课_12.政治工作.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "12.政治工作",
+      "lesson": "12.政治工作"
+    },
+    "第16章_13.官兵关系/第01课_13.官兵关系.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "13.官兵关系",
+      "lesson": "13.官兵关系"
+    },
+    "第17章_14.军民关系/第01课_14.军民关系.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "14.军民关系",
+      "lesson": "14.军民关系"
+    },
+    "第18章_15.三大民主/第01课_15.三大民主.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "15.三大民主",
+      "lesson": "15.三大民主"
+    },
+    "第19章_16.教育和训练/第01课_16.教育和训练.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "16.教育和训练",
+      "lesson": "16.教育和训练"
+    },
+    "第20章_17.为人民服务/第01课_17.为人民服务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "17.为人民服务",
+      "lesson": "17.为人民服务"
+    },
+    "第21章_18.爱国主义和国际主义/第01课_18.爱国主义和国际主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "18.爱国主义和国际主义",
+      "lesson": "18.爱国主义和国际主义"
+    },
+    "第22章_19.革命英雄主义/第01课_19.革命英雄主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "19.革命英雄主义",
+      "lesson": "19.革命英雄主义"
+    },
+    "第23章_20.勤俭建国/第01课_20.勤俭建国.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "20.勤俭建国",
+      "lesson": "20.勤俭建国"
+    },
+    "第24章_21.自力更生，艰苦奋斗/第01课_21.自力更生，艰苦奋斗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "21.自力更生，艰苦奋斗",
+      "lesson": "21.自力更生，艰苦奋斗"
+    },
+    "第25章_22.思想方法和工作方法/第01课_22.思想方法和工作方法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "22.思想方法和工作方法",
+      "lesson": "22.思想方法和工作方法"
+    },
+    "第26章_23.调查研究/第01课_23.调查研究.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "23.调查研究",
+      "lesson": "23.调查研究"
+    },
+    "第27章_24.纠正错误思想/第01课_24.纠正错误思想.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "24.纠正错误思想",
+      "lesson": "24.纠正错误思想"
+    },
+    "第28章_25.团结/第01课_25.团结.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "25.团结",
+      "lesson": "25.团结"
+    },
+    "第29章_26.纪律/第01课_26.纪律.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "26.纪律",
+      "lesson": "26.纪律"
+    },
+    "第30章_27.批评和自我批评/第01课_27.批评和自我批评.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "27.批评和自我批评",
+      "lesson": "27.批评和自我批评"
+    },
+    "第31章_28.共产党员/第01课_28.共产党员.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "28.共产党员",
+      "lesson": "28.共产党员"
+    },
+    "第32章_29.干部/第01课_29.干部.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "29.干部",
+      "lesson": "29.干部"
+    },
+    "第33章_30.青年/第01课_30.青年.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "30.青年",
+      "lesson": "30.青年"
+    },
+    "第34章_31.妇女/第01课_31.妇女.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "31.妇女",
+      "lesson": "31.妇女"
+    },
+    "第35章_32.文化艺术/第01课_32.文化艺术.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "32.文化艺术",
+      "lesson": "32.文化艺术"
+    },
+    "第36章_33.学习/第01课_33.学习.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "33.学习",
+      "lesson": "33.学习"
+    },
+    "第37章_版权页/第01课_版权页.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "版权页",
+      "lesson": "版权页"
+    }
+  }
+}

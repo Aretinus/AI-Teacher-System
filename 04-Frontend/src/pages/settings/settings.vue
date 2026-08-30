@@ -620,22 +620,30 @@ export default {
       this.ocrRunning = true
       this.ocrLog = []
       let done = 0
+      let okCount = 0
+      let failCount = 0
       for (const b of books) {
         done++
         this.ocrLog.push('[' + done + '/' + books.length + '] ' + b.name)
         try {
           const { jobId } = await startOcr({ file: b.file })
           const st = await this.pollOcrJob(jobId)
-          if (st === 'done') this.ocrLog.push('✓ ' + b.name + ' OCR 完成')
-          else this.ocrLog.push('✗ ' + b.name + ' OCR 失败')
+          if (st === 'done') { okCount++; this.ocrLog.push('✓ ' + b.name + ' OCR 完成') }
+          else { failCount++; this.ocrLog.push('✗ ' + b.name + ' OCR 失败') }
         } catch (e) {
+          failCount++
           this.ocrLog.push('✗ ' + b.name + '：' + e.message)
         }
       }
       if (skipped.length) this.ocrLog.push('跳过无需 OCR：' + skipped.map((x) => x.name).join('、'))
       this.ocrRunning = false
+      this.multiSelected = {} // 批量完成后清空选中
       await this.doOcrScan()
-      uni.showToast({ title: '批量 OCR 完成', icon: 'success' })
+      uni.showToast({
+        title: failCount ? `批量 OCR 完成：成功 ${okCount} 个，失败 ${failCount} 个` : `批量 OCR 完成：成功 ${okCount} 个`,
+        icon: failCount ? 'none' : 'success',
+        duration: 2500,
+      })
     },
     async doBatchDistill() {
       const all = this.currentBooks.filter((b) => this.isMulti(b.file))
@@ -660,6 +668,8 @@ export default {
       this.distilling = true
       this.distillLog = []
       let done = 0
+      let okCount = 0
+      let failCount = 0
       for (const b of all) {
         done++
         const file = (b.ocrDone && b.ocrProductFile) || b.file
@@ -667,15 +677,21 @@ export default {
         try {
           const { jobId } = await distillBook({ file, name: this.stemOf(b), subject: this.distillSubject })
           const st = await this.pollJob(jobId)
-          if (st === 'done') this.distillLog.push('✓ ' + b.name + ' 蒸馏完成')
-          else this.distillLog.push('✗ ' + b.name + ' 蒸馏失败')
+          if (st === 'done') { okCount++; this.distillLog.push('✓ ' + b.name + ' 蒸馏完成') }
+          else { failCount++; this.distillLog.push('✗ ' + b.name + ' 蒸馏失败') }
         } catch (e) {
+          failCount++
           this.distillLog.push('✗ ' + b.name + '：' + e.message)
         }
       }
       this.distilling = false
+      this.multiSelected = {} // 批量完成后清空选中，避免下次误带旧选择
       await this.doScan()
-      uni.showToast({ title: '批量蒸馏完成', icon: 'success' })
+      uni.showToast({
+        title: failCount ? `批量蒸馏完成：成功 ${okCount} 本，失败 ${failCount} 本` : `批量蒸馏完成：成功 ${okCount} 本`,
+        icon: failCount ? 'none' : 'success',
+        duration: 2500,
+      })
     },
     async doOcr() {
       const book = this.selectedOcrBook
@@ -706,19 +722,23 @@ export default {
     },
     async pollOcrJob(jobId) {
       return new Promise((resolve) => {
+        let seen = 0
         const tick = async () => {
           try {
             const j = await getOcrJob(jobId)
-            this.ocrLog = j.log
-            if (j.status === 'running') {
-              this.pollTimer = setTimeout(tick, 3000)
-            } else {
-              if (j.status === 'error') {
+            if (j && Array.isArray(j.log) && j.log.length > seen) {
+              this.ocrLog = this.ocrLog.concat(j.log.slice(seen))
+              seen = j.log.length
+            }
+            if (!j || j.status !== 'running') {
+              if (j && j.status === 'error') {
                 this.ocrLog.push('✗ OCR 失败')
                 if (j.error) this.ocrLog.push('✗ ' + j.error)
               }
-              resolve(j.status)
+              resolve(j ? j.status : 'error')
+              return
             }
+            this.pollTimer = setTimeout(tick, 3000)
           } catch (e) {
             this.ocrLog.push('✗ ' + e.message)
             resolve('error')
@@ -881,17 +901,22 @@ export default {
     },
     async pollJob(jobId) {
       return new Promise((resolve) => {
+        let seen = 0
         const tick = async () => {
           try {
             const j = await getDistillJob(jobId)
-            this.distillLog = j.log
-            if (j.status === 'running') {
-              this.pollTimer = setTimeout(tick, 2000)
-            } else {
-              if (j.status === 'error') this.distillLog.push('✗ 蒸馏失败')
-              if (j.error) this.distillLog.push('✗ ' + j.error)
-              resolve(j.status)
+            // 只追加新增行：不整表替换，避免批量时上一本书的进度/结果被当前书的日志冲掉
+            if (j && Array.isArray(j.log) && j.log.length > seen) {
+              this.distillLog = this.distillLog.concat(j.log.slice(seen))
+              seen = j.log.length
             }
+            if (!j || j.status !== 'running') {
+              if (j && j.status === 'error') this.distillLog.push('✗ 蒸馏失败')
+              if (j && j.error) this.distillLog.push('✗ ' + j.error)
+              resolve(j ? j.status : 'error')
+              return
+            }
+            this.pollTimer = setTimeout(tick, 2000)
           } catch (e) {
             this.distillLog.push('✗ ' + e.message)
             resolve('error')

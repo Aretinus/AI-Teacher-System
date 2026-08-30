@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "book": "毛泽东传",
+  "current": "第01章_总序/第01课_总序.md",
+  "total_lessons": 33,
+  "updated": null,
+  "lessons": {
+    "第01章_总序/第01课_总序.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "总序",
+      "lesson": "总序"
+    },
+    "第02章_中文版序/第01课_中文版序.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中文版序",
+      "lesson": "中文版序"
+    },
+    "第03章_目录/第01课_目录.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目录",
+      "lesson": "目录"
+    },
+    "第04章_序曲/第01课_序曲.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "序曲",
+      "lesson": "序曲"
+    },
+    "第05章_★第一章_少年时代(1893—1910)/第01课_★第一章_少年时代(1893—1910).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第一章 少年时代(1893—1910)",
+      "lesson": "★第一章 少年时代(1893—1910)"
+    },
+    "第06章_为何求知(1910—1918)/第01课_为何求知(1910—1918).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为何求知(1910—1918)",
+      "lesson": "为何求知(1910—1918)"
+    },
+    "第07章_★第三章_京沪天地(1918—1921)/第01课_★第三章_京沪天地(1918—1921).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第三章 京沪天地(1918—1921)",
+      "lesson": "★第三章 京沪天地(1918—1921)"
+    },
+    "第08章_★第四章_组织(1921--1927)/第01课_★第四章_组织(1921--1927).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第四章 组织(1921--1927)",
+      "lesson": "★第四章 组织(1921--1927)"
+    },
+    "第09章_★第五章_奋斗(1927--1935)/第01课_★第五章_奋斗(1927--1935).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第五章 奋斗(1927--1935)",
+      "lesson": "★第五章 奋斗(1927--1935)"
+    },
+    "第10章_★第六章未来在握(1935—1936)/第01课_★第六章未来在握(1935—1936).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第六章未来在握(1935—1936)",
+      "lesson": "★第六章未来在握(1935—1936)"
+    },
+    "第11章_★第七章抗日(1936--1945)/第01课_★第七章抗日(1936--1945).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第七章抗日(1936--1945)",
+      "lesson": "★第七章抗日(1936--1945)"
+    },
+    "第12章_★第八章圣人(1936—1945)/第01课_★第八章圣人(1936—1945).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第八章圣人(1936—1945)",
+      "lesson": "★第八章圣人(1936—1945)"
+    },
+    "第13章_★第九章_成熟的桃子(1945—1949)/第01课_★第九章_成熟的桃子(1945—1949).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第九章 成熟的桃子(1945—1949)",
+      "lesson": "★第九章 成熟的桃子(1945—1949)"
+    },
+    "第14章_★第十章_“我们熟习的东西有些快要闲起来了”_(1949—1950)/第01课_★第十章_“我们熟习的东西有些快要闲起来了”_(1949—1950).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十章 “我们熟习的东西有些快要闲起来了” (1949—1950)",
+      "lesson": "★第十章 “我们熟习的东西有些快要闲起来了” (1949—1950)"
+    },
+    "第15章_★第十一章_改造(1951—1953)/第01课_★第十一章_改造(1951—1953).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十一章 改造(1951—1953)",
+      "lesson": "★第十一章 改造(1951—1953)"
+    },
+    "第16章_★第十二章_建设(1953—1956)/第01课_★第十二章_建设(1953—1956).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十二章 建设(1953—1956)",
+      "lesson": "★第十二章 建设(1953—1956)"
+    },
+    "第17章_★第十三章_疑虑(1956--1957)/第01课_★第十三章_疑虑(1956--1957).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十三章 疑虑(1956--1957)",
+      "lesson": "★第十三章 疑虑(1956--1957)"
+    },
+    "第18章_★第十四章_修补体制(1958--1959)/第01课_★第十四章_修补体制(1958--1959).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十四章 修补体制(1958--1959)",
+      "lesson": "★第十四章 修补体制(1958--1959)"
+    },
+    "第19章_★第十五章_苏联与超越(1958—1964)/第01课_★第十五章_苏联与超越(1958—1964).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十五章 苏联与超越(1958—1964)",
+      "lesson": "★第十五章 苏联与超越(1958—1964)"
+    },
+    "第20章_★第十六章_退却(1961--1964)/第01课_★第十六章_退却(1961--1964).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十六章 退却(1961--1964)",
+      "lesson": "★第十六章 退却(1961--1964)"
+    },
+    "第21章_★第十七章_乌托邦之怒(1965--1969)/第01课_★第十七章_乌托邦之怒(1965--1969).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十七章 乌托邦之怒(1965--1969)",
+      "lesson": "★第十七章 乌托邦之怒(1965--1969)"
+    },
+    "第22章_★第十八章_蛲蛲者易折(1969—1971)/第01课_★第十八章_蛲蛲者易折(1969—1971).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十八章 蛲蛲者易折(1969—1971)",
+      "lesson": "★第十八章 蛲蛲者易折(1969—1971)"
+    },
+    "第23章_★第十九章_尼克松(1972)/第01课_★第十九章_尼克松(1972).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第十九章 尼克松(1972)",
+      "lesson": "★第十九章 尼克松(1972)"
+    },
+    "第24章_★第二十章_残梦(1973--1975)/第01课_★第二十章_残梦(1973--1975).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第二十章 残梦(1973--1975)",
+      "lesson": "★第二十章 残梦(1973--1975)"
+    },
+    "第25章_★第二十一章_强弩之末(1976)/第01课_★第二十一章_强弩之末(1976).md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "★第二十一章 强弩之末(1976)",
+      "lesson": "★第二十一章 强弩之末(1976)"
+    },
+    "第26章_尾声/第01课_尾声.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "尾声",
+      "lesson": "尾声"
+    },
+    "第27章_后记/第01课_后记.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "后记",
+      "lesson": "后记"
+    },
+    "第28章_身后境遇/第01课_身后境遇.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "身后境遇",
+      "lesson": "身后境遇"
+    },
+    "第29章_个人主义和走下神坛的毛泽东/第01课_个人主义和走下神坛的毛泽东.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "个人主义和走下神坛的毛泽东",
+      "lesson": "个人主义和走下神坛的毛泽东"
+    },
+    "第30章_《毛泽东传》激起千层浪/第01课_《毛泽东传》激起千层浪.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《毛泽东传》激起千层浪",
+      "lesson": "《毛泽东传》激起千层浪"
+    },
+    "第31章_被迷信化的毛泽东/第01课_被迷信化的毛泽东.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "被迷信化的毛泽东",
+      "lesson": "被迷信化的毛泽东"
+    },
+    "第32章_毛泽东的未来/第01课_毛泽东的未来.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "毛泽东的未来",
+      "lesson": "毛泽东的未来"
+    },
+    "第33章_译者附言/第01课_译者附言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "译者附言",
+      "lesson": "译者附言"
+    }
+  }
+}

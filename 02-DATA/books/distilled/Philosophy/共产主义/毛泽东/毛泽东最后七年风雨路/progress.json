@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "book": "毛泽东最后七年风雨路",
+  "current": "第01章_前言/第01课_前言.md",
+  "total_lessons": 1,
+  "updated": null,
+  "lessons": {
+    "第01章_前言/第01课_前言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "前言",
+      "lesson": "前言"
+    }
+  }
+}

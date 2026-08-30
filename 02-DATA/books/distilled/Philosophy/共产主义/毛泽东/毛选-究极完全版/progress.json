@@ -1,0 +1,3217 @@
+{
+  "version": 1,
+  "book": "毛选-究极完全版",
+  "current": "第01章_序/第01课_序.md",
+  "total_lessons": 401,
+  "updated": null,
+  "lessons": {
+    "第01章_序/第01课_序.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "序",
+      "lesson": "序"
+    },
+    "第02章_中国社会各阶级的分析/第01课_中国社会各阶级的分析.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国社会各阶级的分析",
+      "lesson": "中国社会各阶级的分析"
+    },
+    "第03章_湖南农民运动考察报告/第01课_湖南农民运动考察报告.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "湖南农民运动考察报告",
+      "lesson": "湖南农民运动考察报告"
+    },
+    "第04章_中国的红色政权为什么能够存在？/第01课_中国的红色政权为什么能够存在？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国的红色政权为什么能够存在？",
+      "lesson": "中国的红色政权为什么能够存在？"
+    },
+    "第05章_井冈山的斗争/第01课_井冈山的斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "井冈山的斗争",
+      "lesson": "井冈山的斗争"
+    },
+    "第06章_关于纠正党内的错误思想/第01课_关于纠正党内的错误思想.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于纠正党内的错误思想",
+      "lesson": "关于纠正党内的错误思想"
+    },
+    "第07章_星星之火，可以燎原/第01课_星星之火，可以燎原.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "星星之火，可以燎原",
+      "lesson": "星星之火，可以燎原"
+    },
+    "第08章_反对本本主义/第01课_反对本本主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对本本主义",
+      "lesson": "反对本本主义"
+    },
+    "第09章_必须注意经济工作/第01课_必须注意经济工作.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "必须注意经济工作",
+      "lesson": "必须注意经济工作"
+    },
+    "第10章_怎样分析农村阶级/第01课_怎样分析农村阶级.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "怎样分析农村阶级",
+      "lesson": "怎样分析农村阶级"
+    },
+    "第11章_我们的经济政策/第01课_我们的经济政策.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "我们的经济政策",
+      "lesson": "我们的经济政策"
+    },
+    "第12章_关心群众生活，注意工作方法/第01课_关心群众生活，注意工作方法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关心群众生活，注意工作方法",
+      "lesson": "关心群众生活，注意工作方法"
+    },
+    "第13章_论反对日本帝国主义的策略/第01课_论反对日本帝国主义的策略.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论反对日本帝国主义的策略",
+      "lesson": "论反对日本帝国主义的策略"
+    },
+    "第14章_中国革命战争的战略问题/第01课_中国革命战争的战略问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国革命战争的战略问题",
+      "lesson": "中国革命战争的战略问题"
+    },
+    "第15章_关于蒋介石声明的声明/第01课_关于蒋介石声明的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于蒋介石声明的声明",
+      "lesson": "关于蒋介石声明的声明"
+    },
+    "第16章_中国共产党在抗日时期的任务/第01课_中国共产党在抗日时期的任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国共产党在抗日时期的任务",
+      "lesson": "中国共产党在抗日时期的任务"
+    },
+    "第17章_为争取千百万群众进入抗日民族统一战线而斗争/第01课_为争取千百万群众进入抗日民族统一战线而斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为争取千百万群众进入抗日民族统一战线而斗争",
+      "lesson": "为争取千百万群众进入抗日民族统一战线而斗争"
+    },
+    "第18章_实践论/第01课_实践论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "实践论",
+      "lesson": "实践论"
+    },
+    "第19章_矛盾论/第01课_矛盾论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "矛盾论",
+      "lesson": "矛盾论"
+    },
+    "第20章_反对日本进攻的方针、办法和前途/第01课_反对日本进攻的方针、办法和前途.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对日本进攻的方针、办法和前途",
+      "lesson": "反对日本进攻的方针、办法和前途"
+    },
+    "第21章_为动员一切力量争取抗战胜利而斗争/第01课_为动员一切力量争取抗战胜利而斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为动员一切力量争取抗战胜利而斗争",
+      "lesson": "为动员一切力量争取抗战胜利而斗争"
+    },
+    "第22章_反对自由主义/第01课_反对自由主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对自由主义",
+      "lesson": "反对自由主义"
+    },
+    "第23章_国共合作成立后的迫切任务/第01课_国共合作成立后的迫切任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "国共合作成立后的迫切任务",
+      "lesson": "国共合作成立后的迫切任务"
+    },
+    "第24章_和英国记者贝特兰的谈话/第01课_和英国记者贝特兰的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "和英国记者贝特兰的谈话",
+      "lesson": "和英国记者贝特兰的谈话"
+    },
+    "第25章_上海太原失陷以后抗日战争的形势和任务/第01课_上海太原失陷以后抗日战争的形势和任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "上海太原失陷以后抗日战争的形势和任务",
+      "lesson": "上海太原失陷以后抗日战争的形势和任务"
+    },
+    "第26章_陕甘宁边区政府第八路军后方留守处布告/第01课_陕甘宁边区政府第八路军后方留守处布告.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "陕甘宁边区政府第八路军后方留守处布告",
+      "lesson": "陕甘宁边区政府第八路军后方留守处布告"
+    },
+    "第27章_抗日游击战争的战略问题/第01课_抗日游击战争的战略问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "抗日游击战争的战略问题",
+      "lesson": "抗日游击战争的战略问题"
+    },
+    "第28章_论持久战/第01课_论持久战.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论持久战",
+      "lesson": "论持久战"
+    },
+    "第29章_中国共产党在民族战争中的地位/第01课_中国共产党在民族战争中的地位.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国共产党在民族战争中的地位",
+      "lesson": "中国共产党在民族战争中的地位"
+    },
+    "第30章_统一战线中的独立自主问题/第01课_统一战线中的独立自主问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "统一战线中的独立自主问题",
+      "lesson": "统一战线中的独立自主问题"
+    },
+    "第31章_战争和战略问题/第01课_战争和战略问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "战争和战略问题",
+      "lesson": "战争和战略问题"
+    },
+    "第32章_五四运动/第01课_五四运动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "五四运动",
+      "lesson": "五四运动"
+    },
+    "第33章_青年运动的方向/第01课_青年运动的方向.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "青年运动的方向",
+      "lesson": "青年运动的方向"
+    },
+    "第34章_反对投降活动/第01课_反对投降活动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对投降活动",
+      "lesson": "反对投降活动"
+    },
+    "第35章_必须制裁反动派/第01课_必须制裁反动派.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "必须制裁反动派",
+      "lesson": "必须制裁反动派"
+    },
+    "第36章_关于国际新形势对新华日报⑴记者的谈话/第01课_关于国际新形势对新华日报⑴记者的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于国际新形势对新华日报⑴记者的谈话",
+      "lesson": "关于国际新形势对新华日报⑴记者的谈话"
+    },
+    "第37章_和中央社、扫荡报、新民报⑴三记者的谈话/第01课_和中央社、扫荡报、新民报⑴三记者的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "和中央社、扫荡报、新民报⑴三记者的谈话",
+      "lesson": "和中央社、扫荡报、新民报⑴三记者的谈话"
+    },
+    "第38章_苏联利益和人类利益的一致/第01课_苏联利益和人类利益的一致.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "苏联利益和人类利益的一致",
+      "lesson": "苏联利益和人类利益的一致"
+    },
+    "第39章_《共产党人》发刊词/第01课_《共产党人》发刊词.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《共产党人》发刊词",
+      "lesson": "《共产党人》发刊词"
+    },
+    "第40章_目前形势和党的任务/第01课_目前形势和党的任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目前形势和党的任务",
+      "lesson": "目前形势和党的任务"
+    },
+    "第41章_大量吸收知识分子/第01课_大量吸收知识分子.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "大量吸收知识分子",
+      "lesson": "大量吸收知识分子"
+    },
+    "第42章_中国革命和中国共产党/第01课_中国革命和中国共产党.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国革命和中国共产党",
+      "lesson": "中国革命和中国共产党"
+    },
+    "第43章_斯大林是中国人民的朋友/第01课_斯大林是中国人民的朋友.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "斯大林是中国人民的朋友",
+      "lesson": "斯大林是中国人民的朋友"
+    },
+    "第44章_纪念白求恩/第01课_纪念白求恩.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "纪念白求恩",
+      "lesson": "纪念白求恩"
+    },
+    "第45章_新民主主义论/第01课_新民主主义论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "新民主主义论",
+      "lesson": "新民主主义论"
+    },
+    "第46章_克服投降危险，力争时局好转/第01课_克服投降危险，力争时局好转.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "克服投降危险，力争时局好转",
+      "lesson": "克服投降危险，力争时局好转"
+    },
+    "第47章_团结一切抗日力量，反对反共顽固派/第01课_团结一切抗日力量，反对反共顽固派.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "团结一切抗日力量，反对反共顽固派",
+      "lesson": "团结一切抗日力量，反对反共顽固派"
+    },
+    "第48章_向国民党的十点要求/第01课_向国民党的十点要求.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "向国民党的十点要求",
+      "lesson": "向国民党的十点要求"
+    },
+    "第49章_《中国工人》发刊词/第01课_《中国工人》发刊词.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《中国工人》发刊词",
+      "lesson": "《中国工人》发刊词"
+    },
+    "第50章_必须强调团结和进步/第01课_必须强调团结和进步.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "必须强调团结和进步",
+      "lesson": "必须强调团结和进步"
+    },
+    "第51章_新民主主义的宪政/第01课_新民主主义的宪政.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "新民主主义的宪政",
+      "lesson": "新民主主义的宪政"
+    },
+    "第52章_抗日根据地的政权问题/第01课_抗日根据地的政权问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "抗日根据地的政权问题",
+      "lesson": "抗日根据地的政权问题"
+    },
+    "第53章_目前抗日统一战线中的策略问题/第01课_目前抗日统一战线中的策略问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目前抗日统一战线中的策略问题",
+      "lesson": "目前抗日统一战线中的策略问题"
+    },
+    "第54章_放手发展抗日力量，抵抗反共顽固派的进攻/第01课_放手发展抗日力量，抵抗反共顽固派的进攻.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "放手发展抗日力量，抵抗反共顽固派的进攻",
+      "lesson": "放手发展抗日力量，抵抗反共顽固派的进攻"
+    },
+    "第55章_团结到底/第01课_团结到底.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "团结到底",
+      "lesson": "团结到底"
+    },
+    "第56章_论政策/第01课_论政策.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论政策",
+      "lesson": "论政策"
+    },
+    "第57章_为皖南事变发表的命令和谈话/第01课_为皖南事变发表的命令和谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为皖南事变发表的命令和谈话",
+      "lesson": "为皖南事变发表的命令和谈话"
+    },
+    "第58章_打退第二次反共高潮后的时局/第01课_打退第二次反共高潮后的时局.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "打退第二次反共高潮后的时局",
+      "lesson": "打退第二次反共高潮后的时局"
+    },
+    "第59章_关于打退第二次反共高潮的总结/第01课_关于打退第二次反共高潮的总结.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于打退第二次反共高潮的总结",
+      "lesson": "关于打退第二次反共高潮的总结"
+    },
+    "第60章_《农村调查》的序言和跋/第01课_《农村调查》的序言和跋.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《农村调查》的序言和跋",
+      "lesson": "《农村调查》的序言和跋"
+    },
+    "第61章_改造我们的学习/第01课_改造我们的学习.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "改造我们的学习",
+      "lesson": "改造我们的学习"
+    },
+    "第62章_揭破远东慕尼黑的阴谋/第01课_揭破远东慕尼黑的阴谋.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "揭破远东慕尼黑的阴谋",
+      "lesson": "揭破远东慕尼黑的阴谋"
+    },
+    "第63章_关于反法西斯的国际统一战线/第01课_关于反法西斯的国际统一战线.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于反法西斯的国际统一战线",
+      "lesson": "关于反法西斯的国际统一战线"
+    },
+    "第64章_在陕甘宁边区参议会的演说/第01课_在陕甘宁边区参议会的演说.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在陕甘宁边区参议会的演说",
+      "lesson": "在陕甘宁边区参议会的演说"
+    },
+    "第65章_整顿党的作风/第01课_整顿党的作风.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "整顿党的作风",
+      "lesson": "整顿党的作风"
+    },
+    "第66章_反对党八股/第01课_反对党八股.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对党八股",
+      "lesson": "反对党八股"
+    },
+    "第67章_在延安文艺座谈会上的讲话/第01课_在延安文艺座谈会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在延安文艺座谈会上的讲话",
+      "lesson": "在延安文艺座谈会上的讲话"
+    },
+    "第68章_一个极其重要的政策/第01课_一个极其重要的政策.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "一个极其重要的政策",
+      "lesson": "一个极其重要的政策"
+    },
+    "第69章_第二次世界大战的转折点/第01课_第二次世界大战的转折点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "第二次世界大战的转折点",
+      "lesson": "第二次世界大战的转折点"
+    },
+    "第70章_祝十月革命二十五周年/第01课_祝十月革命二十五周年.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝十月革命二十五周年",
+      "lesson": "祝十月革命二十五周年"
+    },
+    "第71章_抗日时期的经济问题和财政问题/第01课_抗日时期的经济问题和财政问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "抗日时期的经济问题和财政问题",
+      "lesson": "抗日时期的经济问题和财政问题"
+    },
+    "第72章_关于领导方法的若干问题/第01课_关于领导方法的若干问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于领导方法的若干问题",
+      "lesson": "关于领导方法的若干问题"
+    },
+    "第73章_质问国民党/第01课_质问国民党.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "质问国民党",
+      "lesson": "质问国民党"
+    },
+    "第74章_开展根据地的减租、生产和拥政爱民运动/第01课_开展根据地的减租、生产和拥政爱民运动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "开展根据地的减租、生产和拥政爱民运动",
+      "lesson": "开展根据地的减租、生产和拥政爱民运动"
+    },
+    "第75章_评国民党十一中全会和三届二次国民参政会/第01课_评国民党十一中全会和三届二次国民参政会.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评国民党十一中全会和三届二次国民参政会",
+      "lesson": "评国民党十一中全会和三届二次国民参政会"
+    },
+    "第76章_组织起来/第01课_组织起来.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "组织起来",
+      "lesson": "组织起来"
+    },
+    "第77章_学习和时局/第01课_学习和时局.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "学习和时局",
+      "lesson": "学习和时局"
+    },
+    "第78章_为人民服务/第01课_为人民服务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为人民服务",
+      "lesson": "为人民服务"
+    },
+    "第79章_评蒋介石在双十节的演说/第01课_评蒋介石在双十节的演说.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评蒋介石在双十节的演说",
+      "lesson": "评蒋介石在双十节的演说"
+    },
+    "第80章_文化工作中的统一战线/第01课_文化工作中的统一战线.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "文化工作中的统一战线",
+      "lesson": "文化工作中的统一战线"
+    },
+    "第81章_必须学会做经济工作/第01课_必须学会做经济工作.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "必须学会做经济工作",
+      "lesson": "必须学会做经济工作"
+    },
+    "第82章_游击区也能够进行生产/第01课_游击区也能够进行生产.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "游击区也能够进行生产",
+      "lesson": "游击区也能够进行生产"
+    },
+    "第83章_两个中国之命运/第01课_两个中国之命运.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "两个中国之命运",
+      "lesson": "两个中国之命运"
+    },
+    "第84章_论联合政府/第01课_论联合政府.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论联合政府",
+      "lesson": "论联合政府"
+    },
+    "第85章_愚公移山/第01课_愚公移山.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "愚公移山",
+      "lesson": "愚公移山"
+    },
+    "第86章_论军队生产自给，兼论整风和生产两大运动的重要性/第01课_论军队生产自给，兼论整风和生产两大运动的重要性.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论军队生产自给，兼论整风和生产两大运动的重要性",
+      "lesson": "论军队生产自给，兼论整风和生产两大运动的重要性"
+    },
+    "第87章_赫尔利和蒋介石的双簧已经破产/第01课_赫尔利和蒋介石的双簧已经破产.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "赫尔利和蒋介石的双簧已经破产",
+      "lesson": "赫尔利和蒋介石的双簧已经破产"
+    },
+    "第88章_评赫尔利政策的危险/第01课_评赫尔利政策的危险.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评赫尔利政策的危险",
+      "lesson": "评赫尔利政策的危险"
+    },
+    "第89章_给福斯特同志的电报/第01课_给福斯特同志的电报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "给福斯特同志的电报",
+      "lesson": "给福斯特同志的电报"
+    },
+    "第90章_对日寇的最后一战/第01课_对日寇的最后一战.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对日寇的最后一战",
+      "lesson": "对日寇的最后一战"
+    },
+    "第91章_抗日战争胜利后的时局和我们的方针/第01课_抗日战争胜利后的时局和我们的方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "抗日战争胜利后的时局和我们的方针",
+      "lesson": "抗日战争胜利后的时局和我们的方针"
+    },
+    "第92章_蒋介石在挑动内战/第01课_蒋介石在挑动内战.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "蒋介石在挑动内战",
+      "lesson": "蒋介石在挑动内战"
+    },
+    "第93章_第十八集团军总司令给蒋介石的两个电报/第01课_第十八集团军总司令给蒋介石的两个电报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "第十八集团军总司令给蒋介石的两个电报",
+      "lesson": "第十八集团军总司令给蒋介石的两个电报"
+    },
+    "第94章_评蒋介石发言人谈话/第01课_评蒋介石发言人谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评蒋介石发言人谈话",
+      "lesson": "评蒋介石发言人谈话"
+    },
+    "第95章_中共中央关于同国民党进行和平谈判的通知/第01课_中共中央关于同国民党进行和平谈判的通知.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央关于同国民党进行和平谈判的通知",
+      "lesson": "中共中央关于同国民党进行和平谈判的通知"
+    },
+    "第96章_关于重庆谈判/第01课_关于重庆谈判.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于重庆谈判",
+      "lesson": "关于重庆谈判"
+    },
+    "第97章_国民党进攻的真相/第01课_国民党进攻的真相.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "国民党进攻的真相",
+      "lesson": "国民党进攻的真相"
+    },
+    "第98章_减租和生产是保卫解放区的两件大事/第01课_减租和生产是保卫解放区的两件大事.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "减租和生产是保卫解放区的两件大事",
+      "lesson": "减租和生产是保卫解放区的两件大事"
+    },
+    "第99章_一九四六年解放区工作的方针/第01课_一九四六年解放区工作的方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "一九四六年解放区工作的方针",
+      "lesson": "一九四六年解放区工作的方针"
+    },
+    "第100章_建立巩固的东北根据地/第01课_建立巩固的东北根据地.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "建立巩固的东北根据地",
+      "lesson": "建立巩固的东北根据地"
+    },
+    "第101章_关于目前国际形势的几点估计/第01课_关于目前国际形势的几点估计.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于目前国际形势的几点估计",
+      "lesson": "关于目前国际形势的几点估计"
+    },
+    "第102章_以自卫战争粉碎蒋介石的进攻/第01课_以自卫战争粉碎蒋介石的进攻.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "以自卫战争粉碎蒋介石的进攻",
+      "lesson": "以自卫战争粉碎蒋介石的进攻"
+    },
+    "第103章_和美国记者安娜·路易斯·斯特朗的谈话/第01课_和美国记者安娜·路易斯·斯特朗的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "和美国记者安娜·路易斯·斯特朗的谈话",
+      "lesson": "和美国记者安娜·路易斯·斯特朗的谈话"
+    },
+    "第104章_集中优势兵力，各个歼灭敌人/第01课_集中优势兵力，各个歼灭敌人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "集中优势兵力，各个歼灭敌人",
+      "lesson": "集中优势兵力，各个歼灭敌人"
+    },
+    "第105章_美国“调解”真相和中国内战前途/第01课_美国“调解”真相和中国内战前途.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "美国“调解”真相和中国内战前途",
+      "lesson": "美国“调解”真相和中国内战前途"
+    },
+    "第106章_三个月总结/第01课_三个月总结.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "三个月总结",
+      "lesson": "三个月总结"
+    },
+    "第107章_迎接中国革命的新高潮/第01课_迎接中国革命的新高潮.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "迎接中国革命的新高潮",
+      "lesson": "迎接中国革命的新高潮"
+    },
+    "第108章_中共中央关于暂时放弃延安和保卫陕甘宁边区的两个文件/第01课_中共中央关于暂时放弃延安和保卫陕甘宁边区的两个文件.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央关于暂时放弃延安和保卫陕甘宁边区的两个文件",
+      "lesson": "中共中央关于暂时放弃延安和保卫陕甘宁边区的两个文件"
+    },
+    "第109章_关于西北战场的作战方针/第01课_关于西北战场的作战方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于西北战场的作战方针",
+      "lesson": "关于西北战场的作战方针"
+    },
+    "第110章_蒋介石政府已处在全民的包围中/第01课_蒋介石政府已处在全民的包围中.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "蒋介石政府已处在全民的包围中",
+      "lesson": "蒋介石政府已处在全民的包围中"
+    },
+    "第111章_解放战争第二年的战略方针/第01课_解放战争第二年的战略方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "解放战争第二年的战略方针",
+      "lesson": "解放战争第二年的战略方针"
+    },
+    "第112章_中国人民解放军宣言/第01课_中国人民解放军宣言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民解放军宣言",
+      "lesson": "中国人民解放军宣言"
+    },
+    "第113章_中国人民解放军总部关于重行颁布三大纪律八项注意的训令/第01课_中国人民解放军总部关于重行颁布三大纪律八项注意的训令.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民解放军总部关于重行颁布三大纪律八项注意的训令",
+      "lesson": "中国人民解放军总部关于重行颁布三大纪律八项注意的训令"
+    },
+    "第114章_目前形势和我们的任务/第01课_目前形势和我们的任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "目前形势和我们的任务",
+      "lesson": "目前形势和我们的任务"
+    },
+    "第115章_关于建立报告制度/第01课_关于建立报告制度.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于建立报告制度",
+      "lesson": "关于建立报告制度"
+    },
+    "第116章_关于目前党的政策中的几个重要问题/第01课_关于目前党的政策中的几个重要问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于目前党的政策中的几个重要问题",
+      "lesson": "关于目前党的政策中的几个重要问题"
+    },
+    "第117章_军队内部的民主运动/第01课_军队内部的民主运动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "军队内部的民主运动",
+      "lesson": "军队内部的民主运动"
+    },
+    "第118章_在不同地区实施土地法的不同策略/第01课_在不同地区实施土地法的不同策略.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在不同地区实施土地法的不同策略",
+      "lesson": "在不同地区实施土地法的不同策略"
+    },
+    "第119章_纠正土地改革宣传中的“左”倾错误/第01课_纠正土地改革宣传中的“左”倾错误.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "纠正土地改革宣传中的“左”倾错误",
+      "lesson": "纠正土地改革宣传中的“左”倾错误"
+    },
+    "第120章_新解放区土地改革要点/第01课_新解放区土地改革要点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "新解放区土地改革要点",
+      "lesson": "新解放区土地改革要点"
+    },
+    "第121章_关于工商业政策/第01课_关于工商业政策.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于工商业政策",
+      "lesson": "关于工商业政策"
+    },
+    "第122章_关于民族资产阶级和开明绅士问题/第01课_关于民族资产阶级和开明绅士问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于民族资产阶级和开明绅士问题",
+      "lesson": "关于民族资产阶级和开明绅士问题"
+    },
+    "第123章_评西北大捷兼论解放军的新式整军运动/第01课_评西北大捷兼论解放军的新式整军运动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评西北大捷兼论解放军的新式整军运动",
+      "lesson": "评西北大捷兼论解放军的新式整军运动"
+    },
+    "第124章_关于情况的通报/第01课_关于情况的通报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于情况的通报",
+      "lesson": "关于情况的通报"
+    },
+    "第125章_在晋绥干部会议上的讲话/第01课_在晋绥干部会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在晋绥干部会议上的讲话",
+      "lesson": "在晋绥干部会议上的讲话"
+    },
+    "第126章_对晋绥日报编辑人员的谈话/第01课_对晋绥日报编辑人员的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对晋绥日报编辑人员的谈话",
+      "lesson": "对晋绥日报编辑人员的谈话"
+    },
+    "第127章_再克洛阳后给洛阳前线指挥部的电报/第01课_再克洛阳后给洛阳前线指挥部的电报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "再克洛阳后给洛阳前线指挥部的电报",
+      "lesson": "再克洛阳后给洛阳前线指挥部的电报"
+    },
+    "第128章_新解放区农村工作的策略问题/第01课_新解放区农村工作的策略问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "新解放区农村工作的策略问题",
+      "lesson": "新解放区农村工作的策略问题"
+    },
+    "第129章_一九四八年的土地改革工作和整党工作/第01课_一九四八年的土地改革工作和整党工作.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "一九四八年的土地改革工作和整党工作",
+      "lesson": "一九四八年的土地改革工作和整党工作"
+    },
+    "第130章_关于辽沈战战役的作战方针/第01课_关于辽沈战战役的作战方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于辽沈战战役的作战方针",
+      "lesson": "关于辽沈战战役的作战方针"
+    },
+    "第131章_关于健全党委制/第01课_关于健全党委制.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于健全党委制",
+      "lesson": "关于健全党委制"
+    },
+    "第132章_中共中央关于九月会议的通知/第01课_中共中央关于九月会议的通知.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央关于九月会议的通知",
+      "lesson": "中共中央关于九月会议的通知"
+    },
+    "第133章_关于淮海战役的的作战方针/第01课_关于淮海战役的的作战方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于淮海战役的的作战方针",
+      "lesson": "关于淮海战役的的作战方针"
+    },
+    "第134章_全世界革命力量团结起来，反对帝国主义的侵略/第01课_全世界革命力量团结起来，反对帝国主义的侵略.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "全世界革命力量团结起来，反对帝国主义的侵略",
+      "lesson": "全世界革命力量团结起来，反对帝国主义的侵略"
+    },
+    "第135章_中国军事形势的重大变化/第01课_中国军事形势的重大变化.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国军事形势的重大变化",
+      "lesson": "中国军事形势的重大变化"
+    },
+    "第136章_关于平津战役的作战方针/第01课_关于平津战役的作战方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于平津战役的作战方针",
+      "lesson": "关于平津战役的作战方针"
+    },
+    "第137章_敦促杜聿明等投降书/第01课_敦促杜聿明等投降书.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "敦促杜聿明等投降书",
+      "lesson": "敦促杜聿明等投降书"
+    },
+    "第138章_将革命进行到底/第01课_将革命进行到底.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "将革命进行到底",
+      "lesson": "将革命进行到底"
+    },
+    "第139章_评战犯求和/第01课_评战犯求和.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评战犯求和",
+      "lesson": "评战犯求和"
+    },
+    "第140章_中共中央毛泽东主席关于时局的声明/第01课_中共中央毛泽东主席关于时局的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央毛泽东主席关于时局的声明",
+      "lesson": "中共中央毛泽东主席关于时局的声明"
+    },
+    "第141章_中共发言人评南京行政院的决议/第01课_中共发言人评南京行政院的决议.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共发言人评南京行政院的决议",
+      "lesson": "中共发言人评南京行政院的决议"
+    },
+    "第142章_中共发言人关于命令国民党反动政府重新逮捕前日本侵华军总司令冈村宁次和逮捕国民党内战罪犯的谈话/第01课_中共发言人关于命令国民党反动政府重新逮捕前日本侵华军总司令冈村宁次和逮捕国民党内战罪犯的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共发言人关于命令国民党反动政府重新逮捕前日本侵华军总司令冈村宁次和逮捕国民党内战罪犯的谈话",
+      "lesson": "中共发言人关于命令国民党反动政府重新逮捕前日本侵华军总司令冈村宁次和逮捕国民党内战罪犯的谈话"
+    },
+    "第143章_中共发言人关于和平条件必须包括惩办日本战犯和国民党战犯的声明/第01课_中共发言人关于和平条件必须包括惩办日本战犯和国民党战犯的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共发言人关于和平条件必须包括惩办日本战犯和国民党战犯的声明",
+      "lesson": "中共发言人关于和平条件必须包括惩办日本战犯和国民党战犯的声明"
+    },
+    "第144章_把军队变为工作队/第01课_把军队变为工作队.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "把军队变为工作队",
+      "lesson": "把军队变为工作队"
+    },
+    "第145章_四分五裂的反动派为什么还要空喊“全面和平”？/第01课_四分五裂的反动派为什么还要空喊“全面和平”？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "四分五裂的反动派为什么还要空喊“全面和平”？",
+      "lesson": "四分五裂的反动派为什么还要空喊“全面和平”？"
+    },
+    "第146章_国民党反动派由“呼吁和平”变为呼吁战争/第01课_国民党反动派由“呼吁和平”变为呼吁战争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "国民党反动派由“呼吁和平”变为呼吁战争",
+      "lesson": "国民党反动派由“呼吁和平”变为呼吁战争"
+    },
+    "第147章_评国民党对战争责任问题的几种答案/第01课_评国民党对战争责任问题的几种答案.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "评国民党对战争责任问题的几种答案",
+      "lesson": "评国民党对战争责任问题的几种答案"
+    },
+    "第148章_在中国共产党第七届中央委员会第二次全体会议上的报告/第01课_在中国共产党第七届中央委员会第二次全体会议上的报告.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中国共产党第七届中央委员会第二次全体会议上的报告",
+      "lesson": "在中国共产党第七届中央委员会第二次全体会议上的报告"
+    },
+    "第149章_党委会的工作方法/第01课_党委会的工作方法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "党委会的工作方法",
+      "lesson": "党委会的工作方法"
+    },
+    "第150章_南京政府向何处去？/第01课_南京政府向何处去？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "南京政府向何处去？",
+      "lesson": "南京政府向何处去？"
+    },
+    "第151章_向全国进军的命令/第01课_向全国进军的命令.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "向全国进军的命令",
+      "lesson": "向全国进军的命令"
+    },
+    "第152章_中国人民解放军布告/第01课_中国人民解放军布告.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民解放军布告",
+      "lesson": "中国人民解放军布告"
+    },
+    "第153章_中国人民解放军总部发言人为英国军舰暴行发表的声明/第01课_中国人民解放军总部发言人为英国军舰暴行发表的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民解放军总部发言人为英国军舰暴行发表的声明",
+      "lesson": "中国人民解放军总部发言人为英国军舰暴行发表的声明"
+    },
+    "第154章_在新政治协商会议筹备会上的讲话/第01课_在新政治协商会议筹备会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在新政治协商会议筹备会上的讲话",
+      "lesson": "在新政治协商会议筹备会上的讲话"
+    },
+    "第155章_论人民民主专政/第01课_论人民民主专政.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论人民民主专政",
+      "lesson": "论人民民主专政"
+    },
+    "第156章_丢掉幻想，准备斗争/第01课_丢掉幻想，准备斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "丢掉幻想，准备斗争",
+      "lesson": "丢掉幻想，准备斗争"
+    },
+    "第157章_别了，司徒雷登/第01课_别了，司徒雷登.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "别了，司徒雷登",
+      "lesson": "别了，司徒雷登"
+    },
+    "第158章_为什么要讨论白皮书？/第01课_为什么要讨论白皮书？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为什么要讨论白皮书？",
+      "lesson": "为什么要讨论白皮书？"
+    },
+    "第159章_“友谊”，还是侵略？/第01课_“友谊”，还是侵略？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "“友谊”，还是侵略？",
+      "lesson": "“友谊”，还是侵略？"
+    },
+    "第160章_唯心历史观的破产/第01课_唯心历史观的破产.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "唯心历史观的破产",
+      "lesson": "唯心历史观的破产"
+    },
+    "第161章_中国人民站起来了/第01课_中国人民站起来了.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民站起来了",
+      "lesson": "中国人民站起来了"
+    },
+    "第162章_中国人民大团结万岁/第01课_中国人民大团结万岁.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民大团结万岁",
+      "lesson": "中国人民大团结万岁"
+    },
+    "第163章_人民英雄们永垂不朽/第01课_人民英雄们永垂不朽.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "人民英雄们永垂不朽",
+      "lesson": "人民英雄们永垂不朽"
+    },
+    "第164章_永远保持艰苦奋斗的作风/第01课_永远保持艰苦奋斗的作风.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "永远保持艰苦奋斗的作风",
+      "lesson": "永远保持艰苦奋斗的作风"
+    },
+    "第165章_征询对待富农策略问题的意见/第01课_征询对待富农策略问题的意见.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "征询对待富农策略问题的意见",
+      "lesson": "征询对待富农策略问题的意见"
+    },
+    "第166章_为争取国家财政经济状况的基本好转而斗争/第01课_为争取国家财政经济状况的基本好转而斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为争取国家财政经济状况的基本好转而斗争",
+      "lesson": "为争取国家财政经济状况的基本好转而斗争"
+    },
+    "第167章_不要四面出击/第01课_不要四面出击.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "不要四面出击",
+      "lesson": "不要四面出击"
+    },
+    "第168章_做一个完全的革命派/第01课_做一个完全的革命派.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "做一个完全的革命派",
+      "lesson": "做一个完全的革命派"
+    },
+    "第169章_你们是全民族的模范人物/第01课_你们是全民族的模范人物.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "你们是全民族的模范人物",
+      "lesson": "你们是全民族的模范人物"
+    },
+    "第170章_给中国人民志愿军的命令/第01课_给中国人民志愿军的命令.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "给中国人民志愿军的命令",
+      "lesson": "给中国人民志愿军的命令"
+    },
+    "第171章_中国人民志愿军要爱护朝鲜的一山一水一草一木/第01课_中国人民志愿军要爱护朝鲜的一山一水一草一木.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国人民志愿军要爱护朝鲜的一山一水一草一木",
+      "lesson": "中国人民志愿军要爱护朝鲜的一山一水一草一木"
+    },
+    "第172章_中共中央政治局扩大会议决议要点/第01课_中共中央政治局扩大会议决议要点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央政治局扩大会议决议要点",
+      "lesson": "中共中央政治局扩大会议决议要点"
+    },
+    "第173章_镇压反革命必须实行党的群众路线/第01课_镇压反革命必须实行党的群众路线.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "镇压反革命必须实行党的群众路线",
+      "lesson": "镇压反革命必须实行党的群众路线"
+    },
+    "第174章_镇压反革命必须打得稳，打得准，打得狠/第01课_镇压反革命必须打得稳，打得准，打得狠.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "镇压反革命必须打得稳，打得准，打得狠",
+      "lesson": "镇压反革命必须打得稳，打得准，打得狠"
+    },
+    "第175章_应当重视电影《武训传》的讨论/第01课_应当重视电影《武训传》的讨论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "应当重视电影《武训传》的讨论",
+      "lesson": "应当重视电影《武训传》的讨论"
+    },
+    "第176章_三大运动的伟大胜利/第01课_三大运动的伟大胜利.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "三大运动的伟大胜利",
+      "lesson": "三大运动的伟大胜利"
+    },
+    "第177章_关于“三反”、“五反”的斗争/第01课_关于“三反”、“五反”的斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于“三反”、“五反”的斗争",
+      "lesson": "关于“三反”、“五反”的斗争"
+    },
+    "第178章_把农业互助合作当作一件大事去做/第01课_把农业互助合作当作一件大事去做.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "把农业互助合作当作一件大事去做",
+      "lesson": "把农业互助合作当作一件大事去做"
+    },
+    "第179章_元旦祝词/第01课_元旦祝词.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "元旦祝词",
+      "lesson": "元旦祝词"
+    },
+    "第180章_中共中央关于西藏工作方针的指示/第01课_中共中央关于西藏工作方针的指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中共中央关于西藏工作方针的指示",
+      "lesson": "中共中央关于西藏工作方针的指示"
+    },
+    "第181章_工人阶级与资产阶级的矛盾是国内的主要矛盾/第01课_工人阶级与资产阶级的矛盾是国内的主要矛盾.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "工人阶级与资产阶级的矛盾是国内的主要矛盾",
+      "lesson": "工人阶级与资产阶级的矛盾是国内的主要矛盾"
+    },
+    "第182章_团结起来，划清敌我界限/第01课_团结起来，划清敌我界限.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "团结起来，划清敌我界限",
+      "lesson": "团结起来，划清敌我界限"
+    },
+    "第183章_祝贺中国人民志愿军的重大胜利/第01课_祝贺中国人民志愿军的重大胜利.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝贺中国人民志愿军的重大胜利",
+      "lesson": "祝贺中国人民志愿军的重大胜利"
+    },
+    "第184章_反对官僚主义、命令主义和违法乱纪/第01课_反对官僚主义、命令主义和违法乱纪.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对官僚主义、命令主义和违法乱纪",
+      "lesson": "反对官僚主义、命令主义和违法乱纪"
+    },
+    "第185章_批判大汉族主义/第01课_批判大汉族主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "批判大汉族主义",
+      "lesson": "批判大汉族主义"
+    },
+    "第186章_解决“五多”问题/第01课_解决“五多”问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "解决“五多”问题",
+      "lesson": "解决“五多”问题"
+    },
+    "第187章_对刘少奇、杨尚昆破坏纪律擅自以中央名义发出文件的批评/第01课_对刘少奇、杨尚昆破坏纪律擅自以中央名义发出文件的批评.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对刘少奇、杨尚昆破坏纪律擅自以中央名义发出文件的批评",
+      "lesson": "对刘少奇、杨尚昆破坏纪律擅自以中央名义发出文件的批评"
+    },
+    "第188章_批判离开总路线的右倾观点/第01课_批判离开总路线的右倾观点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "批判离开总路线的右倾观点",
+      "lesson": "批判离开总路线的右倾观点"
+    },
+    "第189章_青年团的工作要照顾青年的特点/第01课_青年团的工作要照顾青年的特点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "青年团的工作要照顾青年的特点",
+      "lesson": "青年团的工作要照顾青年的特点"
+    },
+    "第190章_关于国家资本主义/第01课_关于国家资本主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于国家资本主义",
+      "lesson": "关于国家资本主义"
+    },
+    "第191章_党在过渡时期的总路线/第01课_党在过渡时期的总路线.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "党在过渡时期的总路线",
+      "lesson": "党在过渡时期的总路线"
+    },
+    "第192章_反对党内的资产阶级思想/第01课_反对党内的资产阶级思想.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "反对党内的资产阶级思想",
+      "lesson": "反对党内的资产阶级思想"
+    },
+    "第193章_改造资本主义工商业的必经之路/第01课_改造资本主义工商业的必经之路.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "改造资本主义工商业的必经之路",
+      "lesson": "改造资本主义工商业的必经之路"
+    },
+    "第194章_抗美援朝的伟大胜利和今后的任务/第01课_抗美援朝的伟大胜利和今后的任务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "抗美援朝的伟大胜利和今后的任务",
+      "lesson": "抗美援朝的伟大胜利和今后的任务"
+    },
+    "第195章_批判梁漱溟的反动思想/第01课_批判梁漱溟的反动思想.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "批判梁漱溟的反动思想",
+      "lesson": "批判梁漱溟的反动思想"
+    },
+    "第196章_关于农业互助合作的两次谈话/第01课_关于农业互助合作的两次谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于农业互助合作的两次谈话",
+      "lesson": "关于农业互助合作的两次谈话"
+    },
+    "第197章_关于中华人民共和国宪法草案/第01课_关于中华人民共和国宪法草案.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于中华人民共和国宪法草案",
+      "lesson": "关于中华人民共和国宪法草案"
+    },
+    "第198章_为建设一个伟大的社会主义国家而奋斗/第01课_为建设一个伟大的社会主义国家而奋斗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为建设一个伟大的社会主义国家而奋斗",
+      "lesson": "为建设一个伟大的社会主义国家而奋斗"
+    },
+    "第199章_关于《红楼梦》研究问题的信/第01课_关于《红楼梦》研究问题的信.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于《红楼梦》研究问题的信",
+      "lesson": "关于《红楼梦》研究问题的信"
+    },
+    "第200章_原子弹吓不倒中国人民/第01课_原子弹吓不倒中国人民.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "原子弹吓不倒中国人民",
+      "lesson": "原子弹吓不倒中国人民"
+    },
+    "第201章_在中国共产党全国代表会议上的讲话/第01课_在中国共产党全国代表会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中国共产党全国代表会议上的讲话",
+      "lesson": "在中国共产党全国代表会议上的讲话"
+    },
+    "第202章_驳“舆论一律”/第01课_驳“舆论一律”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "驳“舆论一律”",
+      "lesson": "驳“舆论一律”"
+    },
+    "第203章_《关于胡风反革命集团的材料》的序言和按语/第01课_《关于胡风反革命集团的材料》的序言和按语.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《关于胡风反革命集团的材料》的序言和按语",
+      "lesson": "《关于胡风反革命集团的材料》的序言和按语"
+    },
+    "第204章_关于农业合作化问题/第01课_关于农业合作化问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于农业合作化问题",
+      "lesson": "关于农业合作化问题"
+    },
+    "第205章_农业合作化必须依靠党团员和贫农下中农/第01课_农业合作化必须依靠党团员和贫农下中农.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "农业合作化必须依靠党团员和贫农下中农",
+      "lesson": "农业合作化必须依靠党团员和贫农下中农"
+    },
+    "第206章_农业合作化的一场辩论和当前的阶级斗争/第01课_农业合作化的一场辩论和当前的阶级斗争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "农业合作化的一场辩论和当前的阶级斗争",
+      "lesson": "农业合作化的一场辩论和当前的阶级斗争"
+    },
+    "第207章_《中国农村的社会主义高潮》的序言/第01课_《中国农村的社会主义高潮》的序言.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《中国农村的社会主义高潮》的序言",
+      "lesson": "《中国农村的社会主义高潮》的序言"
+    },
+    "第208章_《中国农村的社会主义高潮》的按语/第01课_《中国农村的社会主义高潮》的按语.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "《中国农村的社会主义高潮》的按语",
+      "lesson": "《中国农村的社会主义高潮》的按语"
+    },
+    "第209章_征询对农业十七条的意见/第01课_征询对农业十七条的意见.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "征询对农业十七条的意见",
+      "lesson": "征询对农业十七条的意见"
+    },
+    "第210章_加快手工业的社会主义改造/第01课_加快手工业的社会主义改造.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "加快手工业的社会主义改造",
+      "lesson": "加快手工业的社会主义改造"
+    },
+    "第211章_论十大关系/第01课_论十大关系.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论十大关系",
+      "lesson": "论十大关系"
+    },
+    "第212章_美帝国主义是纸老虎/第01课_美帝国主义是纸老虎.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "美帝国主义是纸老虎",
+      "lesson": "美帝国主义是纸老虎"
+    },
+    "第213章_增强党的团结，继承党的传统/第01课_增强党的团结，继承党的传统.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "增强党的团结，继承党的传统",
+      "lesson": "增强党的团结，继承党的传统"
+    },
+    "第214章_我们党的—些历史经验/第01课_我们党的—些历史经验.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "我们党的—些历史经验",
+      "lesson": "我们党的—些历史经验"
+    },
+    "第215章_纪念孙中山先生/第01课_纪念孙中山先生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "纪念孙中山先生",
+      "lesson": "纪念孙中山先生"
+    },
+    "第216章_在中国共产党第八届中央委员会第二次全体会议上的讲话/第01课_在中国共产党第八届中央委员会第二次全体会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中国共产党第八届中央委员会第二次全体会议上的讲话",
+      "lesson": "在中国共产党第八届中央委员会第二次全体会议上的讲话"
+    },
+    "第217章_在省市自治区党委书记会议上的讲话/第01课_在省市自治区党委书记会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在省市自治区党委书记会议上的讲话",
+      "lesson": "在省市自治区党委书记会议上的讲话"
+    },
+    "第218章_关于正确处理人民内部矛盾的问题/第01课_关于正确处理人民内部矛盾的问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于正确处理人民内部矛盾的问题",
+      "lesson": "关于正确处理人民内部矛盾的问题"
+    },
+    "第219章_在中国共产党全国宣传工作会议上的讲话/第01课_在中国共产党全国宣传工作会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中国共产党全国宣传工作会议上的讲话",
+      "lesson": "在中国共产党全国宣传工作会议上的讲话"
+    },
+    "第220章_坚持艰苦奋斗，密切联系群众/第01课_坚持艰苦奋斗，密切联系群众.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "坚持艰苦奋斗，密切联系群众",
+      "lesson": "坚持艰苦奋斗，密切联系群众"
+    },
+    "第221章_事情正在起变化/第01课_事情正在起变化.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "事情正在起变化",
+      "lesson": "事情正在起变化"
+    },
+    "第222章_中国共产党是全中国人民的领导核心/第01课_中国共产党是全中国人民的领导核心.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国共产党是全中国人民的领导核心",
+      "lesson": "中国共产党是全中国人民的领导核心"
+    },
+    "第223章_组织力量反击右派分子的猖狂进攻/第01课_组织力量反击右派分子的猖狂进攻.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "组织力量反击右派分子的猖狂进攻",
+      "lesson": "组织力量反击右派分子的猖狂进攻"
+    },
+    "第224章_文汇报的资产阶级方向应当批判/第01课_文汇报的资产阶级方向应当批判.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "文汇报的资产阶级方向应当批判",
+      "lesson": "文汇报的资产阶级方向应当批判"
+    },
+    "第225章_打退资产阶级右派的进攻/第01课_打退资产阶级右派的进攻.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "打退资产阶级右派的进攻",
+      "lesson": "打退资产阶级右派的进攻"
+    },
+    "第226章_一九五七年夏季的形势/第01课_一九五七年夏季的形势.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "一九五七年夏季的形势",
+      "lesson": "一九五七年夏季的形势"
+    },
+    "第227章_做革命的促进派/第01课_做革命的促进派.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "做革命的促进派",
+      "lesson": "做革命的促进派"
+    },
+    "第228章_坚定地相信群众的大多数/第01课_坚定地相信群众的大多数.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "坚定地相信群众的大多数",
+      "lesson": "坚定地相信群众的大多数"
+    },
+    "第229章_党内团结的辩证方法/第01课_党内团结的辩证方法.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "党内团结的辩证方法",
+      "lesson": "党内团结的辩证方法"
+    },
+    "第230章_一切反动派都是纸老虎/第01课_一切反动派都是纸老虎.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "一切反动派都是纸老虎",
+      "lesson": "一切反动派都是纸老虎"
+    },
+    "第231章_关于中国人民志愿军撤出朝鲜问题/第01课_关于中国人民志愿军撤出朝鲜问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于中国人民志愿军撤出朝鲜问题",
+      "lesson": "关于中国人民志愿军撤出朝鲜问题"
+    },
+    "第232章_工作方法六十条〔草案〕/第01课_工作方法六十条〔草案〕.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "工作方法六十条〔草案〕",
+      "lesson": "工作方法六十条〔草案〕"
+    },
+    "第233章_在成都会议上的讲话/第01课_在成都会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在成都会议上的讲话",
+      "lesson": "在成都会议上的讲话"
+    },
+    "第234章_干部要以普通劳动者的姿态出现/第01课_干部要以普通劳动者的姿态出现.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "干部要以普通劳动者的姿态出现",
+      "lesson": "干部要以普通劳动者的姿态出现"
+    },
+    "第235章_要搞一点原子弹氢弹/第01课_要搞一点原子弹氢弹.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "要搞一点原子弹氢弹",
+      "lesson": "要搞一点原子弹氢弹"
+    },
+    "第236章_西藏要准备对付那里的可能的全局叛乱/第01课_西藏要准备对付那里的可能的全局叛乱.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "西藏要准备对付那里的可能的全局叛乱",
+      "lesson": "西藏要准备对付那里的可能的全局叛乱"
+    },
+    "第237章_介绍一封信/第01课_介绍一封信.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "介绍一封信",
+      "lesson": "介绍一封信"
+    },
+    "第238章_同苏联驻华大使尤金的谈话/第01课_同苏联驻华大使尤金的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同苏联驻华大使尤金的谈话",
+      "lesson": "同苏联驻华大使尤金的谈话"
+    },
+    "第239章_关于国际形势问题/第01课_关于国际形势问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于国际形势问题",
+      "lesson": "关于国际形势问题"
+    },
+    "第240章_中华人民共和国国防部告台湾同胞书/第01课_中华人民共和国国防部告台湾同胞书.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中华人民共和国国防部告台湾同胞书",
+      "lesson": "中华人民共和国国防部告台湾同胞书"
+    },
+    "第241章_中华人民共和国国防部命令/第01课_中华人民共和国国防部命令.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中华人民共和国国防部命令",
+      "lesson": "中华人民共和国国防部命令"
+    },
+    "第242章_中华人民共和国国防部再告台湾同胞书/第01课_中华人民共和国国防部再告台湾同胞书.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中华人民共和国国防部再告台湾同胞书",
+      "lesson": "中华人民共和国国防部再告台湾同胞书"
+    },
+    "第243章_关于社会主义商品生产问题/第01课_关于社会主义商品生产问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于社会主义商品生产问题",
+      "lesson": "关于社会主义商品生产问题"
+    },
+    "第244章_记者头脑要冷静/第01课_记者头脑要冷静.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "记者头脑要冷静",
+      "lesson": "记者头脑要冷静"
+    },
+    "第245章_在武昌会议上的讲话一/第01课_在武昌会议上的讲话一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在武昌会议上的讲话一",
+      "lesson": "在武昌会议上的讲话一"
+    },
+    "第246章_在武昌会议上的讲话二/第01课_在武昌会议上的讲话二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在武昌会议上的讲话二",
+      "lesson": "在武昌会议上的讲话二"
+    },
+    "第247章_关于帝国主义和一切反动派是不是真老虎的问题/第01课_关于帝国主义和一切反动派是不是真老虎的问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于帝国主义和一切反动派是不是真老虎的问题",
+      "lesson": "关于帝国主义和一切反动派是不是真老虎的问题"
+    },
+    "第248章_在八届六中全会上的讲话/第01课_在八届六中全会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在八届六中全会上的讲话",
+      "lesson": "在八届六中全会上的讲话"
+    },
+    "第249章_马列主义基本原理至今未变，个别结论可以改变/第01课_马列主义基本原理至今未变，个别结论可以改变.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "马列主义基本原理至今未变，个别结论可以改变",
+      "lesson": "马列主义基本原理至今未变，个别结论可以改变"
+    },
+    "第250章_在第二次郑州会议上的讲话一/第01课_在第二次郑州会议上的讲话一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在第二次郑州会议上的讲话一",
+      "lesson": "在第二次郑州会议上的讲话一"
+    },
+    "第251章_在第二次郑州会议上的讲话二/第01课_在第二次郑州会议上的讲话二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在第二次郑州会议上的讲话二",
+      "lesson": "在第二次郑州会议上的讲话二"
+    },
+    "第252章_在第二次郑州会议上的讲话三/第01课_在第二次郑州会议上的讲话三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在第二次郑州会议上的讲话三",
+      "lesson": "在第二次郑州会议上的讲话三"
+    },
+    "第253章_在第二次郑州会议上的讲话四/第01课_在第二次郑州会议上的讲话四.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在第二次郑州会议上的讲话四",
+      "lesson": "在第二次郑州会议上的讲话四"
+    },
+    "第254章_党内通信－建议召开县五级干部大会/第01课_党内通信－建议召开县五级干部大会.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "党内通信－建议召开县五级干部大会",
+      "lesson": "党内通信－建议召开县五级干部大会"
+    },
+    "第255章_关于西藏平叛/第01课_关于西藏平叛.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于西藏平叛",
+      "lesson": "关于西藏平叛"
+    },
+    "第256章_党内通信－致六级干部的公开信/第01课_党内通信－致六级干部的公开信.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "党内通信－致六级干部的公开信",
+      "lesson": "党内通信－致六级干部的公开信"
+    },
+    "第257章_关于西藏问题和台湾问题/第01课_关于西藏问题和台湾问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于西藏问题和台湾问题",
+      "lesson": "关于西藏问题和台湾问题"
+    },
+    "第258章_经济建设是科学，要老老实实学习/第01课_经济建设是科学，要老老实实学习.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "经济建设是科学，要老老实实学习",
+      "lesson": "经济建设是科学，要老老实实学习"
+    },
+    "第259章_要政治家办报/第01课_要政治家办报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "要政治家办报",
+      "lesson": "要政治家办报"
+    },
+    "第260章_如实公开报道灾情/第01课_如实公开报道灾情.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "如实公开报道灾情",
+      "lesson": "如实公开报道灾情"
+    },
+    "第261章_庐山会议讨论的十八个问题/第01课_庐山会议讨论的十八个问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "庐山会议讨论的十八个问题",
+      "lesson": "庐山会议讨论的十八个问题"
+    },
+    "第262章_在庐山会议上的讲话、批语一/第01课_在庐山会议上的讲话、批语一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在庐山会议上的讲话、批语一",
+      "lesson": "在庐山会议上的讲话、批语一"
+    },
+    "第263章_在庐山会议上的讲话、批语二/第01课_在庐山会议上的讲话、批语二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在庐山会议上的讲话、批语二",
+      "lesson": "在庐山会议上的讲话、批语二"
+    },
+    "第264章_在庐山会议上的讲话、批语三/第01课_在庐山会议上的讲话、批语三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在庐山会议上的讲话、批语三",
+      "lesson": "在庐山会议上的讲话、批语三"
+    },
+    "第265章_在庐山会议上的讲话、批语四/第01课_在庐山会议上的讲话、批语四.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在庐山会议上的讲话、批语四",
+      "lesson": "在庐山会议上的讲话、批语四"
+    },
+    "第266章_在庐山会议上的讲话、批语五/第01课_在庐山会议上的讲话、批语五.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在庐山会议上的讲话、批语五",
+      "lesson": "在庐山会议上的讲话、批语五"
+    },
+    "第267章_对彭德怀九月九日信的批示/第01课_对彭德怀九月九日信的批示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对彭德怀九月九日信的批示",
+      "lesson": "对彭德怀九月九日信的批示"
+    },
+    "第268章_争取比较长的和平时间是可能的/第01课_争取比较长的和平时间是可能的.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "争取比较长的和平时间是可能的",
+      "lesson": "争取比较长的和平时间是可能的"
+    },
+    "第269章_同澳共总书记夏基的谈话/第01课_同澳共总书记夏基的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同澳共总书记夏基的谈话",
+      "lesson": "同澳共总书记夏基的谈话"
+    },
+    "第270章_读苏联《政治经济学教科书》的谈话/第01课_读苏联《政治经济学教科书》的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "读苏联《政治经济学教科书》的谈话",
+      "lesson": "读苏联《政治经济学教科书》的谈话"
+    },
+    "第271章_坚决制止重刮“共产风”等违法乱纪行为/第01课_坚决制止重刮“共产风”等违法乱纪行为.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "坚决制止重刮“共产风”等违法乱纪行为",
+      "lesson": "坚决制止重刮“共产风”等违法乱纪行为"
+    },
+    "第272章_同蒙哥马利的谈话/第01课_同蒙哥马利的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同蒙哥马利的谈话",
+      "lesson": "同蒙哥马利的谈话"
+    },
+    "第273章_十年总结/第01课_十年总结.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "十年总结",
+      "lesson": "十年总结"
+    },
+    "第274章_同斯诺的谈话－中国人的精神面貌改变了/第01课_同斯诺的谈话－中国人的精神面貌改变了.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同斯诺的谈话－中国人的精神面貌改变了",
+      "lesson": "同斯诺的谈话－中国人的精神面貌改变了"
+    },
+    "第275章_彻底纠正“五风”/第01课_彻底纠正“五风”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "彻底纠正“五风”",
+      "lesson": "彻底纠正“五风”"
+    },
+    "第276章_永远不许一平二调/第01课_永远不许一平二调.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "永远不许一平二调",
+      "lesson": "永远不许一平二调"
+    },
+    "第277章_坚决退赔，刹住“共产风”/第01课_坚决退赔，刹住“共产风”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "坚决退赔，刹住“共产风”",
+      "lesson": "坚决退赔，刹住“共产风”"
+    },
+    "第278章_大兴调查研究之风/第01课_大兴调查研究之风.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "大兴调查研究之风",
+      "lesson": "大兴调查研究之风"
+    },
+    "第279章_要做系统的由历史到现状的调查研究/第01课_要做系统的由历史到现状的调查研究.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "要做系统的由历史到现状的调查研究",
+      "lesson": "要做系统的由历史到现状的调查研究"
+    },
+    "第280章_总结经验，教育干部/第01课_总结经验，教育干部.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "总结经验，教育干部",
+      "lesson": "总结经验，教育干部"
+    },
+    "第281章_中国在联合国只能有一个代表/第01课_中国在联合国只能有一个代表.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国在联合国只能有一个代表",
+      "lesson": "中国在联合国只能有一个代表"
+    },
+    "第282章_在七千人大会上的讲话－关于党的民主集中制/第01课_在七千人大会上的讲话－关于党的民主集中制.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在七千人大会上的讲话－关于党的民主集中制",
+      "lesson": "在七千人大会上的讲话－关于党的民主集中制"
+    },
+    "第283章_在北戴河中央工作会议中心小组会上的讲话/第01课_在北戴河中央工作会议中心小组会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在北戴河中央工作会议中心小组会上的讲话",
+      "lesson": "在北戴河中央工作会议中心小组会上的讲话"
+    },
+    "第284章_在八届十中全会上的讲话/第01课_在八届十中全会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在八届十中全会上的讲话",
+      "lesson": "在八届十中全会上的讲话"
+    },
+    "第285章_干部参加劳动的伟大意义/第01课_干部参加劳动的伟大意义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "干部参加劳动的伟大意义",
+      "lesson": "干部参加劳动的伟大意义"
+    },
+    "第286章_人的正确思想是从哪里来的/第01课_人的正确思想是从哪里来的.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "人的正确思想是从哪里来的?",
+      "lesson": "人的正确思想是从哪里来的?"
+    },
+    "第287章_论反对官僚主义/第01课_论反对官僚主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论反对官僚主义",
+      "lesson": "论反对官僚主义"
+    },
+    "第288章_支持美国黑人反对种族歧视斗争的声明/第01课_支持美国黑人反对种族歧视斗争的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "支持美国黑人反对种族歧视斗争的声明",
+      "lesson": "支持美国黑人反对种族歧视斗争的声明"
+    },
+    "第289章_受压迫的人民总是要起来的/第01课_受压迫的人民总是要起来的.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "受压迫的人民总是要起来的",
+      "lesson": "受压迫的人民总是要起来的"
+    },
+    "第290章_革命和建设都要靠自己/第01课_革命和建设都要靠自己.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "革命和建设都要靠自己",
+      "lesson": "革命和建设都要靠自己"
+    },
+    "第291章_关于文艺工作的批示/第01课_关于文艺工作的批示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于文艺工作的批示",
+      "lesson": "关于文艺工作的批示"
+    },
+    "第292章_加强相互学习，克服固步自封、骄傲自满/第01课_加强相互学习，克服固步自封、骄傲自满.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "加强相互学习，克服固步自封、骄傲自满",
+      "lesson": "加强相互学习，克服固步自封、骄傲自满"
+    },
+    "第293章_不搞科学技术，生产力无法提高/第01课_不搞科学技术，生产力无法提高.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "不搞科学技术，生产力无法提高",
+      "lesson": "不搞科学技术，生产力无法提高"
+    },
+    "第294章_我国还可能要走一段资本主义复辟的道路/第01课_我国还可能要走一段资本主义复辟的道路.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "我国还可能要走一段资本主义复辟的道路",
+      "lesson": "我国还可能要走一段资本主义复辟的道路"
+    },
+    "第295章_中法之间有共同点/第01课_中法之间有共同点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中法之间有共同点",
+      "lesson": "中法之间有共同点"
+    },
+    "第296章_关于教育革命的谈话/第01课_关于教育革命的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于教育革命的谈话",
+      "lesson": "关于教育革命的谈话"
+    },
+    "第297章_在北京举行的中共中央工作会议上讲话的节录一/第01课_在北京举行的中共中央工作会议上讲话的节录一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在北京举行的中共中央工作会议上讲话的节录一",
+      "lesson": "在北京举行的中共中央工作会议上讲话的节录一"
+    },
+    "第298章_在北京举行的中共中央工作会议上讲话的节录二/第01课_在北京举行的中共中央工作会议上讲话的节录二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在北京举行的中共中央工作会议上讲话的节录二",
+      "lesson": "在北京举行的中共中央工作会议上讲话的节录二"
+    },
+    "第299章_在北京举行的中共中央工作会议上讲话的节录三/第01课_在北京举行的中共中央工作会议上讲话的节录三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在北京举行的中共中央工作会议上讲话的节录三",
+      "lesson": "在北京举行的中共中央工作会议上讲话的节录三"
+    },
+    "第300章_支持被压迫人民反对帝国主义的战争/第01课_支持被压迫人民反对帝国主义的战争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "支持被压迫人民反对帝国主义的战争",
+      "lesson": "支持被压迫人民反对帝国主义的战争"
+    },
+    "第301章_和王海蓉同志的谈话/第01课_和王海蓉同志的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "和王海蓉同志的谈话",
+      "lesson": "和王海蓉同志的谈话"
+    },
+    "第302章_哪里有压迫哪里就有反抗/第01课_哪里有压迫哪里就有反抗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "哪里有压迫哪里就有反抗",
+      "lesson": "哪里有压迫哪里就有反抗"
+    },
+    "第303章_接见日本社会党人士的谈话/第01课_接见日本社会党人士的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见日本社会党人士的谈话",
+      "lesson": "接见日本社会党人士的谈话"
+    },
+    "第304章_关于九评苏共中央的公开信的节录一/第01课_关于九评苏共中央的公开信的节录一.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于九评苏共中央的公开信的节录一",
+      "lesson": "关于九评苏共中央的公开信的节录一"
+    },
+    "第305章_关于九评苏共中央的公开信的节录二/第01课_关于九评苏共中央的公开信的节录二.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于九评苏共中央的公开信的节录二",
+      "lesson": "关于九评苏共中央的公开信的节录二"
+    },
+    "第306章_关于九评苏共中央的公开信的节录三/第01课_关于九评苏共中央的公开信的节录三.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于九评苏共中央的公开信的节录三",
+      "lesson": "关于九评苏共中央的公开信的节录三"
+    },
+    "第307章_关于九评苏共中央的公开信的节录四/第01课_关于九评苏共中央的公开信的节录四.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于九评苏共中央的公开信的节录四",
+      "lesson": "关于九评苏共中央的公开信的节录四"
+    },
+    "第308章_中华人民共和国政府声明/第01课_中华人民共和国政府声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中华人民共和国政府声明",
+      "lesson": "中华人民共和国政府声明"
+    },
+    "第309章_打破核垄断，消灭核武器/第01课_打破核垄断，消灭核武器.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "打破核垄断，消灭核武器",
+      "lesson": "打破核垄断，消灭核武器"
+    },
+    "第310章_中国的大跃进/第01课_中国的大跃进.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国的大跃进",
+      "lesson": "中国的大跃进"
+    },
+    "第311章_同斯诺的谈话－关于越南战争/第01课_同斯诺的谈话－关于越南战争.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同斯诺的谈话－关于越南战争",
+      "lesson": "同斯诺的谈话－关于越南战争"
+    },
+    "第312章_官僚主义者阶级是革命对象/第01课_官僚主义者阶级是革命对象.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "官僚主义者阶级是革命对象",
+      "lesson": "官僚主义者阶级是革命对象"
+    },
+    "第313章_我们希望阿拉伯国家团结起来/第01课_我们希望阿拉伯国家团结起来.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "我们希望阿拉伯国家团结起来",
+      "lesson": "我们希望阿拉伯国家团结起来"
+    },
+    "第314章_把医疗卫生工作的重点放到农村去/第01课_把医疗卫生工作的重点放到农村去.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "把医疗卫生工作的重点放到农村去",
+      "lesson": "把医疗卫生工作的重点放到农村去"
+    },
+    "第315章_人民给政府饭吃，吃了饭就要为人民服务/第01课_人民给政府饭吃，吃了饭就要为人民服务.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "人民给政府饭吃，吃了饭就要为人民服务",
+      "lesson": "人民给政府饭吃，吃了饭就要为人民服务"
+    },
+    "第316章_胜利的信念是从斗争中得来的/第01课_胜利的信念是从斗争中得来的.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "胜利的信念是从斗争中得来的",
+      "lesson": "胜利的信念是从斗争中得来的"
+    },
+    "第317章_突出政治，反对折衷主义/第01课_突出政治，反对折衷主义.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "突出政治，反对折衷主义",
+      "lesson": "突出政治，反对折衷主义"
+    },
+    "第318章_上面要靠党的领导，下面要靠广大群众/第01课_上面要靠党的领导，下面要靠广大群众.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "上面要靠党的领导，下面要靠广大群众",
+      "lesson": "上面要靠党的领导，下面要靠广大群众"
+    },
+    "第319章_关于农业机械化－备战备荒为人民/第01课_关于农业机械化－备战备荒为人民.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于农业机械化－备战备荒为人民",
+      "lesson": "关于农业机械化－备战备荒为人民"
+    },
+    "第320章_在中央政治局常委扩大会议上的讲话/第01课_在中央政治局常委扩大会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中央政治局常委扩大会议上的讲话",
+      "lesson": "在中央政治局常委扩大会议上的讲话"
+    },
+    "第321章_对中宣部和北京市委的批评/第01课_对中宣部和北京市委的批评.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对中宣部和北京市委的批评",
+      "lesson": "对中宣部和北京市委的批评"
+    },
+    "第322章_学校一律要实行半工半读/第01课_学校一律要实行半工半读.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "学校一律要实行半工半读",
+      "lesson": "学校一律要实行半工半读"
+    },
+    "第323章_部队文艺工作座谈会纪要/第01课_部队文艺工作座谈会纪要.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "部队文艺工作座谈会纪要",
+      "lesson": "部队文艺工作座谈会纪要"
+    },
+    "第324章_为什么要搞文化大革命/第01课_为什么要搞文化大革命.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "为什么要搞文化大革命",
+      "lesson": "为什么要搞文化大革命"
+    },
+    "第325章_各行各业均应一业为主兼学别样－五·七指示/第01课_各行各业均应一业为主兼学别样－五·七指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "各行各业均应一业为主兼学别样－五·七指示",
+      "lesson": "各行各业均应一业为主兼学别样－五·七指示"
+    },
+    "第326章_中国共产党中央委员会通知－五·一六通知/第01课_中国共产党中央委员会通知－五·一六通知.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国共产党中央委员会通知－五·一六通知",
+      "lesson": "中国共产党中央委员会通知－五·一六通知"
+    },
+    "第327章_同胡志明的谈话－不搞清官贪官，搞文化大革命/第01课_同胡志明的谈话－不搞清官贪官，搞文化大革命.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同胡志明的谈话－不搞清官贪官，搞文化大革命",
+      "lesson": "同胡志明的谈话－不搞清官贪官，搞文化大革命"
+    },
+    "第328章_给江青的信/第01课_给江青的信.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "给江青的信",
+      "lesson": "给江青的信"
+    },
+    "第329章_凡是镇压学生运动的人，都没有好下场/第01课_凡是镇压学生运动的人，都没有好下场.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "凡是镇压学生运动的人，都没有好下场",
+      "lesson": "凡是镇压学生运动的人，都没有好下场"
+    },
+    "第330章_工作组要撤，文化革命要依靠革命师生/第01课_工作组要撤，文化革命要依靠革命师生.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "工作组要撤，文化革命要依靠革命师生",
+      "lesson": "工作组要撤，文化革命要依靠革命师生"
+    },
+    "第331章_给清华大学附属中学红卫兵的信/第01课_给清华大学附属中学红卫兵的信.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "给清华大学附属中学红卫兵的信",
+      "lesson": "给清华大学附属中学红卫兵的信"
+    },
+    "第332章_在中央常委扩大会议上的讲话－不许镇压学生运动/第01课_在中央常委扩大会议上的讲话－不许镇压学生运动.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中央常委扩大会议上的讲话－不许镇压学生运动",
+      "lesson": "在中央常委扩大会议上的讲话－不许镇压学生运动"
+    },
+    "第333章_炮打司令部－我的一张大字报/第01课_炮打司令部－我的一张大字报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "炮打司令部－我的一张大字报",
+      "lesson": "炮打司令部－我的一张大字报"
+    },
+    "第334章_中国共产党中央委员会关于无产阶级文化大革命的决定/第01课_中国共产党中央委员会关于无产阶级文化大革命的决定.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国共产党中央委员会关于无产阶级文化大革命的决定",
+      "lesson": "中国共产党中央委员会关于无产阶级文化大革命的决定"
+    },
+    "第335章_在中共八届十一中全会闭幕会上的讲话/第01课_在中共八届十一中全会闭幕会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中共八届十一中全会闭幕会上的讲话",
+      "lesson": "在中共八届十一中全会闭幕会上的讲话"
+    },
+    "第336章_对四位外国专家的大字报的批语/第01课_对四位外国专家的大字报的批语.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对四位外国专家的大字报的批语",
+      "lesson": "对四位外国专家的大字报的批语"
+    },
+    "第337章_驻外机关也要革命化/第01课_驻外机关也要革命化.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "驻外机关也要革命化",
+      "lesson": "驻外机关也要革命化"
+    },
+    "第338章_在中央工作会议上的讲话/第01课_在中央工作会议上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中央工作会议上的讲话",
+      "lesson": "在中央工作会议上的讲话"
+    },
+    "第339章_斗争要文明些，坚持文斗，不用武斗/第01课_斗争要文明些，坚持文斗，不用武斗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "斗争要文明些，坚持文斗，不用武斗",
+      "lesson": "斗争要文明些，坚持文斗，不用武斗"
+    },
+    "第340章_对刘少奇到学校做公开检查的批示/第01课_对刘少奇到学校做公开检查的批示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对刘少奇到学校做公开检查的批示",
+      "lesson": "对刘少奇到学校做公开检查的批示"
+    },
+    "第341章_对《文汇报》、《解放日报》夺权事件的谈话/第01课_对《文汇报》、《解放日报》夺权事件的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对《文汇报》、《解放日报》夺权事件的谈话",
+      "lesson": "对《文汇报》、《解放日报》夺权事件的谈话"
+    },
+    "第342章_论夺权/第01课_论夺权.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论夺权",
+      "lesson": "论夺权"
+    },
+    "第343章_人民解放军应该支持左派广大群众/第01课_人民解放军应该支持左派广大群众.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "人民解放军应该支持左派广大群众",
+      "lesson": "人民解放军应该支持左派广大群众"
+    },
+    "第344章_接见卡博和巴卢库时的谈话/第01课_接见卡博和巴卢库时的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见卡博和巴卢库时的谈话",
+      "lesson": "接见卡博和巴卢库时的谈话"
+    },
+    "第345章_对上海文化大革命的指示/第01课_对上海文化大革命的指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对上海文化大革命的指示",
+      "lesson": "对上海文化大革命的指示"
+    },
+    "第346章_批评“二月逆流”/第01课_批评“二月逆流”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "批评“二月逆流”",
+      "lesson": "批评“二月逆流”"
+    },
+    "第347章_论革命的“三结合”/第01课_论革命的“三结合”.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论革命的“三结合”",
+      "lesson": "论革命的“三结合”"
+    },
+    "第348章_关于两条路线斗争的基本问题/第01课_关于两条路线斗争的基本问题.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于两条路线斗争的基本问题",
+      "lesson": "关于两条路线斗争的基本问题"
+    },
+    "第349章_是义和团侵略了帝国主义了吗？/第01课_是义和团侵略了帝国主义了吗？.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "是义和团侵略了帝国主义了吗？",
+      "lesson": "是义和团侵略了帝国主义了吗？"
+    },
+    "第350章_中央军委关于支左工作十条命令/第01课_中央军委关于支左工作十条命令.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中央军委关于支左工作十条命令",
+      "lesson": "中央军委关于支左工作十条命令"
+    },
+    "第351章_接见阿尔巴尼亚军事代表团时的谈话/第01课_接见阿尔巴尼亚军事代表团时的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见阿尔巴尼亚军事代表团时的谈话",
+      "lesson": "接见阿尔巴尼亚军事代表团时的谈话"
+    },
+    "第352章_论无产阶级专政下继续革命/第01课_论无产阶级专政下继续革命.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "论无产阶级专政下继续革命",
+      "lesson": "论无产阶级专政下继续革命"
+    },
+    "第353章_在听了氢弹会议汇报后的讲话/第01课_在听了氢弹会议汇报后的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在听了氢弹会议汇报后的讲话",
+      "lesson": "在听了氢弹会议汇报后的讲话"
+    },
+    "第354章_视察华北、中南和华东地区时的重要指示/第01课_视察华北、中南和华东地区时的重要指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "视察华北、中南和华东地区时的重要指示",
+      "lesson": "视察华北、中南和华东地区时的重要指示"
+    },
+    "第355章_接见刚果〔布〕总理努马扎莱的谈话/第01课_接见刚果〔布〕总理努马扎莱的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见刚果〔布〕总理努马扎莱的谈话",
+      "lesson": "接见刚果〔布〕总理努马扎莱的谈话"
+    },
+    "第356章_关于“九大”和整党问题的谈话/第01课_关于“九大”和整党问题的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于“九大”和整党问题的谈话",
+      "lesson": "关于“九大”和整党问题的谈话"
+    },
+    "第357章_祝贺越南南方民族解放阵线成立七周年的电报/第01课_祝贺越南南方民族解放阵线成立七周年的电报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝贺越南南方民族解放阵线成立七周年的电报",
+      "lesson": "祝贺越南南方民族解放阵线成立七周年的电报"
+    },
+    "第358章_关于国家机关的改革和革命委员会的基本经验/第01课_关于国家机关的改革和革命委员会的基本经验.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于国家机关的改革和革命委员会的基本经验",
+      "lesson": "关于国家机关的改革和革命委员会的基本经验"
+    },
+    "第359章_支持美国黑人抗暴斗争的声明/第01课_支持美国黑人抗暴斗争的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "支持美国黑人抗暴斗争的声明",
+      "lesson": "支持美国黑人抗暴斗争的声明"
+    },
+    "第360章_学校教育革命的方向—要和工农兵结合/第01课_学校教育革命的方向—要和工农兵结合.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "学校教育革命的方向—要和工农兵结合",
+      "lesson": "学校教育革命的方向—要和工农兵结合"
+    },
+    "第361章_接见首都红代会“五大领袖”时的谈话/第01课_接见首都红代会“五大领袖”时的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见首都红代会“五大领袖”时的谈话",
+      "lesson": "接见首都红代会“五大领袖”时的谈话"
+    },
+    "第362章_医学教育革命的方向—赤脚医生就是好/第01课_医学教育革命的方向—赤脚医生就是好.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "医学教育革命的方向—赤脚医生就是好",
+      "lesson": "医学教育革命的方向—赤脚医生就是好"
+    },
+    "第363章_广大干部下放劳动是一种重新学习的极好机会/第01课_广大干部下放劳动是一种重新学习的极好机会.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "广大干部下放劳动是一种重新学习的极好机会",
+      "lesson": "广大干部下放劳动是一种重新学习的极好机会"
+    },
+    "第364章_在中共八届扩大的十二中全会上的讲话/第01课_在中共八届扩大的十二中全会上的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在中共八届扩大的十二中全会上的讲话",
+      "lesson": "在中共八届扩大的十二中全会上的讲话"
+    },
+    "第365章_赞成越南又打又谈的方针/第01课_赞成越南又打又谈的方针.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "赞成越南又打又谈的方针",
+      "lesson": "赞成越南又打又谈的方针"
+    },
+    "第366章_关于知识青年到农村去的号召/第01课_关于知识青年到农村去的号召.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于知识青年到农村去的号召",
+      "lesson": "关于知识青年到农村去的号召"
+    },
+    "第367章_对中国共产党第九次全国代表大会的讲话/第01课_对中国共产党第九次全国代表大会的讲话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对中国共产党第九次全国代表大会的讲话",
+      "lesson": "对中国共产党第九次全国代表大会的讲话"
+    },
+    "第368章_关于战备疏散的指示/第01课_关于战备疏散的指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于战备疏散的指示",
+      "lesson": "关于战备疏散的指示"
+    },
+    "第369章_祝贺越南南方民族解放阵线成立九周年的电报/第01课_祝贺越南南方民族解放阵线成立九周年的电报.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝贺越南南方民族解放阵线成立九周年的电报",
+      "lesson": "祝贺越南南方民族解放阵线成立九周年的电报"
+    },
+    "第370章_与黎笋的谈话/第01课_与黎笋的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "与黎笋的谈话",
+      "lesson": "与黎笋的谈话"
+    },
+    "第371章_全世界人民团结起来，打败美国侵略者及其一切走狗/第01课_全世界人民团结起来，打败美国侵略者及其一切走狗.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "全世界人民团结起来，打败美国侵略者及其一切走狗",
+      "lesson": "全世界人民团结起来，打败美国侵略者及其一切走狗"
+    },
+    "第372章_发展自己的工业和农业不要依靠外国/第01课_发展自己的工业和农业不要依靠外国.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "发展自己的工业和农业不要依靠外国",
+      "lesson": "发展自己的工业和农业不要依靠外国"
+    },
+    "第373章_帝国主义怕第三世界/第01课_帝国主义怕第三世界.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "帝国主义怕第三世界",
+      "lesson": "帝国主义怕第三世界"
+    },
+    "第374章_国际间的事要由大家商量解决/第01课_国际间的事要由大家商量解决.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "国际间的事要由大家商量解决",
+      "lesson": "国际间的事要由大家商量解决"
+    },
+    "第375章_改变国家体制，不设国家主席/第01课_改变国家体制，不设国家主席.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "改变国家体制，不设国家主席",
+      "lesson": "改变国家体制，不设国家主席"
+    },
+    "第376章_我的一点意见/第01课_我的一点意见.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "我的一点意见",
+      "lesson": "我的一点意见"
+    },
+    "第377章_与斯诺的谈话－关于文化大革命/第01课_与斯诺的谈话－关于文化大革命.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "与斯诺的谈话－关于文化大革命",
+      "lesson": "与斯诺的谈话－关于文化大革命"
+    },
+    "第378章_对外宣传工作不可强加于人/第01课_对外宣传工作不可强加于人.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对外宣传工作不可强加于人",
+      "lesson": "对外宣传工作不可强加于人"
+    },
+    "第379章_思想上政治上的路线正确与否是决定一切的/第01课_思想上政治上的路线正确与否是决定一切的.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "思想上政治上的路线正确与否是决定一切的",
+      "lesson": "思想上政治上的路线正确与否是决定一切的"
+    },
+    "第380章_恢复联合国席位后的谈话/第01课_恢复联合国席位后的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "恢复联合国席位后的谈话",
+      "lesson": "恢复联合国席位后的谈话"
+    },
+    "第381章_对反革命不要杀，保留活证据/第01课_对反革命不要杀，保留活证据.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对反革命不要杀，保留活证据",
+      "lesson": "对反革命不要杀，保留活证据"
+    },
+    "第382章_会见美国总统尼克松时的谈话/第01课_会见美国总统尼克松时的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "会见美国总统尼克松时的谈话",
+      "lesson": "会见美国总统尼克松时的谈话"
+    },
+    "第383章_中美联合公报〔“上海公报”〕中国方面的声明/第01课_中美联合公报〔“上海公报”〕中国方面的声明.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中美联合公报〔“上海公报”〕中国方面的声明",
+      "lesson": "中美联合公报〔“上海公报”〕中国方面的声明"
+    },
+    "第384章_与日本首相田中角荣的谈话/第01课_与日本首相田中角荣的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "与日本首相田中角荣的谈话",
+      "lesson": "与日本首相田中角荣的谈话"
+    },
+    "第385章_深挖洞，广积粮，不称霸/第01课_深挖洞，广积粮，不称霸.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "深挖洞，广积粮，不称霸",
+      "lesson": "深挖洞，广积粮，不称霸"
+    },
+    "第386章_祝贺越南人民取得的伟大胜利/第01课_祝贺越南人民取得的伟大胜利.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝贺越南人民取得的伟大胜利",
+      "lesson": "祝贺越南人民取得的伟大胜利"
+    },
+    "第387章_接见基辛格时的谈话/第01课_接见基辛格时的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "接见基辛格时的谈话",
+      "lesson": "接见基辛格时的谈话"
+    },
+    "第388章_启用邓小平/第01课_启用邓小平.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "启用邓小平",
+      "lesson": "启用邓小平"
+    },
+    "第389章_在政治局会议上的讲话—八大军区司令员对调/第01课_在政治局会议上的讲话—八大军区司令员对调.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "在政治局会议上的讲话—八大军区司令员对调",
+      "lesson": "在政治局会议上的讲话—八大军区司令员对调"
+    },
+    "第390章_中国将修建青藏铁路/第01课_中国将修建青藏铁路.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中国将修建青藏铁路",
+      "lesson": "中国将修建青藏铁路"
+    },
+    "第391章_关于划分三个世界的谈话/第01课_关于划分三个世界的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于划分三个世界的谈话",
+      "lesson": "关于划分三个世界的谈话"
+    },
+    "第392章_同英国前首相希思的谈话/第01课_同英国前首相希思的谈话.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "同英国前首相希思的谈话",
+      "lesson": "同英国前首相希思的谈话"
+    },
+    "第393章_关于理论问题的谈话要点/第01课_关于理论问题的谈话要点.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于理论问题的谈话要点",
+      "lesson": "关于理论问题的谈话要点"
+    },
+    "第394章_对在押国民党战犯、党政军特人员一律释放/第01课_对在押国民党战犯、党政军特人员一律释放.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对在押国民党战犯、党政军特人员一律释放",
+      "lesson": "对在押国民党战犯、党政军特人员一律释放"
+    },
+    "第395章_要安定团结不要分裂，不要搞阴谋诡计/第01课_要安定团结不要分裂，不要搞阴谋诡计.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "要安定团结不要分裂，不要搞阴谋诡计",
+      "lesson": "要安定团结不要分裂，不要搞阴谋诡计"
+    },
+    "第396章_关于《水浒》的评论/第01课_关于《水浒》的评论.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "关于《水浒》的评论",
+      "lesson": "关于《水浒》的评论"
+    },
+    "第397章_中美关系会一点点好起/第01课_中美关系会一点点好起.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "中美关系会一点点好起",
+      "lesson": "中美关系会一点点好起"
+    },
+    "第398章_祝贺印度支那三国抗美救国战争取得胜利/第01课_祝贺印度支那三国抗美救国战争取得胜利.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "祝贺印度支那三国抗美救国战争取得胜利",
+      "lesson": "祝贺印度支那三国抗美救国战争取得胜利"
+    },
+    "第399章_走资派还在走，“永不翻案”靠不住/第01课_走资派还在走，“永不翻案”靠不住.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "走资派还在走，“永不翻案”靠不住",
+      "lesson": "走资派还在走，“永不翻案”靠不住"
+    },
+    "第400章_对天安门事件的指示/第01课_对天安门事件的指示.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "对天安门事件的指示",
+      "lesson": "对天安门事件的指示"
+    },
+    "第401章_后事交代/第01课_后事交代.md": {
+      "status": "unstarted",
+      "mastery": 0,
+      "unresolved": [],
+      "quiz": [],
+      "chapter": "后事交代",
+      "lesson": "后事交代"
+    }
+  }
+}

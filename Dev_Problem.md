@@ -4,6 +4,13 @@
 
 ## 问题列表（按时间倒序）
 
+### P42. 批量蒸馏：日志被逐本冲掉看不到失败、选中不清理、finalize 兜底可能抓错书
+- **现象**：①批量蒸馏时界面日志只剩当前一本书的内容，之前每本的结果（含失败）被冲掉，结束 toast 还报"完成"，失败不可见——用户感知"有时候只蒸馏一本"；②批量完成后选中的文件仍保持选中；③后端 finalize 的"书库/ 最新目录"兜底在批量场景可能抓到上一本书的产物目录（书名不一致时按修改时间取最新，批期间上一本刚生成必然最新），存在产物互覆/串课风险。
+- **根因**：①pollJob/pollOcrJob 每次轮询 `this.distillLog = j.log` 整表替换前端日志；②批量循环结束未清 multiSelected；③finalize 兜底无"本次生成"的时间约束。
+- **解决**：①轮询改增量追加（seen 指针 + concat），后端返回 null（重启丢内存 job）时立即以 error 结束而不是 TypeError；②批量蒸馏/OCR 完成后清空 multiSelected，toast 带成功/失败计数（"成功 X 本，失败 Y 本"）；③finalize 兜底只认 mtime ≥ 任务开始时间的目录，找不到明确报错。
+- **备注**：若修复后仍出现"只蒸馏一本"，日志现在会保留每本书的 ✓/✗ 与后端错误明细，可直接定位是哪本书、败在哪一步（teach.py 退出码/书库目录缺失等）。
+- **状态**：已修复（2026-08-30）。
+
 ### P41. 语音通话进入即"通话已结束"且不同步历史：beginCall 误定义在组件根级
 - **现象**：进入语音通话页显示「通话已结束」、日志区空白（不加载会话历史），recog 完全不启动；DevTools 控制台报 `TypeError: this.beginCall is not a function (voice.vue)`。
 - **根因**：语音页新增"AI API 未配置守卫"时，把 `beginCall(options)` 方法定义在了组件**根级**（与 onLoad 平级）而非 `methods` 内——Vue 选项式 API 不把根级函数注册为方法，`getSettings().then(() => this.beginCall(options))` 在 Promise 回调里抛 TypeError，被未处理的 promise rejection 吞掉，`voiceCall.start()` 从未执行，页面停留在模块初始 idle 状态。
