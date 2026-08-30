@@ -266,26 +266,40 @@ export default {
   min-height: 100vh;
 }
 .hero {
-  padding: 60rpx 20rpx 40rpx;
+  margin: 20rpx 20rpx 0;
+  padding: 40rpx 36rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, #4f8cff 0%, #7c3aed 100%);
+  box-shadow: 0 8rpx 24rpx rgba(79, 140, 255, 0.25);
 }
 .hero-title {
-  font-size: 56rpx;
+  font-size: 44rpx;
   font-weight: 700;
-  color: var(--text-1);
+  color: #ffffff;
 }
 .hero-sub {
-  margin-top: 12rpx;
-  font-size: 28rpx;
-  color: var(--text-3);
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.85);
 }
 .section {
   margin-top: 30rpx;
 }
 .section-title {
-  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
   font-weight: 600;
-  color: var(--text-2);
+  color: var(--text-1);
   margin-bottom: 18rpx;
+}
+.section-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #4f8cff, #7c3aed);
+  margin-right: 12rpx;
 }
 .history-title {
   display: flex;
@@ -329,10 +343,15 @@ export default {
 .subject-card {
   flex: 1;
   background: var(--bg-card);
-  border: 3rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
   border-radius: 20rpx;
   padding: 28rpx 24rpx;
   text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.subject-card:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 18rpx rgba(17, 24, 39, 0.08);
 }
 .subject-card.active {
   border-color: #4f8cff;
@@ -357,9 +376,14 @@ export default {
   flex: 1;
   min-width: 40%;
   background: var(--bg-card);
-  border: 3rpx solid #e5e7eb;
+  border: 2rpx solid var(--border);
   border-radius: 20rpx;
   padding: 22rpx 24rpx;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.style-card:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 18rpx rgba(17, 24, 39, 0.08);
 }
 .style-card.active {
   border-color: #4f8cff;
@@ -445,4 +469,9 @@ export default {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+[data-theme="dark"] .hero {
+  background: linear-gradient(135deg, #2b3a67 0%, #4c2b8f 100%);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.35);
+}
+
 </style>

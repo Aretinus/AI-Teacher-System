@@ -66,6 +66,7 @@ src/
 - **音色 ≠ 对话逻辑**：声音由 TTS 引擎决定（Edge / 本地 Qwen3-TTS），对话逻辑由对话模型决定（设置 → AI 模型）
 - **主题（外观）**：设置 → 外观 可切 浅色/深色（localStorage.appTheme 持久化，导航栏同步变色）；设计令牌在 `styles/theme.css`（CSS 变量 + `[data-theme="dark"]` 覆盖），新页面请使用 `var(--bg-card)/var(--text-1)` 等令牌而非硬编码色值
 - **组件化**：课程分支面板（`components/course-tree.vue`）、问题条（question-bar）、悬浮球、TabBar、Markdown 渲染（md-render）均为独立组件
+- **设计规范**：Web UI 设计语言沉淀为 `01-Skills/web-ui-designer/SKILL.md`（清风蓝设计系统：令牌/字体层级/组件/布局/暗色规则），页面重设计或新增页面时遵循该规范
 
 ## 流式协议
 

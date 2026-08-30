@@ -933,11 +933,16 @@ onLoad(options) {
   height: calc(100vh - var(--window-top, 0px));
 }
 .chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16rpx 26rpx;
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1rpx solid var(--border-soft);
   flex-shrink: 0;
 }
@@ -1286,12 +1291,14 @@ onLoad(options) {
 }
 .bubble.assistant {
   background: var(--bg-card);
-  border: 1rpx solid #eef1f5;
+  border: 1rpx solid var(--border);
+  border-radius: 4rpx 20rpx 20rpx 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
 }
 .bubble.user {
-  background: #4f8cff;
+  background: linear-gradient(135deg, #4f8cff, #6f5bf5);
   color: #ffffff;
+  border-radius: 20rpx 4rpx 20rpx 20rpx;
   align-self: flex-end;
 }
 .user-text {
@@ -1414,9 +1421,12 @@ onLoad(options) {
 .input-bar {
   display: flex;
   align-items: center;
-  padding: 14rpx 22rpx calc(14rpx + env(safe-area-inset-bottom));
+  margin: 12rpx 20rpx calc(12rpx + env(safe-area-inset-bottom));
+  padding: 12rpx 18rpx;
   background: var(--bg-card);
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  border: 1rpx solid var(--border);
+  border-radius: 32rpx;
+  box-shadow: 0 6rpx 24rpx rgba(17, 24, 39, 0.08);
   gap: 14rpx;
 }
 .attach-btn {
@@ -1449,7 +1459,7 @@ onLoad(options) {
   min-height: 46rpx;
 }
 .send-btn {
-  background: #4f8cff;
+  background: linear-gradient(135deg, #4f8cff, #6f5bf5);
   color: #fff;
   border-radius: 36rpx;
   padding: 12rpx 30rpx;
@@ -1463,4 +1473,8 @@ onLoad(options) {
 .send-btn.stopping {
   background: #ef4444;
 }
+[data-theme="dark"] .chat-header {
+  background: rgba(20, 22, 28, 0.86);
+}
+
 </style>

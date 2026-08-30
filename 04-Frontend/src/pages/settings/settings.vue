@@ -962,14 +962,26 @@ export default {
   margin-top: 30rpx;
 }
 .section-title {
-  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
   font-weight: 600;
-  color: var(--text-2);
+  color: var(--text-1);
   margin-bottom: 18rpx;
+}
+.section-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #4f8cff, #7c3aed);
+  margin-right: 12rpx;
 }
 .card {
   background: var(--bg-card);
+  border: 1rpx solid var(--border-soft);
   border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(17, 24, 39, 0.05);
   padding: 24rpx 28rpx;
 }
 .model-row {
