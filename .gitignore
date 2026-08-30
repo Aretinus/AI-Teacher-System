@@ -43,7 +43,6 @@ logs/
 
 # ===== 本机私密配置（不入库）=====
 06-Tools/jwt_token.txt
-local-config.txt
 
 # ===== 系统文件 =====
 .DS_Store

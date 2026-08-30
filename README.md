@@ -21,7 +21,7 @@
 
 ```bat
 :: 一键启动（推荐）：自动清理残留进程 → 启动 runtime/后端/前端 → 健康检查 → 用 Chrome 打开页面
-:: 首次使用请先创建 local-config.txt（gitignored）：内容一行 DB_PASSWORD=你的数据库密码
+:: 首次使用：在 02-DATA/settings.json 中加入一行 "dbPassword": "你的数据库密码"
 start-dev.bat
 ```
 

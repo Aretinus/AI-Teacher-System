@@ -6,7 +6,7 @@
 
 ### P40. 模型配置产品化：默认 Agnes + 空配置引导；local-config.bat 降级为纯数据文件
 - **背景**：模型配置迁移到设置页（P39）后，"全新用户"路径没有兜底——profiles 为空时 `migrate()` 会因 `undefined.id` 崩溃；对话/语音在无 Key 时只会报底层 401；默认配置还是"模型运行时"（该概念已随 P39 弃用）。
-- **解决**：① settingsService 默认配置改为 **Agnes 预填档**（OpenAI 兼容：api.agnes-ai.cn/v1 + agnes-2.5-flash，Key 留空），修复空 profiles 的迁移崩溃；② 模型设置页去掉「模型运行时」提供商选项，空列表显示引导卡片（"尚未配置 AI API，新增配置默认预填 Agnes"），新增表单默认预填 Agnes；③ 对话页发送前、语音页进入前检查配置（openai/anthropic 缺 Key 即拦截），弹窗引导「去设置」；④ `local-config.bat` 改为纯数据文件 **local-config.txt**（KEY=VALUE，# 注释，start-dev.bat 用 for /f 读取）——配置就该是数据而不是可执行脚本。
+- **解决**：① settingsService 默认配置改为 **Agnes 预填档**（OpenAI 兼容：api.agnes-ai.cn/v1 + agnes-2.5-flash，Key 留空），修复空 profiles 的迁移崩溃；② 模型设置页去掉「模型运行时」提供商选项，空列表显示引导卡片（"尚未配置 AI API，新增配置默认预填 Agnes"），新增表单默认预填 Agnes；③ 对话页发送前、语音页进入前检查配置（openai/anthropic 缺 Key 即拦截），弹窗引导「去设置」；④ 数据库密码不再单独建文件——并入 `02-DATA/settings.json` 顶层 `dbPassword` 字段（gitignored，settingsService 保存时原样保留该私有字段、GET 接口不外泄），start-dev.bat 用 PowerShell 读取。配置集中一处，避免散落。
 - **状态**：已解决（2026-08-30）。
 
 ### P39. 语音链路修复后对话仍失败：runtime 404（OpenSSL DLL 丢失 + 模型配置随 .env 丢失 + externalRequest 非流式解析 bug）

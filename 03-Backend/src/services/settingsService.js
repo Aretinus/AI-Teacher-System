@@ -46,6 +46,19 @@ function migrate(raw) {
   };
 }
 
+// 本机私有字段（如 dbPassword）不经过设置页 UI，读写 settings.json 时原样保留
+const LOCAL_KEYS = ['dbPassword'];
+
+function extractLocal(raw) {
+  const local = {};
+  if (raw && typeof raw === 'object') {
+    for (const k of LOCAL_KEYS) {
+      if (raw[k] !== undefined) local[k] = raw[k];
+    }
+  }
+  return local;
+}
+
 function loadRaw() {
   try {
     return JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
@@ -65,9 +78,10 @@ function loadSettings() {
 //  1) 新版：{ profiles: [...], activeProfileId } → 整体替换
 //  2) 旧版：{ provider/baseUrl/apiKey/modelName/name } → 合并进当前激活配置
 function saveSettings(next) {
+  const local = extractLocal(loadRaw());
   if (next && Array.isArray(next.profiles)) {
     const { activeProfileId, profiles } = migrate(next);
-    const data = { activeProfileId, profiles };
+    const data = { ...local, activeProfileId, profiles };
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), 'utf8');
     const active = profiles.find((p) => p.id === activeProfileId) || profiles[0];
     return { ...active, profiles, activeProfileId: active.id };
@@ -77,7 +91,7 @@ function saveSettings(next) {
   const active = profiles.find((p) => p.id === activeProfileId) || profiles[0];
   const merged = { ...active, ...next };
   const updated = normalizeProfiles(profiles.map((p) => (p.id === merged.id ? merged : p)));
-  const data = { activeProfileId: merged.id, profiles: updated };
+  const data = { ...local, activeProfileId: merged.id, profiles: updated };
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), 'utf8');
   const act = updated.find((p) => p.id === merged.id) || updated[0];
   return { ...act, profiles: updated, activeProfileId: act.id };

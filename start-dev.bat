@@ -5,6 +5,7 @@ title AI Teacher System - one-click start
 
 set BACKEND_DIR=%~dp003-Backend
 set FRONTEND_DIR=%~dp004-Frontend
+set DATA_SETTINGS=%~dp002-DATA\settings.json
 set RUNTIME_DIR=%BACKEND_DIR%\node_modules\@opencangjie\skills\dist\runtime\win-x64\release\bin
 set RUNTIME_ENV=%RUNTIME_DIR%\.env
 set LOG_DIR=%~dp0logs
@@ -26,18 +27,15 @@ for %%d in (libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll libssp-0.dll 
   )
 )
 
-rem ---------- 0b. Load local private config (gitignored, plain KEY=VALUE lines) ----------
-rem local-config.txt line: DB_PASSWORD=yourpassword  (# lines are comments)
+rem ---------- 0b. Read DB password from 02-DATA\settings.json ("dbPassword" field, gitignored) ----------
 set "DB_PASSWORD="
-if exist "%~dp0local-config.txt" (
-  for /f "usebackq eol=# tokens=1,* delims==" %%a in ("%~dp0local-config.txt") do set "%%a=%%b"
-)
+if exist "%DATA_SETTINGS%" for /f "delims=" %%p in ('powershell -NoProfile -Command "try{(Get-Content '%DATA_SETTINGS%' -Raw | ConvertFrom-Json).dbPassword}catch{}"') do set "DB_PASSWORD=%%p"
 
 rem ---------- 0c. Ensure runtime .env has DB config (missing config => 2-min freeze) ----------
 if defined DB_PASSWORD (
   powershell -NoProfile -Command "$f='%RUNTIME_ENV%';if(Test-Path $f){$t=[IO.File]::ReadAllText($f);if($t -notmatch '(?m)^DATABASE_URL='){$nl=[char]10;$add='DATABASE_URL=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo'+$nl+'opengauss_orm_connectionUrl=postgresql://postgres:%DB_PASSWORD%@127.0.0.1:5432/uctoo';[IO.File]::WriteAllText($f,$t+$nl+$add,(New-Object System.Text.UTF8Encoding($false)))}}"
 ) else (
-  echo [WARN] local-config.txt missing or DB_PASSWORD not set - skip writing DATABASE_URL
+  echo [WARN] settings.json missing "dbPassword" - skip writing DATABASE_URL
 )
 
 rem ---------- 1. Kill stale processes + clean vite cache ----------
