@@ -9,6 +9,7 @@
 | `subjects/` | 学科教师技能，按学科组织（`index.json` 登记学科 → `defaultSkill`）；技能目录内 `manifest.yaml` 声明角色/教法，`courseDir` 绑定该学科蒸馏课程。未在 index.json 登记的书库文件夹也能用：自动出现在学科列表并走「通用教学」模式（无技能/课程上下文，按学科名教学，见 03-Backend 路由 `manual-generic`） |
 | `core/` | 跨学科通用能力（知识折叠、讲解规范等） |
 | `styles/` | 授课风格定义（Markdown 说明），扫描加载为可选讲法，如 `feynman.md`（费曼：第一性原理）、`standard.md`（默认） |
+| `web-ui-designer/` | Web 前端 UI 设计规范（"清风蓝"设计系统：令牌/字体层级/组件/布局/暗色规则），前端重设计或新增页面时遵循；配套 `04-Frontend/src/styles/theme.css` 设计令牌 |
 | `vendor/book-learning-tutor/` | 书籍蒸馏引擎（teach.py：抽取 → 切章/课 → 生成 `书库/` 课程），Backend `distillService` 调用其 venv_slim 解释器 |
 | `vendor/book-learning-tutor/vendor/djvulibre/` | DjVu 文本层抽取工具（djvutxt + 依赖 DLL，随仓库迁移），`book_formats._djvu_sections` 的降级路径 |
 | `_TEMPLATE/` | 新教师/新技能模板 |

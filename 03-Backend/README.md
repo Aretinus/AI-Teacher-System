@@ -65,6 +65,9 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 | `POST /api/books/scan`、`POST /api/books/distill`、`GET /api/books/distill/:id` | 书籍扫描 / 蒸馏启动 / 轮询 |
 | `POST /api/users/default/...` | 用户状态、历史、进度读写 |
 
+> 课程模式跳转：对话中解析"第X章/第X课"跳转意图（中文数字可），命中即切换当前课并持久化进度；"跳过前置/直接开始"类消息自动跳到首个正文章（P44）。
+> 大类综合问答：course 传 `group:<分类路径>` 时走综合模式——注入该分类下书→章→课大纲与按问题匹配的课文节选，综合回答并注明出处（P43）。
+
 > 未注册学科兜底：书库放入新文件夹即自动出现在学科列表（`registered:false`），蒸馏/OCR 按目录名访问，对话走 `manual-generic` 通用教学模式（无技能/课程上下文，按学科名教学）。
 
 ## 依赖的外部部件
