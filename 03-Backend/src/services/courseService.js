@@ -259,6 +259,111 @@ function listSubjectCourses(subject) {
   return out.sort((a, b) => a.id.localeCompare(b.id, 'zh-CN-numeric'));
 }
 
+// 课程树：分类逐级下钻（分类 → 子集合 → 书），叶子 = 可系统学习的课程
+// 判定"课程目录"：直接含课级 md，或子目录大多为 章 式命名（第X章 / 两位数编号）
+function looksLikeCourseDir(dir) {
+  let hasLessonMd = false;
+  let subDirs = 0;
+  let chapterLike = 0;
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    return false;
+  }
+  for (const e of entries) {
+    if (e.name.startsWith('_') || e.name.startsWith('.') || e.name === 'progress.json') continue;
+    if (e.isDirectory()) {
+      subDirs++;
+      if (/第\d+/.test(e.name) || /^\d{2}_/.test(e.name)) chapterLike++;
+    } else if (e.name.endsWith('.md') && e.name !== '00_目录导读.md') {
+      hasLessonMd = true;
+    }
+  }
+  return hasLessonMd || (subDirs > 0 && chapterLike >= Math.max(1, Math.ceil(subDirs * 0.5)));
+}
+
+function countCourseNodes(nodes) {
+  return nodes.reduce((n, x) => n + (x.type === 'course' ? 1 : x.courseCount), 0);
+}
+
+function listCourseTree(subject) {
+  const bookDir = bookDirOf(subject);
+  const root = bookDir ? path.join(DISTILLED_ROOT, bookDir) : null;
+  if (!root || !fs.existsSync(root)) return [];
+  const build = (dir, rel) => {
+    const out = [];
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'zh-CN-numeric'));
+    } catch (e) {
+      return out;
+    }
+    for (const e of entries) {
+      if (!e.isDirectory() || e.name.startsWith('_') || e.name.startsWith('.')) continue;
+      const childRel = rel ? rel + '/' + e.name : e.name;
+      const childDir = path.join(dir, e.name);
+      const lessons = listLessons(childDir);
+      if (looksLikeCourseDir(childDir)) {
+        const chapters = chaptersOf(childDir);
+        out.push({ id: childRel, name: e.name, type: 'course', subject, chapters: chapters.length, lessons: lessons.length, available: lessons.length > 0 });
+      } else if (lessons.length) {
+        out.push({ id: childRel, name: e.name, type: 'group', subject, lessons: lessons.length, courseCount: countCourseNodes(build(childDir, childRel)), children: build(childDir, childRel) });
+      }
+    }
+    return out;
+  };
+  return build(root, '');
+}
+
+function countSubjectCourses(subject) {
+  return countCourseNodes(listCourseTree(subject));
+}
+
+// 大类综合问答上下文：分类大纲（书→章→课标题树）+ 与问题相关的课文节选（按课名 bigram 重合度取前 2 篇）
+function loadGroupContext(subject, groupPath, message) {
+  const dir = resolveDistilledCourse(subject, groupPath);
+  if (!dir) return null;
+  const outline = [];
+  const excerpts = [];
+  const q = String(message || '');
+  const walk = (d, depth, prefix) => {
+    let entries;
+    try {
+      entries = fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'zh-CN-numeric'));
+    } catch (e) {
+      return;
+    }
+    for (const e of entries) {
+      if (e.name.startsWith('_') || e.name.startsWith('.') || e.name === 'progress.json') continue;
+      if (outline.length > 400) return;
+      const rel = prefix ? prefix + '/' + e.name : e.name;
+      if (e.isDirectory()) {
+        outline.push('  '.repeat(depth) + '- ' + e.name + '/');
+        walk(path.join(d, e.name), depth + 1, rel);
+      } else if (e.name.endsWith('.md') && e.name !== '00_目录导读.md') {
+        outline.push('  '.repeat(depth) + '- ' + e.name.replace(/\.md$/, ''));
+        if (e.name !== '第00课_本章导言.md') {
+          let score = 0;
+          for (let i = 0; i + 1 < q.length; i++) {
+            const bigram = q.slice(i, i + 2);
+            if (/[一-龥]/.test(bigram[0]) && e.name.includes(bigram)) score++;
+          }
+          if (score > 0) excerpts.push({ rel: rel.replace(/\.md$/, ''), file: path.join(d, e.name), score });
+        }
+      }
+    }
+  };
+  walk(dir, 0, '');
+  excerpts.sort((a, b) => b.score - a.score);
+  const top = excerpts.slice(0, 2).map((x) => {
+    let t = '';
+    try { t = fs.readFileSync(x.file, 'utf8'); } catch (e) { /* 忽略 */ }
+    return '【' + x.rel.replace(/\.md$/, '') + '】\n' + t.slice(0, 6000) + (t.length > 6000 ? '\n…（课文其余部分略）' : '');
+  });
+  return { groupName: path.basename(dir), groupPath, outline: outline.join('\n'), excerpts: top, matchCount: Math.min(2, excerpts.length) };
+}
+
 // 安全解析课程目录：拒绝越界路径
 function resolveDistilledCourse(subject, courseId) {
   if (!courseId) return null;
@@ -363,4 +468,4 @@ function loadDistilledCourseContext(subject, courseId, message, wantAdvance) {
   };
 }
 
-module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField, listCourses, listSubjectCourses, resolveDistilledCourse, loadDistilledCourseContext };
+module.exports = { detectCourseIntent, findCourse, loadCourseContext, listLessons, advanceLesson, extractYamlField, listCourses, listSubjectCourses, listCourseTree, countSubjectCourses, loadGroupContext, resolveDistilledCourse, loadDistilledCourseContext };

@@ -4,6 +4,14 @@
 
 ## 问题列表（按时间倒序）
 
+### P43. 课程分支太笼统（一门"749 课"）+ 大类综合问答
+- **现象**：主页课程分支只有顶层分类一门课（如"共产主义 749 课"），无法下钻到具体书籍系统学习；分类也没有"综合全课程"的问答入口。
+- **根因**：courseService `listSubjectCourses` 只列蒸馏目录一级子目录，目录递归全部 lessons 记入一门课；对话侧 course 只支持单课程上下文。
+- **解决**：①新增 `GET /api/courses/tree?subject=`（courseService `listCourseTree`：按"直接含课级 md / 子目录多为章式命名"判定课程叶子，否则为 group 递归下钻，含 courseCount 汇总）；`/api/subjects` 的 courseCount 改按树统计（共产主义卡显示 7 门课而非 1 门）；②主页课程分支改树下钻 UI（分组展开/收起、课程叶子点选、分组行带「综合问答」）；③大类综合问答：course 以 `group:<分类路径>` 传给后端，`loadGroupContext` 生成分类大纲（书→章→课标题树，限 400 行）+ 按课名 bigram 匹配问题的前 2 篇课文节选，`buildGroupSystemPrompt` 要求综合回答并注明书目/章节出处、末尾给「建议深入」指引（plain Markdown，不走 teaching-response JSON 协议）。
+- **坑**：①Git Bash 里 python -c 写 `
+` 等转义会被吃/错乱——复杂代码写入一律用 Edit 工具或临时 py 文件 + 单引号 heredoc；②`/api/chat` 的 `await handleChat` 未包 try/catch，Express 4 不捕获 async handler rejection → 一次 groupCtx null（GBK 控制台 curl 中文体乱码所致）直接崩掉整个后端进程——已兜 500 并保留给浏览器 UTF-8 通道。
+- **状态**：已修复（2026-08-30，树/大纲/节选/端到端综合回答均验证）。
+
 ### P42. 批量蒸馏：日志被逐本冲掉看不到失败、选中不清理、finalize 兜底可能抓错书
 - **现象**：①批量蒸馏时界面日志只剩当前一本书的内容，之前每本的结果（含失败）被冲掉，结束 toast 还报"完成"，失败不可见——用户感知"有时候只蒸馏一本"；②批量完成后选中的文件仍保持选中；③后端 finalize 的"书库/ 最新目录"兜底在批量场景可能抓到上一本书的产物目录（书名不一致时按修改时间取最新，批期间上一本刚生成必然最新），存在产物互覆/串课风险。
 - **根因**：①pollJob/pollOcrJob 每次轮询 `this.distillLog = j.log` 整表替换前端日志；②批量循环结束未清 multiSelected；③finalize 兜底无"本次生成"的时间约束。

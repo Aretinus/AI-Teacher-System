@@ -13,7 +13,7 @@ const { scanSubjectBooks, startDistill, getJob, listLibrarySubjects } = require(
 const { scanRaw, startOcr, getOcrJob } = require('./services/ocrService');
 const { listLogs, getLog } = require('./services/logService');
 const { listStyles } = require('./services/stylesService');
-const { listCourses, listSubjectCourses } = require('./services/courseService');
+const { listCourses, listSubjectCourses, listCourseTree, countSubjectCourses } = require('./services/courseService');
 const { externalRequest, anthropicRequest } = require('./runtimeClient');
 const { spawn } = require('child_process');
 
@@ -107,8 +107,8 @@ app.get('/api/health', async (req, res) => {
 app.get('/api/subjects', (req, res) => {
   const registered = loadSubjects().map((s) => ({
     ...s,
-    courseCount: listSubjectCourses(s.id).length,
-    hasCourses: listSubjectCourses(s.id).length > 0,
+    courseCount: countSubjectCourses(s.id),
+    hasCourses: countSubjectCourses(s.id) > 0,
   }));
   // 合并书库实时学科（未注册文件夹）：通用教学模式，无技能/课程
   const regIds = new Set(registered.map((s) => String(s.id).toLowerCase()));
@@ -249,6 +249,13 @@ app.get('/api/courses', (req, res) => {
   res.json({ courses: listSubjectCourses(subject) });
 });
 
+// 课程树：分类逐级下钻到可系统学习的书/课程（前端课程分支面板用）
+app.get('/api/courses/tree', (req, res) => {
+  const subject = req.query.subject;
+  if (!subject) return res.status(400).json({ error: 'subject is required' });
+  res.json({ tree: listCourseTree(subject) });
+});
+
 app.post('/api/ocr/scan', async (req, res) => {
   try {
     const books = await scanRaw((req.body || {}).subject || '');
@@ -387,7 +394,14 @@ app.post('/api/chat', async (req, res) => {
   const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course, debug });
+  let prepared;
+  try {
+    prepared = await handleChat({ userId, subject, message, conversationId, stream: false, style, course, debug });
+  } catch (e) {
+    // Express 4 不会捕获 async handler 的 rejection，不兜住会直接崩掉整个进程
+    console.error('[chat] handleChat failed:', e.message);
+    return res.status(500).json({ error: '对话准备失败：' + e.message });
+  }
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;
@@ -405,7 +419,13 @@ app.post('/api/chat/stream', async (req, res) => {
   const { userId = DEFAULT_USER, subject = null, message, conversationId, style, course, debug } = req.body || {};
   if (!message) return res.status(400).json({ error: 'message is required' });
 
-  const prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course, debug });
+  let prepared;
+  try {
+    prepared = await handleChat({ userId, subject, message, conversationId, stream: true, style, course, debug });
+  } catch (e) {
+    console.error('[chat/stream] handleChat failed:', e.message);
+    return res.status(500).json({ error: '对话准备失败：' + e.message });
+  }
   if (prepared.error) return res.status(400).json(prepared);
 
   const { sessionId, routeInfo, messages, userMessage } = prepared;

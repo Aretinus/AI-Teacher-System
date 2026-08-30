@@ -55,7 +55,8 @@ node src/index.js        # 监听 http://127.0.0.1:3000
 |---|---|
 | `GET /api/subjects` | 学科列表：已注册学科（含课程数）+ 书库实时扫描的未注册学科（`registered:false`，走通用教学） |
 | `GET /api/books/subjects` | 书库学科清单（已注册 + raw/ocr/distilled 顶层目录实时扫描，含中文映射），书籍加工页用 |
-| `GET /api/courses?subject=` | 学科下课程清单（来自蒸馏产物） |
+| `GET /api/courses?subject=` | 学科下顶层课程清单（来自蒸馏产物） |
+| `GET /api/courses/tree?subject=` | 课程树：分类逐级下钻到可系统学习的书/课程（group 节点可展开、可发大类综合问答） |
 | `GET /api/styles` | 授课风格列表 |
 | `POST /api/chat/stream` | SSE 流式对话（body 支持 `subject` / `course` / `style` / 消息） |
 | `POST /api/chat` | 非流式对话（同参数，返回 JSON） |

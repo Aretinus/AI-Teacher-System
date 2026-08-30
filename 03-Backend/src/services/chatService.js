@@ -1,6 +1,6 @@
 const { route } = require('./routerService');
-const { buildMessages, buildCourseMessages } = require('./promptBuilder');
-const { detectCourseIntent, loadCourseContext, loadDistilledCourseContext, listSubjectCourses } = require('./courseService');
+const { buildMessages, buildCourseMessages, buildGroupMessages } = require('./promptBuilder');
+const { detectCourseIntent, loadCourseContext, loadDistilledCourseContext, loadGroupContext, listSubjectCourses } = require('./courseService');
 const {
   loadState, saveState, loadProfile, loadHistory, appendHistory,
   saveSessionDetail, newSessionId,
@@ -110,12 +110,18 @@ async function handleChat({ userId, subject, message, conversationId, stream, st
   let messages;
   let courseCtx = null;
   const wantAdvance = debug ? false : /继续|下一课|下一节|接着/.test(message);
-  if (effectiveCourse) {
+  // 大类综合问答（course 以 group: 前缀标识）：综合分类下全部课程回答，不跟随单课进度
+  const isGroupCourse = typeof effectiveCourse === 'string' && effectiveCourse.startsWith('group:');
+  if (isGroupCourse) {
+    courseCtx = loadGroupContext(routeInfo.subject, effectiveCourse.slice(6), message);
+  } else if (effectiveCourse) {
     courseCtx = loadDistilledCourseContext(routeInfo.subject, effectiveCourse, message, wantAdvance);
   } else if (wantCourse) {
     courseCtx = loadCourseContext(routeInfo.subject, tutor, message, wantAdvance);
   }
-  if (courseCtx) {
+  if (isGroupCourse && courseCtx) {
+    messages = buildGroupMessages({ subject: routeInfo.subject, tutor, userState, history, message, groupCtx: courseCtx, style });
+  } else if (courseCtx) {
     messages = buildCourseMessages({ subject: routeInfo.subject, tutor, userState, history, message, courseCtx, style });
   } else {
     messages = buildMessages({ subject: routeInfo.subject, tutor, userState, history, message, style });

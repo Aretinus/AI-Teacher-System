@@ -190,6 +190,53 @@ function buildCourseMessages({ subject, tutor, userState, history, message, cour
   ];
 }
 
+// 大类综合问答：综合分类下全部课程回答，不跟随单课进度（plain 文本回复，无 JSON 协议）
+function buildGroupSystemPrompt({ subject, tutor, userState, history, message, groupCtx, style }) {
+  const engineSkill = readCoreSkill('tutor-engine');
+  const tutorSkill = readSkillFile(subject, tutor, 'SKILL.md');
+  const recent = (history.sessions || []).slice(0, MAX_CONTEXT_HISTORY)
+    .map((s) => `- [${s.date}] ${s.subject}: ${s.summary || ''}`).join('\n') || '（无）';
+
+  return [
+    '你是 AI 教师系统的教学引擎。当前为「分类综合问答」模式：综合给定分类下全部课程的内容回答问题，不跟随单课进度。',
+    '',
+    '## Tutor Engine（编排协议）',
+    engineSkill || '（缺失）',
+    '',
+    '## 学科 Tutor 指令（参考）',
+    tutorSkill || '（缺失）',
+    '',
+    '## 分类：' + groupCtx.groupName + ' 的全部课程大纲（书 → 章 → 课）',
+    groupCtx.outline,
+    '',
+    '## 与本次问题相关的课文节选',
+    groupCtx.excerpts.join('\n\n') || '（未匹配到明显相关的课文：请基于大纲与你自身的知识回答，并给出建议阅读的书目）',
+    '',
+    '## 授课风格',
+    styleBlock(style),
+    '',
+    '## 用户当前状态',
+    JSON.stringify({ currentSubject: userState.currentSubject, currentGoal: userState.currentGoal, knowledgePoints: userState.knowledgePoints, recentErrors: userState.recentErrors }, null, 2),
+    '',
+    '## 近期会话摘要',
+    recent,
+    '',
+    '## 本轮输入',
+    `分类：${groupCtx.groupName}｜学生消息：${message}`,
+    '',
+    '## 输出要求',
+    '用 Markdown 综合该分类下相关课程内容回答学生的问题；引用具体内容时注明出自哪本书/哪一章；回答末尾用一行「建议深入：书名 → 章节」给出可系统学习的进阶指引（若大纲中有对应内容）。直接输出回答正文，不要输出 JSON。',
+  ].join('\n');
+}
+
+function buildGroupMessages({ subject, tutor, userState, history, message, groupCtx, style }) {
+  return [
+    { role: 'system', content: buildGroupSystemPrompt({ subject, tutor, userState, history, message, groupCtx, style }) },
+    ...(history.messages || []).slice(-4).map((m) => ({ role: m.role, content: m.content })),
+    { role: 'user', content: message },
+  ];
+}
+
 function buildMessages({ subject, tutor, userState, history, message, style }) {
   return [
     { role: 'system', content: buildSystemPrompt({ subject, tutor, userState, history, message, style }) },
@@ -198,4 +245,4 @@ function buildMessages({ subject, tutor, userState, history, message, style }) {
   ];
 }
 
-module.exports = { buildSystemPrompt, buildMessages, buildCourseSystemPrompt, buildCourseMessages, readSkillFile, readCoreSkill, readKnowledge };
+module.exports = { buildSystemPrompt, buildMessages, buildCourseSystemPrompt, buildCourseMessages, buildGroupSystemPrompt, buildGroupMessages, readSkillFile, readCoreSkill, readKnowledge };

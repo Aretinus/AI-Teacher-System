@@ -46,6 +46,11 @@ export function getCourses(subject) {
   return apiGet(`/api/courses?subject=${encodeURIComponent(subject)}`).then((d) => d.courses || [])
 }
 
+// 课程树：分类逐级下钻（group 节点可展开/综合问答，course 节点可系统学习）
+export function getCoursesTree(subject) {
+  return apiGet(`/api/courses/tree?subject=${encodeURIComponent(subject)}`).then((d) => d.tree || [])
+}
+
 export function getSettings() {
   return apiGet('/api/settings')
 }

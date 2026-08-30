@@ -39,21 +39,30 @@
       </view>
       <view class="course-panel">
         <view class="course-panel-head" @click="coursePanelOpen = !coursePanelOpen">
-          <text class="course-panel-title">课程分支{{ courses.length ? `（${courses.length} 门）` : '' }}</text>
+          <text class="course-panel-title">课程分支{{ courseCount ? `（${courseCount} 门课程）` : '' }}</text>
           <text class="course-panel-toggle">{{ coursePanelOpen ? '收起 ▲' : '展开 ▼' }}</text>
         </view>
-        <view v-if="coursePanelOpen" class="style-grid course-panel-body">
-          <view
-            v-for="c in courses"
-            :key="c.id"
-            class="style-card"
-            :class="{ active: c.id === selectedCourse, disabled: !c.available }"
-            @click="selectCourse(c)"
-          >
-            <view class="style-name">{{ c.name }}</view>
-            <view class="style-desc">{{ c.available ? `${c.chapters} 章 / ${c.lessons} 课` : '蒸馏完成后可学' }}</view>
-          </view>
-          <view v-if="!courses.length" class="style-desc" style="width:100%">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
+        <view v-if="coursePanelOpen" class="course-panel-body">
+          <template v-if="courseRows.length">
+            <view
+              v-for="row in courseRows"
+              :key="row.node.id"
+              class="course-row"
+              :class="{ selected: row.node.type === 'course' && row.node.id === selectedCourse }"
+              :style="{ paddingLeft: 12 + row.depth * 30 + 'rpx' }"
+            >
+              <view class="course-row-main" @click="row.node.type === 'group' ? toggleCourseGroup(row.node) : selectCourseNode(row.node)">
+                <text v-if="row.node.type === 'group'" class="course-toggle">{{ courseExpanded[row.node.id] ? '▾' : '▸' }}</text>
+                <text v-else class="course-dot">·</text>
+                <text class="course-name">{{ row.node.name }}</text>
+                <text class="course-meta">{{ row.node.type === 'group' ? `${row.node.courseCount} 门课 / ${row.node.lessons} 课` : `${row.node.chapters} 章 / ${row.node.lessons} 课` }}</text>
+              </view>
+              <view v-if="row.node.type === 'group'" class="course-row-ops">
+                <view class="course-qa-btn" @click.stop="categoryQA(row.node)">综合问答</view>
+              </view>
+            </view>
+          </template>
+          <view v-else class="style-desc" style="padding:8rpx 12rpx">该学科暂无已蒸馏课程，去书籍加工页处理书籍后自动出现</view>
         </view>
       </view>
     </view>
@@ -121,7 +130,7 @@
 </template>
 
 <script>
-import { getSubjects, getState, getHistory, deleteSession, getStyles, getCourses } from '@/api'
+import { getSubjects, getState, getHistory, deleteSession, getStyles, getCoursesTree } from '@/api'
 import TabBar from '@/components/tab-bar.vue'
 
 export default {
@@ -131,6 +140,8 @@ export default {
       subjects: [],
       styles: [],
       courses: [],
+      courseTree: [],
+      courseExpanded: {},
       selectedSubject: '',
       subjectTouched: false,
       selectedStyle: 'standard',
@@ -142,6 +153,21 @@ export default {
     }
   },
   computed: {
+    courseRows() {
+      const rows = []
+      const walk = (nodes, depth) => {
+        for (const n of nodes) {
+          rows.push({ node: n, depth })
+          if (n.type === 'group' && this.courseExpanded[n.id] && n.children) walk(n.children, depth + 1)
+        }
+      }
+      walk(this.courseTree, 0)
+      return rows
+    },
+    courseCount() {
+      const count = (nodes) => nodes.reduce((n, x) => n + (x.type === 'course' ? 1 : count(x.children || [])), 0)
+      return count(this.courseTree)
+    },
     availableSubjects() {
       return this.subjects || []
     },
@@ -194,29 +220,38 @@ export default {
     },
     async loadCourses(subject) {
       if (!subject) {
-        this.courses = []
+        this.courseTree = []
         this.selectedCourse = ''
         return
       }
       try {
-        this.courses = await getCourses(subject)
-        if (this.selectedCourse && !this.courses.some((c) => c.id === this.selectedCourse)) {
-          this.selectedCourse = ''
-        }
+        this.courseTree = await getCoursesTree(subject)
+        const ids = []
+        const walk = (nodes) => nodes.forEach((n) => { ids.push(n.id); if (n.children) walk(n.children) })
+        walk(this.courseTree)
+        if (this.selectedCourse && !ids.includes(this.selectedCourse)) this.selectedCourse = ''
+        // 默认展开第一层分组
+        for (const n of this.courseTree) if (n.type === 'group') this.courseExpanded[n.id] = true
       } catch (e) {
-        this.courses = []
+        this.courseTree = []
       }
+    },
+    toggleCourseGroup(node) {
+      this.courseExpanded[node.id] = !this.courseExpanded[node.id]
+    },
+    selectCourseNode(node) {
+      if (node.type !== 'course') return
+      this.selectedCourse = node.id
+    },
+    // 大类综合问答：course 以 group: 前缀传递，后端综合该分类全部课程回答
+    categoryQA(node) {
+      if (!this.selectedSubject) return
+      const course = 'group:' + node.id
+      uni.navigateTo({ url: `/pages/chat/chat?subject=${this.selectedSubject}&style=${this.selectedStyle}&course=${encodeURIComponent(course)}` })
     },
     pickSubject(id) {
       this.subjectTouched = true
       this.selectedSubject = id
-    },
-    selectCourse(c) {
-      if (!c.available) {
-        uni.showToast({ title: '该课程尚未蒸馏完成', icon: 'none' })
-        return
-      }
-      this.selectedCourse = c.id
     },
     subjectName(id) {
       if (!id) return '综合问答'
@@ -411,6 +446,59 @@ export default {
 }
 .course-panel-body {
   margin-top: 4rpx;
+}
+.course-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 12rpx;
+  border-radius: 14rpx;
+}
+.course-row.selected {
+  background: #eef2ff;
+}
+.course-row-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+.course-toggle {
+  color: #9ca3af;
+  font-size: 24rpx;
+  margin-right: 8rpx;
+}
+.course-dot {
+  color: #4f8cff;
+  margin-right: 10rpx;
+  font-weight: 700;
+}
+.course-name {
+  font-size: 27rpx;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.course-row.selected .course-name {
+  color: #4f46e5;
+  font-weight: 600;
+}
+.course-meta {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+.course-qa-btn {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: #4f8cff;
+  border: 1rpx solid #bfdbfe;
+  background: #eff6ff;
+  border-radius: 999rpx;
+  padding: 4rpx 16rpx;
 }
 .card {
   background: #ffffff;
