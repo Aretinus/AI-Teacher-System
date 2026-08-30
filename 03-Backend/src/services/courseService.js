@@ -425,6 +425,60 @@ function chaptersOf(courseDir) {
 }
 
 // 蒸馏驱动课程上下文：进度存 COURSES_DIR（蒸馏目录会被重蒸馏清空，不能写入）
+
+// 中文数字/阿拉伯数字 → 数值（支持 一~九十九）
+function cnNum(s) {
+  const digits = { 零: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+  s = String(s).trim();
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  if (s === '十') return 10;
+  const m1 = s.match(/^十([一二三四五六七八九])?$/);
+  if (m1) return 10 + (m1[1] ? digits[m1[1]] : 0);
+  const m2 = s.match(/^([一二三四五六七八九])十([一二三四五六七八九])?$/);
+  if (m2) return digits[m2[1]] * 10 + (m2[2] ? digits[m2[2]] : 0);
+  return NaN;
+}
+
+// 学生消息要求跳章/跳课时，解析目标并返回 { current, hint }；无跳转意图返回 null
+function parseJumpTarget(message, chapters, lessons) {
+  const msg = String(message || '');
+  if (!msg) return null;
+  const chM = msg.match(/第\s*([0-9一二三四五六七八九十两]+)\s*(章|讲|编|部分)/);
+  if (chM) {
+    const want = cnNum(chM[1]);
+    if (!isNaN(want)) {
+      const ch = chapters.find((c) => {
+        const cm = c.match(/第\s*(\d+)\s*[章节]/) || c.match(/^(\d{1,3})_/);
+        return cm && parseInt(cm[1], 10) === want;
+      });
+      if (ch) {
+        const ls = lessons.filter((l) => l.startsWith(ch + '/'));
+        if (ls.length) return { current: ls[0], hint: `已按学生要求跳转到「${ch}」（该章共 ${ls.length} 课），本轮从本章第一课开始教` };
+      }
+    }
+  }
+  const leM = msg.match(/第\s*([0-9一二三四五六七八九十两]+)\s*(课|节|篇)/);
+  if (leM) {
+    const want = cnNum(leM[1]);
+    if (!isNaN(want)) {
+      const hit = lessons.find((l) => {
+        const lm = l.match(/第\s*(\d+)\s*课/) || l.match(/(\d{1,3})_/);
+        return lm && parseInt(lm[1], 10) === want;
+      });
+      if (hit) return { current: hit, hint: `已按学生要求跳转到第 ${want} 课（${hit}）` };
+    }
+  }
+  if (/跳过|直接进入|直接开始|直接看|直接学|直接讲/.test(msg)) {
+    const front = /(书名页|版权页|封面|前言|序言|目录|出版说明|照片|笔迹|题签)/;
+    const body = chapters.find((c) => !front.test(c) && lessons.some((l) => l.startsWith(c + '/')));
+    if (body) {
+      const ls = lessons.filter((l) => l.startsWith(body + '/'));
+      return { current: ls[0], hint: `学生要求跳过前置内容（书名页/版权页/目录等），已跳转到「${body}」开始教` };
+    }
+  }
+  return null;
+}
+
 function loadDistilledCourseContext(subject, courseId, message, wantAdvance) {
   const courseDir = resolveDistilledCourse(subject, courseId);
   if (!courseDir) return null;
@@ -433,13 +487,20 @@ function loadDistilledCourseContext(subject, courseId, message, wantAdvance) {
 
   const progressFile = progressFileOf(subject, courseId);
   const progress = loadProgressFile(progressFile);
+  const chapters = chaptersOf(courseDir);
   let current = progress.current || lessons[0];
-  if (wantAdvance && progress.current) {
+  let jumpHint = '';
+  // 学生明确要求跳章/跳课时优先执行（覆盖"下一课"顺序推进），并持久化进度
+  const jump = parseJumpTarget(message, chapters, lessons);
+  if (jump) {
+    current = jump.current;
+    jumpHint = jump.hint;
+    saveProgressFile(progressFile, { ...progress, current });
+  } else if (wantAdvance && progress.current) {
     const adv = advanceLessonFile(progressFile, progress, lessons);
     if (adv) current = adv;
   }
 
-  const chapters = chaptersOf(courseDir);
   const curChapter = chapters.find((ch) => {
     const chDir = path.join(courseDir, ch);
     return fs.readdirSync(chDir).some((f) => path.join(ch, f).replace(/\\/g, '/') === current || path.join(ch, f) === current);
@@ -448,12 +509,16 @@ function loadDistilledCourseContext(subject, courseId, message, wantAdvance) {
   const lessonPath = path.join(courseDir, current);
   const lessonContent = fs.existsSync(lessonPath) ? fs.readFileSync(lessonPath, 'utf8') : '';
   const learnedCount = Object.values(progress.lessons || {}).filter((l) => l.status === 'learned').length;
+  const chapterList = chapters
+    .map((c) => `${c}（${lessons.filter((l) => l.startsWith(c + '/')).length} 课）`)
+    .join('；') || '（无）';
 
   return {
     courseDir,
     courseName: path.basename(courseDir),
     chapter: curChapter || '未知',
-    chapterList: chapters.join('；') || '（无）',
+    jumpHint,
+    chapterList,
     tocSection: curChapter ? fs.readdirSync(path.join(courseDir, curChapter)).filter((f) => f.endsWith('.md')).sort((a, b) => a.localeCompare(b, 'zh-CN-numeric')).join('；') : '（无）',
     currentLesson: current,
     lessonTitle: lessonTitle(progress, current),

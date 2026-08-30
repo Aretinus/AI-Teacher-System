@@ -148,8 +148,9 @@ function buildCourseSystemPrompt({ subject, tutor, userState, history, message, 
     '## 课程模式 · 本轮任务',
     `学生要求按《${courseCtx.courseName}》课程逐课学习。学生此前已完成 ${courseCtx.learnedCount} 课（不含当前课）。`,
     `**当前正在上的课：《${courseCtx.lessonTitle}》（文件：${courseCtx.currentLesson}，所属章节：${courseCtx.chapter || '未知'}）。**`,
-    '本次教学必须严格围绕当前这一课：先备课（目标层级/核心概念/必背清单），再费曼式逐段讲解，',
-    '最后给练习闸门（≥80% 才推进）与课后作业。**只教下方"当前课正文"里这一课的内容，不得教其他课、不得提前讲后续课、不得跳章。**',
+    courseCtx.jumpHint
+      ? `**${courseCtx.jumpHint}。**学生明确要求跳转，本轮直接教下方"当前课正文"的内容，不要再回到书名页/版权页等前置内容，也不要质疑跳转的合理性。`
+      : '本次教学必须严格围绕当前这一课：先备课（目标层级/核心概念/必背清单），再费曼式逐段讲解，最后给练习闸门（≥80% 才推进）与课后作业。**只教下方"当前课正文"里这一课的内容，不得教其他课、不得提前讲后续课、不得跳章。**',
     '',
     '## 本轮要教的课（唯一，重申）',
     `《${courseCtx.lessonTitle}》——这是学生现在正在上的课，正文见下。教学必须从这一课的第一段开始完整讲解。`,
